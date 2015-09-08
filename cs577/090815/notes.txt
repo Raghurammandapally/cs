@@ -1,0 +1,82 @@
+specification:
+  *what* problem is solved
+  input: 
+    may include preconditions (e.g. postitive ints)
+    types, etc.
+  output: what output is desired for a given input
+implementation:
+  how it is solved, in some langugage
+
+powering problem
+  input: (a,b) s.t. a an integer and b a positive integer
+  output: a^b (= a * a * ... * a, b times)
+
+  proofs:
+    forall int a and positive ints b,c: (a^b)(a^c) = a^(b+c)
+    forall int a and positive ints b,c: (a^b)^c = a^(b*c)
+      (can extend these definitions of a^b to a an int and b a rational, i.e. b=p/q s.t. p an int and q a positive int)
+      also can extend this s.t. a is any rational
+    
+    (a/b)^c = (a^c)/(b^c), see notes
+
+    can extend to reals by continuity (density of rationals)
+    
+  show a^0 is 1: a^0 * a = a^0 * a^1 = a^(0+1) = a^1 = a
+  therefor a^0 must be 1 for equality to hold
+
+gcd
+  divisor: a | b iff (exists int c) s.t. b = a * c
+  div(b) = {int z s.t. a | b}
+  div(6) = {-6,-3,-2,-1,1,2,3,6}
+  div(0) = ints
+
+  DEFINE gcd as MAX( div(a) intersect div(b) )
+  gcd(4, 6) = 2
+  gcd(0, 6) = 6
+  gcd(0, 0) is undefined as the set of common divisors of 0 and 0 is Z, which does not have a largest element
+
+  prove :
+    Claim 2. For any two integers a and b, the set of common divisors of a and b is the same as the set of common divisors of a and b − a.
+    
+    proving equality of sets: show that any element in left is also in the right, and vice versa
+
+    show div(a) intersect div(b) = div(a) intersect div(b-a)
+    lhs subset of div(a): trivial
+    lhs subset of div(b-a)
+      consider any d in LHS, then we can write a = d*e and b = d*f...
+    going the other way, we can do the same sort of proof
+
+  gcd(a,a) = a for all positive integers (consider 0 and negative ints)
+
+  INPUT: (a,b) both positive ints
+  OUTPUT: gcd(a,b)
+
+CORRECTNESS:
+  for EVERY valid input (correct types + satisfies preconditions), the algorithm halts and returns an output that satisfies the specifications
+
+  2 phases (partial: assuming that the algorithm halts, what it returns is correct; and termination: the algorithm halts)
+
+  partial correctness:
+    suppose that claims 5, 6, and 7 are loop invariants. then partial correctness follows almost immediately (next lecture, we will prove the loop invariants by induction).
+    consider the iteration where the loop is exited. by loop invariants, we have r = a^c, c an int, and c <= b. since loop is exited, c < b fails, so c >= b. combined, c == b so r = a^b.
+
+  termination:
+    the loop cannot keep on going, because c increments at each loop and b does not change.
+
+  we have seen why we need claims 5 and 7. we will see next time why we need claim 6 (c an int).
+
+review:
+-----------------
+[x] proving equality of sets (gcd example)
+  Proving a subset relation "S ⊆ T"
+    Let x ∈ S.
+      . . .
+    [Logical deductions]
+      . . .
+    Therefore x ∈ T.
+    This proves that S ⊆ T.
+
+  Proving a set equality "S = T"
+    By definition (9), equality between two sets S and T is equivalent to the subset relations (i) S ⊆ T and (ii) T ⊆ S both being true. Thus, the proof of S = T, breaks down into two parts, (i) the proof of S ⊆ T, and (ii) the proof of T ⊆ S, each of which follows the above template.
+
+[ ] correctness notes from cs240

@@ -1,0 +1,49 @@
+stable marriage problem
+-------------
+n boys, n girls
+ranked preference list for each person (assume no ties)
+req: 
+  no rogue couples (no b/g that prefer each other to the people they are paired with)
+  stable iff no rogue couples
+input: set of pref lists
+output: stable pairing
+
+does stable pairing always exist?
+
+idea: start with some pairing, and whenever their is a rogue couple, let them break up
+  if this halts, we know trivially that this is stable
+  question: can we argue that there is a stable state?
+  answer: no, their can be cycles if we don't specify which rogue couple breaks up (consider n=3 counterex)
+
+soln (see notes)
+
+claim: traditional marriage alg (TMA) always produces a stable pairing
+  does it always terminate?
+    situation where the alg doesn't specify what to do next?
+    infinite loop?
+    definitely produces a pairing if there is no core dump
+  unless a boy crosses off all the girls on his list
+theorem: alg should terminate in at most n^2 days
+  "master list" argument
+  since each list never drops below 1, there will be max n(n-1) <= n^2
+
+theorem: tma produces male-optimal pairing
+  B ------S------A
+     ~~~~~~~~~~~/
+    /
+  D ------S------C
+
+  D: X,Y,A,...,O,...,C
+
+
+notes afterwards:
+------------------
+claim on slides 9/10:
+  Idea: Allow the pairs to keep breaking up and reforming until they become stable.  
+  Can you argue that the couples will not  continue breaking up and reforming forever?
+
+  http://www.cs.cmu.edu/~anupamg/251-notes/stable.pdf
+    As we mentioned, Knuth showed that just choosing an arbitrary rogue couple to resolve at each step can cause the process to cycle without reaching a stable matching.
+    "In fact, Knuth showed in 1990 that just doing evolutionary approach by choosing an arbitrary rogue couple may result in the process cycling indefinitely without reaching a stable matching. (See the comments at the end of the notes.)"
+
+    See p13/14 of ext/knuth_1976.djvu for ex.

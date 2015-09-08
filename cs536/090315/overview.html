@@ -1,0 +1,330 @@
+
+<!-- saved from url=(0070)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/dextras.css">
+<style type="text/css"></style></head>
+<body>
+<hr>
+<span class="subhead">Contents</span>
+<p>
+</p><ul class="style1" style="list-style-type:disc">
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#intro">Introduction</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#scanner">The Scanner</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#parser">The Parser</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#semantic">The Semantic Analyzer</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#int">The Intermediate Code Generator</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#opt">The Optimizer</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#codegen">The Code Generator</a>
+</li></ul>
+<p></p>
+
+<p>
+<a class="subhead" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#intro" name="intro">Introduction</a>
+</p><p>
+What is a compiler?
+</p><ul class="style1" style="list-style-type:disc">
+  <li> A recognizer (of some source language L).
+  </li><li> A translator (of programs written in L into programs written in some
+       object or target language L').
+</li></ul>
+Here's a simple pictorial view:
+<p></p>
+<p>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="367.43698" height="112.31703" id="svg2" version="1.1" inkscape:version="0.47 r22583" sodipodi:docname="overview_hl.svg">
+  <defs id="defs4">
+    <inkscape:path-effect effect="spiro" id="path-effect4861" is_visible="true"></inkscape:path-effect>
+    <inkscape:path-effect is_visible="true" id="path-effect4847" effect="spiro"></inkscape:path-effect>
+    <marker inkscape:stockid="Arrow2Mend" orient="auto" refY="0" refX="0" id="Arrow2Mend" style="overflow:visible">
+      <path id="path3665" style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round" d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z" transform="scale(-0.6,-0.6)"></path>
+    </marker>
+    <marker inkscape:stockid="Arrow2Lend" orient="auto" refY="0" refX="0" id="Arrow2Lend" style="overflow:visible">
+      <path id="path3659" style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round" d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z" transform="matrix(-1.1,0,0,-1.1,-1.1,0)"></path>
+    </marker>
+    <marker inkscape:stockid="Arrow1Lend" orient="auto" refY="0" refX="0" id="Arrow1Lend" style="overflow:visible">
+      <path id="path3641" d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none" transform="matrix(-0.8,0,0,-0.8,-10,0)"></path>
+    </marker>
+    <inkscape:path-effect effect="spiro" id="path-effect2861" is_visible="true"></inkscape:path-effect>
+    <inkscape:perspective sodipodi:type="inkscape:persp3d" inkscape:vp_x="0 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:persp3d-origin="372.04724 : 350.78739 : 1" id="perspective2993"></inkscape:perspective>
+    <inkscape:perspective id="perspective4253" inkscape:persp3d-origin="0.5 : 0.33333333 : 1" inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d"></inkscape:perspective>
+  </defs>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="1.4142136" inkscape:cx="114.83301" inkscape:cy="21.704042" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" inkscape:window-width="1200" inkscape:window-height="724" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="0"></sodipodi:namedview>
+  <metadata id="metadata7">
+    <rdf:rdf>
+      <cc:work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+        <dc:title></dc:title>
+      </cc:work>
+    </rdf:rdf>
+  </metadata>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(-21.526487,-1096.5719)">
+    <flowroot xml:space="preserve" id="flowRoot2985" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><flowregion id="flowRegion2987"><rect id="rect2989" width="295.64752" height="215.3271" x="164.05875" y="266.24738" style="font-size:12px"></rect></flowregion><flowpara id="flowPara2991"></flowpara></flowroot>    <text xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#800080;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter" x="-113.88979" y="1086.9584" id="text3019" sodipodi:linespacing="125%"><tspan sodipodi:role="line" id="tspan3021" x="-110.00777" y="1086.9584" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#800080;font-family:Purisa;-inkscape-font-specification:Purisa">x can be </tspan><tspan sodipodi:role="line" x="-110.00777" y="1101.9584" id="tspan3025" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#800080;font-family:Purisa;-inkscape-font-specification:Purisa">replaced </tspan><tspan sodipodi:role="line" x="-113.88979" y="1116.9584" id="tspan3023" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#800080;font-family:Purisa;-inkscape-font-specification:Purisa">with y</tspan></text>
+    <path style="fill:none;stroke:#800080;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m -145.82322,1087.9731 c 0,0 -9.3678,-0.7842 -5.70191,-8.3076 3.6659,-7.5234 18.7515,-5.4275 25.98129,-7.4901 8.29594,-2.3668 12.65655,-9.8791 12.65655,-9.8791" id="path3027" inkscape:connector-curvature="0" sodipodi:nodetypes="czsc"></path>
+    <path style="fill:none;stroke:#800080;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="m -116.68562,1063.2186 3.97015,-1.0112 0.30951,4.1758" id="path3805" inkscape:connector-curvature="0"></path>
+    <rect style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" id="rect2816" width="88.746971" height="44.373486" x="21.871487" y="1097.6814" ry="11.853456"></rect>
+    <text sodipodi:linespacing="125%" id="text3062" y="1113.8761" x="66.108963" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter" xml:space="preserve"><tspan style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis" y="1113.8761" x="66.108963" sodipodi:role="line" id="tspan3074">Source</tspan><tspan style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis" y="1133.8761" x="66.108963" sodipodi:role="line" id="tspan2847">Program</tspan></text>
+    <flowroot xml:space="preserve" id="flowRoot2837" style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans" transform="translate(13.124102,1015.9464)"><flowregion id="flowRegion2839"><rect id="rect2841" width="106.77312" height="82.731491" x="-237.58788" y="19.875111"></rect></flowregion><flowpara id="flowPara2843"></flowpara></flowroot>    <rect ry="11.853456" y="1096.9169" x="153.31886" height="44.373535" width="102.53555" id="rect2849" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+    <text xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter" x="204.12259" y="1123.3517" id="text2851" sodipodi:linespacing="125%"><tspan sodipodi:role="line" x="204.12259" y="1123.3517" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis" id="tspan4911">Compiler</tspan></text>
+    <path style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)" d="m 97,103 42,0" id="path2859" inkscape:path-effect="#path-effect2861" inkscape:original-d="m 97,103 42,0" transform="translate(13.124102,1015.9464)"></path>
+    <rect style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" id="rect4839" width="88.746971" height="44.373486" x="299.87149" y="1097.6814" ry="11.853456"></rect>
+    <text sodipodi:linespacing="125%" id="text4841" y="1115.9161" x="343.78094" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter" xml:space="preserve"><tspan style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis" y="1115.9161" x="345.38104" sodipodi:role="line" id="tspan4843">Object </tspan><tspan style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis" y="1135.9161" x="343.78094" sodipodi:role="line" id="tspan4849">code</tspan></text>
+    <path inkscape:original-d="m 256.1241,1118.9464 42,0" inkscape:path-effect="#path-effect4847" id="path4845" d="m 256.1241,1118.9464 42,0" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <path sodipodi:type="arc" style="fill:#aa0000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" id="path4867" sodipodi:cx="330.74921" sodipodi:cy="167.66043" sodipodi:rx="34.117901" sodipodi:ry="32.880466" d="m 364.86711,167.66043 c 0,18.15938 -15.27511,32.88047 -34.1179,32.88047 -18.8428,0 -34.1179,-14.72109 -34.1179,-32.88047 0,-18.15938 15.2751,-32.88047 34.1179,-32.88047 18.84279,0 34.1179,14.72109 34.1179,32.88047 z" transform="matrix(0.87176305,0,0,0.87176305,55.974059,1033.764)"></path>
+    <text xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter" x="343.78094" y="1173.9161" id="text4853" sodipodi:linespacing="125%"><tspan id="tspan4857" sodipodi:role="line" x="343.78094" y="1173.9161" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">Error</tspan><tspan sodipodi:role="line" x="343.78094" y="1193.9161" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis" id="tspan4865">Log</tspan></text>
+    <path style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)" d="m 256.1241,1128.5096 c 3.2878,-1.3232 7.10909,-1.2583 10.35003,0.1759 2.22648,0.9853 4.15854,2.5798 5.67921,4.4813 1.52066,1.9014 2.63991,4.1042 3.43792,6.4044 1.59602,4.6005 1.91495,9.5297 2.25296,14.3874 0.33802,4.8578 0.7253,9.791 2.44432,14.347 0.85951,2.278 2.05354,4.4443 3.64958,6.283 1.59603,1.8386 3.60413,3.3428 5.8803,4.2071 3.56228,1.3526 7.50039,1.0778 11.30955,0.9791 4.0687,-0.1054 8.14317,0.013 12.19893,0.3536" id="path4859" inkscape:path-effect="#path-effect4861" inkscape:original-d="m 256.1241,1128.5096 c 0,0 8.44713,0.2646 10.35003,0.1759 0.70858,-0.033 22.39889,50.1385 23.34429,50.1102 1.57652,-0.047 6.71925,0.9791 11.30955,0.9791 4.59031,0 12.19893,0.3536 12.19893,0.3536" sodipodi:nodetypes="csszc"></path>
+  </g>
+</svg>
+</p>
+
+A compiler is <em>itself</em> a program, written in some <b>host</b>
+language.
+(In cs536, students will implement a compiler for a simple source language
+using Java as the host language.)
+
+<p>
+A compiler operates in <em>phases</em>;
+each phase translates the source program from one representation to
+another.  Different compilers may include different phases, and/or may
+order them somewhat differently.
+A typical organization is shown below.
+</p>
+<p>
+<svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.2" width="238" height="572.14069" id="svg2">
+  <defs id="defs4">
+    <inkscape:path-effect effect="spiro" id="path-effect5099"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect5055"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect5051"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect5047"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect5043"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect5039"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect4861"></inkscape:path-effect>
+    <inkscape:path-effect effect="spiro" id="path-effect4847"></inkscape:path-effect>
+    <marker refX="0" refY="0" orient="auto" id="Arrow2Mend" style="overflow:visible">
+      <path d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z" transform="scale(-0.6,-0.6)" id="path3665" style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"></path>
+    </marker>
+    <marker refX="0" refY="0" orient="auto" id="Arrow2Lend" style="overflow:visible">
+      <path d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z" transform="matrix(-1.1,0,0,-1.1,-1.1,0)" id="path3659" style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"></path>
+    </marker>
+    <marker refX="0" refY="0" orient="auto" id="Arrow1Lend" style="overflow:visible">
+      <path d="M 0,0 5,-5 -12.5,0 5,5 0,0 z" transform="matrix(-0.8,0,0,-0.8,-10,0)" id="path3641" style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"></path>
+    </marker>
+    <inkscape:path-effect effect="spiro" id="path-effect2861"></inkscape:path-effect>
+  </defs>
+  <g transform="translate(-16.158252,-1097.3364)" id="layer1">
+    <flowroot id="flowRoot2985" xml:space="preserve" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><flowregion id="flowRegion2987"><rect width="295.64752" height="215.3271" x="164.05875" y="266.24738" id="rect2989" style="font-size:12px"></rect></flowregion><flowpara id="flowPara2991"></flowpara></flowroot>    <text x="-113.88979" y="1086.9584" id="text3019" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#800080;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="-110.00777" y="1086.9584" id="tspan3021" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#800080;font-family:Purisa;-inkscape-font-specification:Purisa">x can be </tspan><tspan x="-110.00777" y="1101.9584" id="tspan3025" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#800080;font-family:Purisa;-inkscape-font-specification:Purisa">replaced </tspan><tspan x="-113.88979" y="1116.9584" id="tspan3023" style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#800080;font-family:Purisa;-inkscape-font-specification:Purisa">with y</tspan></text>
+    <path d="m -145.82322,1087.9731 c 0,0 -9.3678,-0.7842 -5.70191,-8.3076 3.6659,-7.5234 18.7515,-5.4275 25.98129,-7.4901 8.29594,-2.3668 12.65655,-9.8791 12.65655,-9.8791" id="path3027" style="fill:none;stroke:#800080;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+    <path d="m -116.68562,1063.2186 3.97015,-1.0112 0.30951,4.1758" id="path3805" style="fill:none;stroke:#800080;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+    <g transform="translate(0,7.6293945e-6)" id="g5027">
+      <rect width="88.746971" height="44.373486" ry="11.853456" x="21.871487" y="1097.6814" id="rect2816" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="66.108963" y="1113.8761" id="text3062" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="66.108963" y="1113.8761" id="tspan3074" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">Source</tspan><tspan x="66.108963" y="1133.8761" id="tspan2847" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">Program</tspan></text>
+    </g>
+    <flowroot transform="translate(13.124102,1015.9464)" id="flowRoot2837" xml:space="preserve" style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"><flowregion id="flowRegion2839"><rect width="106.77312" height="82.731491" x="-237.58788" y="19.875111" id="rect2841"></rect></flowregion><flowpara id="flowPara2843"></flowpara></flowroot>    <g transform="translate(0,-14.692398)" id="g5010">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.671253" y="1414.7585" id="rect2849" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1431.1934" id="text2851" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="67.650978" y="1431.1934" id="tspan4911" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">intermediate</tspan><tspan x="67.650978" y="1451.1934" id="tspan4936" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">code generator</tspan></text>
+    </g>
+    <path d="m 66.235364,1142.5246 0,30" id="path2859" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <rect width="88.746971" height="44.373486" ry="11.853456" x="492.87149" y="1014.6814" id="rect4839" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+    <text x="143.81039" y="1162.7172" id="text4841" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="143.81039" y="1162.7172" id="tspan4849" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Sequence of characters</tspan></text>
+    <path d="m 449.1241,1035.9464 42,0" id="path4845" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <path d="m 364.86711,167.66043 a 34.117901,32.880466 0 1 1 -68.2358,0 34.117901,32.880466 0 1 1 68.2358,0 z" transform="matrix(0.87176305,0,0,0.87176305,248.97406,950.764)" id="path4867" style="fill:#aa0000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></path>
+    <text x="536.78094" y="1090.9161" id="text4853" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="536.78094" y="1090.9161" id="tspan4857" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">Error</tspan><tspan x="536.78094" y="1110.9161" id="tspan4865" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">Log</tspan></text>
+    <path d="m 449.1241,1045.5096 c 3.2878,-1.3232 7.10909,-1.2583 10.35003,0.1759 2.22648,0.9853 4.15854,2.5798 5.67921,4.4813 1.52066,1.9014 2.63991,4.1042 3.43792,6.4044 1.59602,4.6005 1.91495,9.5297 2.25296,14.3874 0.33802,4.8578 0.7253,9.791 2.44432,14.347 0.85951,2.278 2.05354,4.4443 3.64958,6.283 1.59603,1.8386 3.60413,3.3428 5.8803,4.2071 3.56228,1.3526 7.50039,1.0778 11.30955,0.9791 4.0687,-0.1054 8.14317,0.013 12.19893,0.3536" id="path4859" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <g transform="translate(0,-33.238419)" id="g5004">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.647202" y="1356.9584" id="rect4938" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1372.8732" id="text4940" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="69.251076" y="1372.8732" id="tspan4944" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">semantic </tspan><tspan x="67.650978" y="1392.8732" id="tspan4970" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">analyzer</tspan></text>
+    </g>
+    <g transform="translate(0,-42.717911)" id="g4998">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.567253" y="1292.0917" id="rect4948" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1308.5265" id="text4950" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="67.650978" y="1308.5265" id="tspan4952" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">syntax analyzer</tspan><tspan x="67.650978" y="1328.5265" id="tspan4960" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">(parser)</tspan></text>
+    </g>
+    <g transform="translate(0,-23.135391)" id="g5016">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.655252" y="1498.5477" id="rect4954" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1524.4625" id="text4956" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="67.650978" y="1524.4625" id="tspan4958" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">optimizer</tspan></text>
+    </g>
+    <g transform="translate(0,-66.456436)" id="g4992">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.871252" y="1239.484" id="rect4962" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1257.6147" id="text4964" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="67.650978" y="1257.6147" id="tspan4966" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">lexical analyzer</tspan><tspan x="67.650978" y="1277.6147" id="tspan4968" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">(scanner)</tspan></text>
+    </g>
+    <g transform="translate(0,-9)" id="g5021">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.503252" y="1557.7585" id="rect4980" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1574.1934" id="text4982" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="69.251076" y="1574.1934" id="tspan4986" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">code </tspan><tspan x="67.650978" y="1594.1934" id="tspan4990" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">generator</tspan></text>
+    </g>
+    <path d="m 66.235364,1217.5246 0,30" id="path5033" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <path d="m 66.235364,1292.5246 0,30" id="path5041" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <path d="m 66.235364,1367.5246 0,30" id="path5045" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <path d="m 66.235364,1443.5246 0,30" id="path5049" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <path d="m 66.235364,1518.5246 0,30" id="path5053" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <text x="135.81039" y="1238.7172" id="text5059" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="135.81039" y="1238.7172" id="tspan5061" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Sequence of tokens</tspan></text>
+    <text x="156.57872" y="1312.7172" id="text5063" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="156.57872" y="1312.7172" id="tspan5065" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Abstract-syntax tree (AST)</tspan></text>
+    <text x="161.12242" y="1388.7172" id="text5067" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="161.12242" y="1388.7172" id="tspan5071" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Augmented, annotated  AST</tspan></text>
+    <text x="130.6826" y="1463.7172" id="text5075" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="130.6826" y="1463.7172" id="tspan5077" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Intermediate code</tspan></text>
+    <text x="162.81964" y="1538.7172" id="text5079" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="162.81964" y="1538.7172" id="tspan5081" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Optimized intermediate code</tspan></text>
+    <g transform="translate(0,67)" id="g5083">
+      <rect width="102.53555" height="44.373535" ry="11.853456" x="16.503252" y="1557.7585" id="rect5085" style="fill:#5080d0;fill-opacity:1;stroke:#000000;stroke-width:0.69;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"></rect>
+      <text x="67.650978" y="1574.1934" id="text5087" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f2f2f2;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="67.650978" y="1574.1934" id="tspan5091" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">object</tspan><tspan x="67.650978" y="1594.1934" id="tspan5103" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#f2f2f2;font-family:Dosis;-inkscape-font-specification:Dosis">program</tspan></text>
+    </g>
+    <path d="m 66.235364,1594.5246 0,30" id="path5093" style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)"></path>
+    <text x="157.52257" y="1614.7172" id="text5095" xml:space="preserve" style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#1a1a1a;fill-opacity:1;stroke:none;font-family:Bitstream Charter;-inkscape-font-specification:Bitstream Charter"><tspan x="157.52257" y="1614.7172" id="tspan5097" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;text-anchor:middle;fill:#1a1a1a;font-family:Dosis;-inkscape-font-specification:Dosis">Assembly or machine code</tspan></text>
+  </g>
+</svg>
+</p>
+
+<p>
+Below, we look at each phase of the compiler.
+</p>
+
+<p>
+<a name="scanner" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#scanner" class="subhead">The Scanner</a>
+</p><p>
+The scanner is called by the parser;
+here's how it works:
+</p><ul>
+  <li> The scanner reads characters from the source program.
+  </li><li> The scanner groups the characters into <b>lexemes</b> (sequences
+       of characters that "go together").
+  </li><li> Each lexeme corresponds to a <b>token</b>; the scanner returns the next
+       token (plus maybe some additional information) to the parser.
+  </li><li> The scanner may also discover lexical errors (e.g., erroneous
+       characters).
+</li></ul>
+The definitions of what is a lexeme, token, or bad character all depend on
+the source language.
+
+<p>
+</p><h3>Example</h3>
+<p>
+Here are some Java lexemes and the corresponding tokens:
+</p><ul>
+<pre>lexeme:                 ;           =        index    tmp    37        102
+
+corresponding token:  SEMI-COLON   ASSIGN    IDENT  IDENT  INT-LIT  INT-LIT
+</pre>
+</ul>
+<p>
+Note that multiple lexemes can correspond to the same token (e.g., there are
+many identifiers).
+
+</p><p>
+Given the source code:
+</p><ul>
+<pre>position  =  initial +  rate   *    60 ;
+</pre>
+</ul>
+a Java scanner would return the following sequence of tokens:
+<ul>
+<pre>IDENT  ASSIGN IDENT PLUS IDENT TIMES INT-LIT SEMI-COLON
+</pre>
+</ul>
+
+Erroneous characters for Java source include # and control-a.
+
+<p>
+<a name="parser"></a>
+<span class="subhead">The Parser</span>
+</p><p>
+</p><ul>
+  <li> Groups tokens into "grammatical phrases", discovering the underlying
+       structure of the source program.
+  </li><li> Finds syntax errors.  For example, in Java the source code
+       <ul><tt>position  =   *  5 ;</tt></ul>
+       corresponds to the sequence of tokens:
+       <ul><tt>IDENT ASSIGN TIMES INT-LIT SEMI-COLON</tt></ul>
+       All are legal tokens, but that sequence of tokens is erroneous.
+  </li><li> Might find some "static semantic" errors, e.g., a use of an undeclared
+       variable, or variables that are multiply declared.
+  </li><li> Might generate code, or build some intermediate representation of
+       the program such as an abstract-syntax tree.
+</li></ul>
+<p></p>
+<h3>Example</h3>
+<p>source code:&nbsp;&nbsp;&nbsp;<code style="font-family:Courier">position = initial + rate * 60 ;</code>
+</p><p>
+Abstract syntax tree:
+</p>
+<img src="./overview_files/ast1.png">
+<p>
+Notes:
+</p><ul style="list-style-type:disc">
+  <li> The interior nodes of the tree are <b>operators</b>.
+  </li><li> A node's children are its <b>operands</b>.
+  </li><li> Each subtree forms a "logical unit", e.g., the subtree with * at
+       its root shows that because multiplication has higher precedence
+       than addition, this operation must be performed as a unit (<em>not</em>
+       initial+rate).
+</li></ul>
+<p></p>
+
+<p>
+<a name="semantic" class="subhead" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#semantic">The Semantic Analyzer</a>
+</p><p>
+The semantic analyzer checks for (more) "static semantic" errors,
+e.g., type errors.
+It may also annotate and/or change the abstract syntax tree (e.g., it
+might annotate each node that represents an expression with its type).
+
+<b>Example:</b>
+</p>
+<p>Abstract syntax tree before semantic analysis:</p>
+<img src="./overview_files/ast1.png">
+<p></p>
+<p>
+Abstract syntax tree after semantic analysis:
+</p>
+<img src="./overview_files/ast2.png">
+
+<p>
+<a name="int" class="subhead" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#int">The Intermediate Code Generator</a>
+</p><p>
+The intermediate code generator translates from abstract-syntax tree
+to intermediate code.
+One possibility is 3-address code (code in which each instruction
+involves at most 3 operands).
+Below is an example of 3-address code for the abstract-syntax tree
+shown above.
+Note that in this example, the second and third instructions each have
+exactly three operands (the location where the result of the
+operation is stored, and two operators);
+the first and fourth instructions have just two operands ("temp1" and "60"
+for instruction 1, and  "position" and "temp3" for instruction 4).
+</p><pre>		temp1 = inttofloat(60)
+		temp2 = rate * temp1
+		temp3 = initial + temp2
+		position = temp3
+</pre>
+
+<p>
+<a name="opt" class="subhead" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#opt">The Optimizer</a>
+</p><p>
+The optimizer tries to improve code generated by the intermediate code
+generator.
+The goal is usually to make code run faster, but the optimizer may also
+try to make the code smaller.
+In the example above, an optimizer might first discover that the
+conversion of the integer 60 to a floating-point number can be done
+at compile time instead of at run time.
+Then it might discover that there is no need for "temp1" or "temp3".
+Here's the optimized code:
+</p><pre>		temp2 = rate * 60.0
+		position = initial + temp2
+</pre>
+
+<p>
+<a name="codegen" class="subhead" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/overview.html#codegen">The Code Generator</a>
+</p><p>
+The code generator generates object code from (optimized) intermediate code.
+For example, the following code might be generated for our running example:
+</p><pre>                .data
+                c1:
+                    .float  60.0
+                .text
+                    l.s     $f0,rate
+                    mul.s   $f0,c1
+                    l.s     $f2,initial
+                    add.s   $f0,$f0,$f2
+                    s.s     $f0,position
+</pre>
+
+
+
+
+</body><div></div></html>

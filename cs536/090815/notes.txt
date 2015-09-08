@@ -1,0 +1,82 @@
+notes:
+------------------
+finite state machines:
+  there does not exist a regular expression to write the language (1^n)(0^n), i.e. 1 some number of times followed by 0 some number of times
+
+ex1:
+  (fsm background) look at char, if you have an edge with that char, then follow it. otherwise the machine is stuck
+  single line comment with //
+  draw finitely many states:
+                           ___ not "\n"
+          "/"       "/"   |   |
+    ->S1 -----> S2 -----> S3<-
+                          |
+                          |
+                         \/
+                         S4 (double circle around s4 implies accept state)
+
+ex2:
+  valid strings:
+    ""
+    "ab"
+    "abab"
+    "ab ... ab"
+  so "ab" n times with n an int
+  simpler:
+            a
+          -----
+        /      _\
+    ->S0        S1
+       /\       /
+        \ -----
+            b
+    where S0 is accepted
+
+formal fsm:
+
+        a
+  S0 ------->  S1
+
+  delta(s0,a) = s1
+
+L(M) = { w | M(w) = true } where M is a FSM and w is a word in the language M
+M = M' iff L(M) = L(M')
+
+nfa:
+  binary string with 1 in 5th to last position
+  to represent this as dfa, need 2^5 states
+
+hex:
+                                   ------ hex
+      O         X,x       hex     /     |
+  S0 ----> S1 ------> S2 -----> S3<----- 
+                            (accepting)
+                                |
+                                | l,L
+                               \/
+                               S4 (accepting)
+
+c/c+ identifier
+                ------letter,digit,_
+    letter,_  /       \
+  S0 -----> S1 <------
+          (acc)
+
+the only way to count is to add states
+
+can (count) two vars with rows
+  e.g. at least 2 a's, at most 1 b
+                    /\
+      a        a    \/a
+  S0 ----> S1 ---> S2 (acc.)
+   |         |       |
+   |b        |b      |b
+   |         |       |
+  \/        \/       \/
+  S3------> S4 ----->S5 (acc.)
+      a         a   /\
+                    \/a
+    
+review:
+-----------------
+automatatutor.com

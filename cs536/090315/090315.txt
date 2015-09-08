@@ -1,0 +1,45 @@
+scanner (chars -> tokens)
+  errors e.g. variable name too long
+
+parser (tokens -> ast, abstract syntax tree)
+  errors e.g. syntax error (x = x = * y) or undeclared var
+        =
+      /   \
+    x     *
+        /   \
+       y     5
+
+semantic analyzer (ast -> annotated ast)
+  adds information e.g. var type to ast
+  errors e.g. var out of scope
+    {
+      int i = 4;
+      i++;
+    }
+    i = 5;
+    ^ out of scope from {}'s
+
+intermediate code gen (Aast -> IR, intermediate representation)
+  e.g. 3-address code, mult y z temp (temp = y * z)
+
+^--------------FRONT END------------------^
+
+ex. a = 2 * b + abs(-71)
+
+
+whatever the step is pre-optimizer:
+  if there is a function that takes more than one arg, it may not be a binary tree and have multiple children
+  the function may just link an external library, or be built into the language (written somewhere else)
+
+
+optimizer:
+  e.g.
+    x = x + 1  \
+    ...         -> x = x + 10
+    x = x + 1  /
+  list of optimizations that it will run through
+  local (peephole optimization)
+  global (general, e.g. loops -> recursion or vice versa)
+
+code gen:
+  convert from language that looks a lot like assembly, to assembly on whatever architecture

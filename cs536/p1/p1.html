@@ -1,0 +1,113 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p1/p1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style></head><body><h2>Programming Assignment 1 (P1)</h2>
+<p><br>
+This assignment has two parts. Part 1 is due at 
+<b>Sept 14 2015. Part 1 will not be accepted past this time</b> 
+(the regular late policy does not apply to Part 1). Part 2 is due at <b>11 PM on Sept 17 2015</b>. For Part 2, see the <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/info.html">late policy</a> for information on late submissions. 
+Make sure to follow the <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn.html">submission instructions</a>.
+<br><br>
+<i>Each student must do this assignment <b>alone</b>. You may work in pairs from Programming Assignment 2 (not Part 2) onwards. You may discuss this assignment with the instructor, TA, and other students, but you may not share code.</i></p>
+<h3>Overview</h3>
+<p>In this assignment, you will write several Java classes to be used later in the semester to represent a symbol table. This is a simple assignment to get you up to speed with your computing environment, Java, and our programming and testing conventions.</p>
+<p>Make sure you read through everything carefully. The assignment appears long but it is less work than it might initially seem. If it seems difficult, ask for help; you may be misunderstanding something.</p>
+<h3>Specifications</h3>
+For this assignment you will implement four Java classes: <tt>SymTable</tt>, <tt>Sym</tt>, <tt>DuplicateSymException</tt>, and <tt>EmptySymTableException</tt>. You will also write a program called <tt>P1.java</tt> to test your implementations.<p></p>
+<p>The <tt>SymTable</tt> class will be used by the compiler you write later in the semester to represent a <i>symbol table</i>: a data structure that stores the identifiers declared in the program being compiled (e.g., function and variable names) and information about each identifier (e.g., its type, where it will be stored at runtime). The symbol table will be implemented as a <tt>List</tt> of <tt>HashMaps</tt>. Eventually, each <tt>HashMap</tt> will store the identifiers declared in one scope in the program being compiled.</p>
+<p>The <tt>HashMap</tt> keys will be <tt>String</tt>s (the declared identifier names) and the associated information will be <tt>Sym</tt>s (you will also implement the <tt>Sym</tt> class). For now, the only information in a <tt>Sym</tt> will be the type of the identifier, represented using a <tt>String</tt> (e.g., <tt>“int”</tt>, <tt>“double”</tt>, etc.).</p>
+<p>The <tt>DuplicateSymException</tt> and <tt>EmptySymTableException</tt> classes will define exceptions that can be thrown by methods of the <tt>SymTable</tt> class.</p>
+<p>In addition to defining the four classes, you will write a main program to test your implementation. You will be graded on the correctness of your <tt>Sym</tt> and <tt>SymTable</tt> classes, on how thoroughly you test the classes that you implement, on the efficiency of your code, and on your programming style.</p>
+<p><b>The <tt>Sym</tt> Class</b><br></p>
+<p>The <tt>Sym</tt> class must be in a file named <tt>Sym.java</tt>. You must implement the following <tt>Sym</tt> constructor and public methods (and no other public or protected methods):</p>
+<table id="p1sym">
+  <tbody><tr class="r1"><td class="c1"><tt>Sym(String type)</tt> </td><td class="c2"> This is the constructor; it should initialize the <tt>Sym</tt> to have the given <tt>type</tt>. </td></tr>
+  <tr class="r2"><td class="c1"><tt>String getType()</tt> </td><td class="c2"> Return this <tt>Sym</tt>'s type. </td></tr>
+  <tr class="r3"><td class="c1"><tt>String toString()</tt> </td><td class="c2"> Return this <tt>Sym</tt>'s type. (This method will be changed later in a future project when more information is stored in a <tt>Sym</tt>.)
+</td></tr></tbody></table>
+<p><br><b>The <tt>SymTable</tt> Class</b><br></p>
+<p>The <tt>SymTable class</tt> must be in a file named <tt>SymTable.java</tt>. It must be implemented using a <tt>List</tt> of <tt>HashMap</tt>s. (Think about the operations that will be done on a <tt>SymTable</tt> to decide whether to use an <tt>ArrayList</tt> or a <tt>LinkedList</tt>.) The <tt>HashMap</tt>s must map a <tt>String</tt> to a <tt>Sym</tt>. This means that the <tt>SymTable</tt> class will have a (private) field of type <tt>List&lt;HashMap&lt;String,Sym&gt;&gt;</tt>.</p>
+<p><tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/List.html">List</a></tt> and <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html">HashMap</a></tt> are defined in the <tt><a href="http://docs.oracle.com/javase/7/docs/api/java/util/package-frame.html">java.util</a></tt> package. This means that you will need to have the line </p><div style="margin-left: 20px;">
+  <div class="codeblock">
+    <div class="blockcontent"><pre>import java.util.*;
+</pre></div></div></div>
+at the top of <tt>SymTable.java</tt>.<p></p>
+<p>You must implement the following <tt>SymTable</tt> constructor and public methods (and no other public or protected methods):</p>
+<table id="p1symtable">
+  <tbody><tr class="r1"><td class="c1"><tt>SymTable()</tt> </td><td class="c2"> This is the constructor; it should initialize the <tt>SymTable</tt>'s List field to contain a single, empty <tt>HashMap</tt>. </td></tr>
+  <tr class="r2"><td class="c1"><tt>void addDecl(String name, Sym sym) throws DuplicateSymException, EmptySymTableException</tt> </td><td class="c2"> If this <tt>SymTable</tt>'s list is empty, throw an <tt>EmptySymTableException</tt>. If either <tt>name</tt> or <tt>sym</tt> (or both) is <tt>null</tt>, throw a <tt>NullPointerException</tt>. If the first <tt>HashMap</tt> in the list already contains the given name as a key, throw a <tt>DuplicateSymException</tt>. Otherwise, add the given <tt>name</tt> and <tt>sym</tt> to the first <tt>HashMap</tt> in the list. </td></tr>
+  <tr class="r3"><td class="c1"><tt>void addScope()</tt> </td><td class="c2"> Add a new, empty <tt>HashMap</tt> to the front of the list. </td></tr>
+  <tr class="r4"><td class="c1"><tt>Sym lookupLocal(String name)</tt> </td><td class="c2"> If this <tt>SymTable</tt>'s list is empty, <span style="color: blue;">throw an <tt>EmptySymTableException</tt></span>. Otherwise, if the first <tt>HashMap</tt> in the list contains name as a key, return the associated <tt>Sym</tt>; otherwise, return <tt>null</tt>. </td></tr>
+  <tr class="r5"><td class="c1"><tt>Sym lookupGlobal(String name)</tt> </td><td class="c2"> <span style="color: blue;">If this <tt>SymTable</tt>'s list is empty, throw an <tt>EmptySymTableException</tt></span>. If <b>any</b> <tt>HashMap</tt> in the list contains <tt>name</tt> as a key, return the first associated <tt>Sym</tt> (i.e., the one from the <tt>HashMap</tt> that is closest to the front of the list); otherwise, return <tt>null</tt>. </td></tr>
+  <tr class="r6"><td class="c1"><tt>void removeScope() throws EmptySymTableException</tt> </td><td class="c2"> If this <tt>SymTable</tt>'s list is empty, throw an <tt>EmptySymTableException</tt>; otherwise, remove the <tt>HashMap</tt> from the front of the list. To clarify, throw an exception only if <i>before attempting to remove</i>, the list is empty (i.e. there are no <tt>HashMap</tt>s to remove). </td></tr>
+  <tr class="r7"><td class="c1"><tt>void print()</tt> </td><td class="c2"> This method is for debugging. First, print <tt>“\nSym Table\n”</tt>. Then, for each <tt>HashMap M</tt> in the list, print <tt>M.toString()</tt> followed by a newline. Finally, print one more newline. All output should go to <tt>System.out</tt>.
+</td></tr></tbody></table>
+<p><br><b>The <tt>DuplicateSymException</tt> and <tt>EmptySymTableException</tt> Classes</b><br></p>
+<p>These two classes (which must be in files named <tt>DuplicateSymException.java</tt> and <tt>EmptySymTableException.java</tt>) will simply define the two checked exceptions that can be thrown by the <tt>SymTable</tt> class. Each exception must be able to be created using a constructor that takes no arguments.</p>
+<p>To define a checked exception named <tt>XXX</tt>, you can use code like this:</p><div style="margin-left: 20px;">
+  <div class="codeblock">
+    <div class="blockcontent"><pre>    public class XXX extends Exception {
+    }
+</pre></div></div></div><p></p>
+<p>Note that the class has an empty body (it will have a no-argument constructor by default).</p>
+<p><b>The <tt>main</tt> program</b><br></p>
+<p>To test your <tt>SymTable</tt> implementation, you will write a main program in a file named <tt>P1.java</tt>. The program must not expect any command-line arguments or user input. It can read from one or more files; if you set it up to do that, be sure to hand in the file(s) along with P1.java.</p>
+<p>Be sure that your <tt>P1.java</tt> tests all of the <tt>Sym</tt> and <tt>SymTable</tt> operations and all situations under which exceptions are thrown. Also think about testing both “boundary” and “non-boundary” cases.</p>
+<p>It is up to you how your program works. A suggested approach is to write your program so that output is only produced if one of the methods that it is testing does <i><b>not</b></i> work as expected (e.g., if the <tt>lookupLocal</tt> method of the <tt>SymTable</tt> class returns <tt>null</tt> when you expect it to return a non-null value). This will make it much easier to determine whether your test succeeds or fails. The one exception to this approach is that <tt>P1.java</tt> will need to test the <tt>print</tt> method of the <tt>SymTable</tt> class and that will cause output to be produced.</p>
+<p>To help you understand better the kind of code you would write using this suggested approach, look at <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p1/files/TestList.java">TestList.java</a>. This file contains a main program designed to test a (fictional) <tt>List</tt> class whose methods are documented in <tt>TestList.java</tt>. You are being asked to write something similar (in a file called <tt>P1.java</tt>) to test the <tt>Sym</tt> and <tt>SymTable</tt> classes. You should be able to write <tt>P1.java</tt> <i>before</i> you write the classes that it's designed to test.
+<br></p>
+<p><b>Test Code</b></p>
+<p>After the Part 1 deadline, download our <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p1/code/p1/P1.java">P1.java</a> file and test it against the expected <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p1/code/p1/P1output.txt">output</a>. Make sure that your actual output matches this.</p>
+<p>On a Linux machine you can see whether two files match by using the <tt>diff</tt> utility. For example, typing <tt>diff file1 file2</tt> compares the two files <tt>file1</tt> and <tt>file2</tt>. Typing <tt>diff -b -B file1 file2</tt> does the same comparison, but ignores differences in whitespace.</p>
+<p>If you send the output of <tt>P1.java</tt> to a file, you can use <tt>diff</tt> to make sure that it matches the expected output. To send the output of <tt>P1.java</tt> to a file named <tt>out.txt</tt> (on a Linux machine) type <tt>java P1 &gt;&amp; out.txt</tt>.</p>
+<h3>Handing In</h3>
+<p>Deadlines are at the top of the page. See <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn.html">instructions</a> for submitting assignments.</p>
+<p>By the Part 1 deadline, submit your <tt>P1.java</tt> file (and the files that it reads, if any).<br>
+By the Part 2 deadline, submit the rest of your <tt>.java</tt> files. This should include your <tt>Sym.java</tt>, <tt>SymTable.java</tt>, <tt>DuplicateSymException.java</tt>, and <tt>EmptySymTable.java</tt>.</p>
+<p>You may work in the environment of your choice, but be aware that your submitted
+code must run on the department lab Linux machines.</p>
+<p><i><b>Do not turn in any .class files and do not create any subdirectories in your submission</b></i>. If you accidentally turn in (or create) extra files or subdirectories, make a new submission that does not include them.</p>
+<p>Remember, your <tt>P1.java</tt> is worth 15% of the grade for this assignment and will not be accepted past the deadline.</p>
+<h3>Grading Criteria</h3>
+<p>For this program, extra emphasis will be placed on <b><i>style</i></b>. In particular,</p>
+<ul>
+  <li><p>Every class, method, and field must have a comment that describes its purpose. Comments should also be used to explain anything that would not be obvious to an experienced Java programmer who has read this assignment.</p>
+  </li>
+  <li><p>Identifiers must conform to standard Java conventions. <tt>UPPER_CASE</tt> with underscores for named constants, <tt>CamelCase</tt> starting with a capital letter for classes, and <tt>camelCase</tt> starting with a lower-case letter for other identifiers. Names should help a reader to understand the code.</p>
+  </li>
+  <li><p>Indentation must be consistent and clear. Use either one tab character or four spaces for each level of indentation. Do not mix spaces and tabs for indentation; either always use tabs or never use them.</p>
+  </li>
+  <li><p>Avoid lines that are longer than 80 characters (including indentation).</p>
+  </li>
+  <li><p>Each field or method must be declared public, protected, or private. If you have good reason to give a field or method “package” (default) access – which is highly unlikely – you must include a comment explaining why.
+  <br></p>
+  </li>
+</ul>
+<p>The goal is to make your code readable to an experienced Java programmer who is used to the conventions. The goal is not to develop your own personal style, even if it's “better” than the standard. For more advice on Java programming style, see <a href="http://www.oracle.com/technetwork/java/javase/documentation/codeconvtoc-136057.html">Code Conventions for the Java Programming Language</a>. See also the <a href="http://www.cs.wisc.edu/~cs302/resources/guides/style.html">style</a> and <a href="http://www.cs.wisc.edu/~cs302/resources/guides/commenting.html">commenting</a> standards used in CS 302 and CS 367.
+<br></p>
+<script type="text/javascript">
+var sc_project=9871693; 
+var sc_invisible=1; 
+var sc_security="4cd752ac"; 
+var scJsHost = (("https:" == document.location.protocol) ?
+    "https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" +
+    scJsHost+
+    "statcounter.com/counter/counter.js'></"+"script>");
+</script><script type="text/javascript" src="./p1_files/counter.js"></script>
+<noscript>&lt;div class="statcounter"&gt;&lt;a title="web analytics"
+      href="http://statcounter.com/" target="_blank"&gt;&lt;img
+      class="statcounter"
+      src="http://c.statcounter.com/9871693/0/4cd752ac/1/"
+      alt="web analytics"&gt;&lt;/a&gt;&lt;/div&gt;</noscript>
+
+
+<p>Also be very sure that you use the specified file names (being careful about the upper- and lower-case letters in those names). And be sure that the output that is produced when we run our <tt>P1.java</tt> using your implementations of the <tt>Sym</tt>, <tt>SymTable</tt>, <tt>DuplicateSymException</tt>, and <tt>EmptySymTableException</tt> classes matches the expected output that we provide. We will test that output by automatically comparing it to the expected output and you will lose points for even minor differences.</p>
+<p> </p>
+
+
+
+
+
+
+
+</body><div></div></html>
