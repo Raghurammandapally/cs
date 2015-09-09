@@ -5,7 +5,6 @@ import java.util.*;
  * */
 
 public class SymTable {
-  //is this allowed? see ^
   private List<HashMap<String,Sym>> tableList;
 
   public SymTable() {
