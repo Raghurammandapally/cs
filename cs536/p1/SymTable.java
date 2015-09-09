@@ -2,12 +2,10 @@ import java.util.*;
 
 /*
  * It must be implemented using a List of HashMaps. (Think about the operations that will be done on a SymTable to decide whether to use an ArrayList or a LinkedList.) The HashMaps must map a String to a Sym. This means that the SymTable class will have a (private) field of type List<HashMap<String,Sym>>.
- *
- *
  * */
 
 public class SymTable {
-  private ArrayList<HashMap<String,Sym>> tableList;
+  private List<HashMap<String,Sym>> tableList;
 
   public SymTable() {
     //should initialize the SymTable's List field to contain a single, empty HashMap.
