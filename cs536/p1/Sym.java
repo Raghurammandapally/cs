@@ -16,7 +16,6 @@ public class Sym {
 
   //String toString() Return this Sym's type. (This method will be changed later in a future project when more information is stored in a Sym.)
   public String toString() {
-    return type;
+    return getType();
   }
-
 }
