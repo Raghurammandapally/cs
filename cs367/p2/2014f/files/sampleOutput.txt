@@ -1,0 +1,63 @@
+Enter option : list users
+Chris
+Roney
+Zach
+Enter option : list following
+Chris
+Roney
+Zach
+Enter option : list
+Invalid Command
+Enter option : print 15
+1 Chris:Hello, Worlds
+2 Roney:so happy, it compiles
+4 Zach:This project is taking longer than I thought
+5 Roney:"I'm sorry, Dave. I'm afraid I can't do that"
+7 Zach:#javafail
+8 Chris:So excited for #internationalCoffeeDay
+10 Chris:Iterators... why did it have to be iterators
+12 Zach:This is why i prefer python #dynamicTyping
+Enter option : unfollow Zach
+Enter option : unfollow Zach
+Warning: User not followed
+Enter option : print 30
+1 Chris:Hello, Worlds
+2 Roney:so happy, it compiles
+5 Roney:"I'm sorry, Dave. I'm afraid I can't do that"
+8 Chris:So excited for #internationalCoffeeDay
+10 Chris:Iterators... why did it have to be iterators
+15 Chris:NO ECLIPSE I DO NOT WANT TO RUN AS AN ANT PROJECT
+18 Roney:rm -rf / #badLinuxCommands
+23 Roney:java exceptions so fun to handle
+29 Chris:how much grades could a TA grade if a TA could grade grades
+Enter option : follow Zach
+Enter option : print 30
+1 Chris:Hello, Worlds
+2 Roney:so happy, it compiles
+4 Zach:This project is taking longer than I thought
+5 Roney:"I'm sorry, Dave. I'm afraid I can't do that"
+7 Zach:#javafail
+8 Chris:So excited for #internationalCoffeeDay
+10 Chris:Iterators... why did it have to be iterators
+12 Zach:This is why i prefer python #dynamicTyping
+15 Chris:NO ECLIPSE I DO NOT WANT TO RUN AS AN ANT PROJECT
+16 Zach:javas enhanced for loops tho
+18 Roney:rm -rf / #badLinuxCommands
+20 Zach:Stacks on Stacks on Stacks
+23 Roney:java exceptions so fun to handle
+25 Zach:hash tables are people too
+29 Chris:how much grades could a TA grade if a TA could grade grades
+Enter option : follow foo
+Invalid user
+Enter option : unfollow foo
+Invalid user
+Enter option : search java
+7 Zach:#javafail
+16 Zach:javas enhanced for loops tho
+23 Roney:java exceptions so fun to handle
+32 Chris:java file I/O why u so unintuitive??
+53 Zach:The cross compatability thing is pretty ok i guess #java
+Enter option : foo
+Invalid Command
+Enter option : quit
+exit

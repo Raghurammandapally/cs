@@ -1,0 +1,12 @@
+1:Hello, Worlds
+8:So excited for #internationalCoffeeDay
+10:Iterators... why did it have to be iterators
+15:NO ECLIPSE I DO NOT WANT TO RUN AS AN ANT PROJECT
+29:how much grades could a TA grade if a TA could grade grades
+32:java file I/O why u so unintuitive??
+39:If each linked list node also has a pointer to a random node, how long does search take #InterviewQs
+41:xkcd.com/1426
+43:I wonder how actual Twitter works...
+48:So wait, the movie was about his sled???
+54:LAB HOURS ARE YOUR FRIEND
+57:APPLE WATCH!!!

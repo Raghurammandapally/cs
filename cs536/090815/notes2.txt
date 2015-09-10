@@ -1,0 +1,13 @@
+slide 3:
+  2^Q is powerset (set of states)
+
+slide 11:
+  don't get rid of Q, still in set of possible states, even though it is now unreachable
+
+
+
+
+review:
+-------------
+[ ] compare dfa to nfa on slide 8
+[ ] dfa or nfa for ex on slide 9

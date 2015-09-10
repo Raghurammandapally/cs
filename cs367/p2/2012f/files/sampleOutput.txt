@@ -1,0 +1,92 @@
+Enter option - l, p, r, s, t, u or x: p
+Empty
+Enter option - l, p, r, s, t, u or x: r 19
+Invalid line number.
+Enter option - l, p, r, s, t, u or x: u 19
+Invalid line number.
+Enter option - l, p, r, s, t, u or x: t 2 3
+Invalid line number.
+Enter option - l, p, r, s, t, u or x: l sampleLog.txt
+1 Name:Robot1 Move:Forward Distance:10 Speed:Fast
+2 Name:Robot2 Move:Left Distance:2 Speed:Slow
+3 Name:Robot1 Move:Right Distance:5 Speed:ExtraSlow
+4 Name:Robot1 Move:Forward Distance:11 Speed:Middle
+5 Name:Robot2 Move:Back Distance:3 Speed:Slow
+6 Name:Robot2 Move:Left Distance:7 Speed:Fast
+7 Name:Robot2 Move:Back Distance:1 Speed:Fast
+8 Name:Robot1 Move:Left Distance:2 Speed:Middle
+9 Name:Robot1 Move:Forward Distance:6 Speed:ExtraFast
+10 Name:Robot2 Move:Right Distance:6 Speed:Fast
+11 Name:Robot2 Move:Forward Distance:8 Speed:Middle
+12 Name:Robot1 Move:Left Distance:4 Speed:Slow
+13 Name:Robot2 Move:Back Distance:4 Speed:Slow
+14 Name:Robot1 Move:Back Distance:4 Speed:ExtraSlow
+15 Name:Robot2 Move:Right Distance:7 Speed:Middle
+16 Name:Robot2 Move:Forward Distance:10 Speed:Slow
+17 Name:Robot1 Move:Right Distance:1 Speed:Fast
+Enter option - l, p, r, s, t, u or x: r 4
+Successfully removed line 4.
+Enter option - l, p, r, s, t, u or x: p
+1 Name:Robot1 Move:Forward Distance:10 Speed:Fast
+2 Name:Robot2 Move:Left Distance:2 Speed:Slow
+3 Name:Robot1 Move:Right Distance:5 Speed:ExtraSlow
+4 Name:Robot2 Move:Back Distance:3 Speed:Slow
+5 Name:Robot2 Move:Left Distance:7 Speed:Fast
+6 Name:Robot2 Move:Back Distance:1 Speed:Fast
+7 Name:Robot1 Move:Left Distance:2 Speed:Middle
+8 Name:Robot1 Move:Forward Distance:6 Speed:ExtraFast
+9 Name:Robot2 Move:Right Distance:6 Speed:Fast
+10 Name:Robot2 Move:Forward Distance:8 Speed:Middle
+11 Name:Robot1 Move:Left Distance:4 Speed:Slow
+12 Name:Robot2 Move:Back Distance:4 Speed:Slow
+13 Name:Robot1 Move:Back Distance:4 Speed:ExtraSlow
+14 Name:Robot2 Move:Right Distance:7 Speed:Middle
+15 Name:Robot2 Move:Forward Distance:10 Speed:Slow
+16 Name:Robot1 Move:Right Distance:1 Speed:Fast
+Enter option - l, p, r, s, t, u or x: u 13
+Successfully copied.
+Enter option - l, p, r, s, t, u or x: p
+1 Name:Robot1 Move:Forward Distance:10 Speed:Fast
+2 Name:Robot2 Move:Left Distance:2 Speed:Slow
+3 Name:Robot1 Move:Right Distance:5 Speed:ExtraSlow
+4 Name:Robot2 Move:Back Distance:3 Speed:Slow
+5 Name:Robot2 Move:Left Distance:7 Speed:Fast
+6 Name:Robot2 Move:Back Distance:1 Speed:Fast
+7 Name:Robot1 Move:Left Distance:2 Speed:Middle
+8 Name:Robot1 Move:Forward Distance:6 Speed:ExtraFast
+9 Name:Robot2 Move:Right Distance:6 Speed:Fast
+10 Name:Robot2 Move:Forward Distance:8 Speed:Middle
+11 Name:Robot1 Move:Left Distance:4 Speed:Slow
+12 Name:Robot2 Move:Back Distance:4 Speed:Slow
+13 Name:Robot1 Move:Back Distance:4 Speed:ExtraSlow
+14 Name:Robot2 Move:Right Distance:7 Speed:Middle
+15 Name:Robot2 Move:Forward Distance:10 Speed:Slow
+16 Name:Robot1 Move:Right Distance:1 Speed:Fast
+17 Name:Robot1 Move:Back Distance:4 Speed:ExtraSlow
+Enter option - l, p, r, s, t, u or x: t 12 16
+Successfully copied.
+Enter option - l, p, r, s, t, u or x: p
+1 Name:Robot1 Move:Forward Distance:10 Speed:Fast
+2 Name:Robot2 Move:Left Distance:2 Speed:Slow
+3 Name:Robot1 Move:Right Distance:5 Speed:ExtraSlow
+4 Name:Robot2 Move:Back Distance:3 Speed:Slow
+5 Name:Robot2 Move:Left Distance:7 Speed:Fast
+6 Name:Robot2 Move:Back Distance:1 Speed:Fast
+7 Name:Robot1 Move:Left Distance:2 Speed:Middle
+8 Name:Robot1 Move:Forward Distance:6 Speed:ExtraFast
+9 Name:Robot2 Move:Right Distance:6 Speed:Fast
+10 Name:Robot2 Move:Forward Distance:8 Speed:Middle
+11 Name:Robot1 Move:Left Distance:4 Speed:Slow
+12 Name:Robot2 Move:Back Distance:4 Speed:Slow
+13 Name:Robot1 Move:Back Distance:4 Speed:ExtraSlow
+14 Name:Robot2 Move:Right Distance:7 Speed:Middle
+15 Name:Robot2 Move:Forward Distance:10 Speed:Slow
+16 Name:Robot2 Move:Back Distance:4 Speed:Slow
+17 Name:Robot1 Move:Right Distance:1 Speed:Fast
+18 Name:Robot1 Move:Back Distance:4 Speed:ExtraSlow
+Enter option - l, p, r, s, t, u or x: s sampleLogOutput.txt
+Successfully saved.
+Enter option - l, p, r, s, t, u or x: l nonexistantFile.txt
+Cannot find the specified file.
+Enter option - l, p, r, s, t, u or x: x
+exit

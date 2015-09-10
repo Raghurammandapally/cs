@@ -1,0 +1,42 @@
+Enter option : Invalid Command
+Enter option : 1 Chris:Hello, Worlds
+2 Roney:so happy, it compiles
+4 Zach:This project is taking longer than I thought
+5 Roney:"I'm sorry, Dave. I'm afraid I can't do that"
+7 Zach:#javafail
+8 Chris:So excited for #internationalCoffeeDay
+10 Chris:Iterators... why did it have to be iterators
+12 Zach:This is why i prefer python #dynamicTyping
+15 Chris:NO ECLIPSE I DO NOT WANT TO RUN AS AN ANT PROJECT
+16 Zach:javas enhanced for loops tho
+18 Roney:rm -rf / #badLinuxCommands
+20 Zach:Stacks on Stacks on Stacks
+23 Roney:java exceptions so fun to handle
+25 Zach:hash tables are people too
+29 Chris:how much grades could a TA grade if a TA could grade grades
+Enter option : Invalid Command
+Enter option : Invalid user
+Enter option : Invalid user
+Enter option : Warning: User already followed
+Enter option : 1 Chris:Hello, Worlds
+2 Roney:so happy, it compiles
+4 Zach:This project is taking longer than I thought
+5 Roney:"I'm sorry, Dave. I'm afraid I can't do that"
+7 Zach:#javafail
+8 Chris:So excited for #internationalCoffeeDay
+10 Chris:Iterators... why did it have to be iterators
+12 Zach:This is why i prefer python #dynamicTyping
+15 Chris:NO ECLIPSE I DO NOT WANT TO RUN AS AN ANT PROJECT
+16 Zach:javas enhanced for loops tho
+18 Roney:rm -rf / #badLinuxCommands
+20 Zach:Stacks on Stacks on Stacks
+23 Roney:java exceptions so fun to handle
+25 Zach:hash tables are people too
+29 Chris:how much grades could a TA grade if a TA could grade grades
+Enter option : 7 Zach:#javafail
+16 Zach:javas enhanced for loops tho
+23 Roney:java exceptions so fun to handle
+32 Chris:java file I/O why u so unintuitive??
+53 Zach:The cross compatability thing is pretty ok i guess #java
+Enter option : Enter option : Enter option : Enter option : Enter option : Warning: User not followed
+Enter option : Enter option : Enter option : exit

@@ -1,0 +1,473 @@
+<!--
+  Programming Assignment 2 Write-up
+  Version: 1.0 
+  Date Changed: 02/11/13
+  Last Edited By: Adalbert Gerald Soosai Raj
+  
+  Change Log:
+    02/11/13 - First Version Release (0.1) for review
+-->
+
+<content for="title">CS 367 p2</content>
+
+<content for="top">
+<h2>CS 367 Programming Assignment 2</h2>
+<font size="+1" color="#990000"><b>DUE by ? on ?</b><br></font>
+
+<br>
+<a href="#Announcements">P2 Announcements</a> |
+<a href="#Overview">Overview</a> |
+<a href="#Specifications">Specifications</a> |
+<a href="#Steps">Steps</a> |
+<a href="#Submission">Submission</a>
+</content>
+
+
+<content for="main">
+
+<div class="announcements">
+
+<a name="Announcements"></a>
+<h2>P2 Announcements</h2>
+
+<p>Corrections, clarifications, and other announcements regarding this programming assignment will be found below.</p>
+
+</div>
+<div>
+
+<a name="Overview"></a>
+<h2>Overview</h2>
+
+<h3>Goals</h3>
+
+<p>The goals of this assignment are to:</p>
+<ul>
+  <li>Understand and implement a circular doubly-linked list.</li>
+  <li>Gain experience working with Java references (i.e., pointers).</li>
+  <li>Implement an iterator.</li>
+  <li>Implement exceptions.</li>
+  <li>Gain experience writing classes which implement Java interfaces.</li>
+  <li>Develop an application that processes input commands.</li>
+  <li>Get more practice with command-line arguments and file I/O.</li>
+</ul>
+
+<h3>Description</h3>
+  <p>You probably have seen an LED display that loops through a sequence of letters (such as is
+  <a href="http://en.wikipedia.org/wiki/Dot_matrix_display">depicted here</a>). For this assignment you will implement a simple console-based display editor that allows a user to create, edit, save, and load sequences of characters, which can be displayed in a dot matrix form on the output console.</p>
+  <p>It is typical for today's programmers to use ADTs that are already
+    implemented as part of a class library (e.g., C++ Standard Template Library)
+    or an API (e.g., Java's Application Program Interface).  Understanding ADT <i>implementations</i> is still important to be able to make informed
+    choices as to which ADT implementation is best suited for an application
+    in terms of memory and time efficiencies. For example, knowing the tradeoffs
+    between array and linked implementations of the <tt>List</tt> ADT helps us
+    choose between Java's <tt>ArrayList</tt> and <tt>LinkedList</tt> classes. It is also important to be able to implement your own data structures
+  when pre-built ones are not available or when standard ADTs (and their
+  operations) are unsuitable for the intended application.</p>
+  <p>In this assignment we provide you with an interface for a specialized ADT called a Loop. In addition to the main display editor application class, you will write a class which implements a Loop ADT using a circular doubly-linked list, as well as  iterator and exception classes needed to support your Loop ADT implementation.</p>
+
+</div>
+<div>
+
+<a name="Specifications"></a>
+<h2>Specifications</h2>
+<p class="sectionDesc">What are the program requirements?</p>
+
+<a name="DisplayEditor"></a>
+  <h3>Display Editor Menu of Commands</h3>
+  <p>Your main method, in the file <tt>DisplayEditor.java</tt>, will create an empty <a href="#LoopADT">Loop</a> of characters and then prompt the user to enter commands, which it will process until the user
+  types <b><tt>q</tt></b> for quit.  Your program will prompt for input by displaying :  
+<dir><pre>enter command (? for help)&gt;</pre></dir>
+  <p>If an invalid command is entered your program should display "<tt>invalid 
+  command</tt>" and display the prompt again. You may assume that all commands will start with a single non-whitespace character.&nbsp; 
+  Your program will need to ensure the following:</p>
+
+  <ul>
+    <li>For the <tt>s</tt> and <tt>l</tt> commands, the first character should 
+    be followed by a space and the remainder of the line should be a string 
+    (representing a file name) starting with at least one non-whitespace 
+    character. You may assume that the file name contains no spaces.</li>
+    <li>For the <tt>a</tt> and <tt>i</tt> commands,
+	  the first character should be followed by a space and 
+	  the remainder of the line should be a string.&nbsp;    </li>
+    <li>For the <tt>r</tt> command, the first character should be followed by a space and the remainder of the line should be a character.</li>
+    <li>For the <tt>j</tt> command, the first character should be followed by a space and the 
+  remainder of the line should be an integer. </li>
+</ul>
+
+  <p>If a valid command is entered, your program should carry out the command.</p>
+  <p>If an enter is pressed, without typing any command, your program should display the input prompt in the next line, ready to accept the next input.</p>
+<p>Here are the display editor commands your program should provide:</p>
+<p>
+ <table border="1" cellpadding="2" cellspacing="0">
+    <tbody>
+      <tr>
+        <th width="20%">Command format</th>
+        <th width="80%">Description</th>
+      </tr>
+      
+      <tr>
+      <td align="center"><tt>?</tt></td>
+        <td>Display the following:
+<pre>s (save)    l (load)       d (display)
+n (next)    p (previous)   j (jump)
+x (delete)  a (add after)  i (insert before)
+c (context) r (replace)    q (quit)</pre>        </td>
+      </tr>
+      
+      <tr>
+        <td align="center"><tt>s <i>filename</i></tt></td>
+        <td>If the message loop is empty, display &quot;<tt>no message to save</tt>&quot;.&nbsp; Otherwise, <b>s</b>ave the message to file named <i>filename</i>, the entire message should be saved in a dot matrix format starting with the current character (and proceeding forward through the loop). Each character should be saved one below the other and each character must be separated using a string of pound sign(#). If <i>filename</i> already exists, display &quot;<tt>warning: file already exists, will be overwritten</tt>&quot; before saving the messages. If <i>filename</i> cannot be written to, display &quot;<tt>unable to save</tt>&quot;.</td>
+      </tr>
+      <tr>
+        <td align="center"><tt>l <i>filename</i></tt></td>
+        <td>(Note that this command is a lower-case L, not the number one.) If a file named <i>filename</i> does not exist or cannot be read from, display &quot;<tt>unable to load</tt>&quot;. Otherwise, <b>l</b>oad the message from <i>filename</i> until the entire file is read. Set the current character to be the first character read from the file. You may assume that the file we use to load the dot matrix characters, will be in the same format as the file saved using the <b>s</b>ave command. </td>
+      </tr>
+      <tr>
+        <td align="center"><tt>d</tt></td>
+        <td>If the message loop is empty, display &quot;<tt>no message</tt>&quot;.&nbsp; Otherwise, 
+        <b>d</b>isplay the message in the loop, starting with the current character in a 7 x 5 dot-matrix display (going forward through the entire loop). Each character must be separated from the other characters by a blank line.</td>
+      </tr>
+
+       <tr>
+        <td align="center"><tt>n</tt></td>
+        <td>If the message loop is empty, display "<tt>no message</tt>".  Otherwise, go forward to the <b>n</b>ext character in the loop and
+        display the current context (see note below).</td>
+      </tr>      
+            <tr>
+        <td align="center"><tt>p</tt></td>
+        <td>If the message loop is empty, display "<tt>no message</tt>".  Otherwise, go backwards to the <b>p</b>revious character in the loop and
+        display the current context (see note below).</td>
+      </tr>      
+      <tr>
+        <td align="center"><tt>j <i>N</i></tt></td>
+        <td>If the message loop is empty, display "<tt>no message</tt>".  Otherwise, <b>j</b>ump  
+          <i>N</i> characters in the loop (forward if <i>N</i> &gt; 0, backwards if <i>N</i> &lt; 0) and
+         display the current context (see note below).</td>
+      </tr>
+      
+      <tr>
+        <td align="center"><tt>x</tt></td>
+        <td>If the message loop is empty, display &quot;<tt>no message</tt>&quot;.&nbsp; Otherwise, delete the current character in the message.&nbsp; If the message loop becomes empty 
+        as a result of the removal, display &quot;<tt>no message</tt>&quot;.&nbsp; Otherwise, make 
+        the character after the removed character the current character and display the 
+        current context (see note below).</td>
+      </tr>
+      <tr>
+        <td align="center"><tt>a <i>message</i>
+          </t></tt></td>
+        <td>If the message loop is empty, add 
+        all the characters in the message, one character per node to the message loop.
+        Make the last character that was added as the current character.&nbsp; 
+		Otherwise, <b>a</b>dd the new message immediately after the current character, one character per node,
+        and make the last character that was added as the new current character.&nbsp; In either case, display the 
+        current context (see note below).</td>
+      </tr>
+      <tr>
+        <td align="center"><tt>i <i>message</i> </tt></td>
+        <td>If the message loop is empty, add
+        all the characters in the message, one character per node to the message loop.
+        Make the last character that was added as the current character.&nbsp;
+        Otherwise, <b>i</b>nsert the new message immediately before the current character, one character per node,
+        and make the last character that was added as the new current character.&nbsp; In either case, display the
+        current context (see note below).</td>
+      </tr>
+      
+      <tr>
+        <td align="center"><tt>c</tt></td>
+        <td>Display the current context. (see note below)</td> 
+      </tr>
+      <tr>
+        <td align="center"><tt>r <i>character</i></tt></td>
+        <td>If the message loop is empty, display &quot;<tt>no message</tt>&quot;.&nbsp; Otherwise, 
+        <b>r</b>eplace the current character with the new character and display the current 
+        context (see note below). </td>
+      </tr>
+
+      <tr>
+        <td align="center"><tt>q</tt></td>
+        <td>Display &quot;<tt>quit</tt>&quot; and <b>q</b>uit the program.</td>
+      </tr>
+    </tbody>
+  </table>
+</p>
+  <p><b>Note:</b> Displaying the current context means displaying the character
+  immediately before the current character, the current character, and the character immediately
+  after the current character (one per line). For example, if the current character is
+  'B', the message before current is 'A', and the
+  message after current is 'C', your program should display:  
+<dir>
+<pre>
+     XXX
+    X   X
+    X   X
+    XXXXX
+    X   X
+    X   X
+    X   X
+*************
+    XXXX
+    X   X
+    X   X
+    XXXX
+    X   X
+    X   X
+    XXXX
+*************
+     XXX
+    X   x
+    X
+    X
+    X
+    X   x
+     XXX
+
+</pre>
+  </dir>
+  <p>The current character is displayed in between the 2 asterisk lines. However, if there are fewer
+  than three messages in the loop, do the following: 
+  <ul>
+  <li>If the loop contains
+  only one character, such as 'B', then display:
+<dir>
+<pre>
+
+*************
+    XXXX
+    X   X
+    X   X
+    XXXX
+    X   X
+    X   X
+    XXXX
+*************
+
+</pre>
+</dir></li>
+  <li>If the loop contains only two messages, such as 'B' and 'C', then display showing the current character first:
+<dir><pre>
+
+*************
+    XXXX
+    X   X
+    X   X
+    XXXX
+    X   X
+    X   X
+    XXXX
+*************
+     XXX
+    X   x
+    X
+    X
+    X
+    X   x
+     XXX
+
+</pre></dir></li>
+</ul>
+
+<b>Note: A function for converting characters to 7 x 5 dot matrix display will be provided.</b>
+
+<a name="LoopADT"></a>
+<h3>The Loop ADT</h3>
+
+<p>A Loop is essentially a circular List, however, unlike a List, a Loop does not have a beginning or an end
+and items within the Loop cannot be accessed using a position.  Instead, the Loop has a current item
+and the ability to move forward or backwards.  A Loop can be modified by removing the current item or 
+by adding an item either before or after the current item.  The Loop ADT is represented in Java by the 
+<tt>LoopADT</tt> interface which is provided for you (see <a href="assignments/p2/files/LoopADT.java"><tt>LoopADT.java</tt></a>).
+The documentation for the LoopADT interface can be found here (<a href="assignments/p2/files/LoopADT.html"><tt>LoopADT Documentation</tt></a> ).</p> 
+
+<a name="MessageLoop"></a>
+  <h3>The <tt>MessageLoop</tt> Class</h3>
+
+  <p>You will write a <tt>MessageLoop</tt> class (in a file named <tt>MessageLoop.java</tt>)
+  which implements the <a href="#LoopADT"><tt>LoopADT</tt> interface</a>. In addition to the methods given in the <tt>LoopADT</tt> interface, your <tt>MessageLoop</tt> class must have a constructor that takes no arguments and creates an empty message loop. You may not add any other public constructors or methods.</p>
+  <p>The internal data structure used by the <tt>MessageLoop</tt> to contain the messages must be  a <b>circular</b>, <b>doubly-linked</b> list of nodes
+    containing <tt>String</tt>s.<font color="red"> <em>You may <b>not</b> use Java's
+      <tt>LinkedList</tt> class for this assignment.</em> </font> You must implement your
+    own chain of doubly-linked nodes. To implement the circular, doubly-linked list, you will need to define
+  a class <tt>DblListnode</tt> (in a file named <tt>DblListnode.java</tt>).
+  Your <tt>MessageLoop</tt> class will have a field of type <tt>DblListnode</tt>
+  that references the node representing the current message. You may include other
+  private fields that you find helpful, but no public fields.</p>
+  <a name="Additional"></a>
+  <h3>Additional Classes</h3>
+
+  <p>There are three other classes that you will need to write to go along with your <tt>MessageLoop</tt> class.</p>
+  <h4>The <tt>EmptyLoopException</tt> class</h4>
+  <p>The <tt>EmptyLoopException</tt> must be an unchecked exception. It is thrown by some methods (as described in <a href="assignments/p2/files/LoopADT.html">the <tt>LoopADT</tt> interface documentation</a>).</p>
+  <h4>The <tt>UnrecogonizedCharacterException</tt> class</h4>
+  <p>The <tt>UnrecogonizedCharacterException</tt> must be an unchecked exception. It is thrown if the input for the commands (<b>a</b>dd, <b>i</b>nsert and <b>r</b>eplace) contains a character, which isn't specified in the <a href="assignments/p2/files/alphabets.txt">alphabets.txt</a> file, which is used for converting the characters to it's corresponding dot matrix representation.
+  <h4>The <tt>MessageLoopIterator</tt> class</h4>
+  <p>The <tt>LoopADT</tt> interface includes an <tt>iterator()</tt> method that returns an <tt>Iterator</tt> object. You must write a specialized iterator class, named <tt>MessageLoopIterator</tt>, which  
+will be used as the type of iterator returned by the <tt>MessageLoop</tt>'s  <tt>iterator()</tt> method. The <tt>MessageLoopIterator</tt> class must implement the 
+  <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Iterator.html"><tt>Iterator</tt></a> interface
+(you do not need to implement the <tt>remove</tt> method - just throw an <tt>UnsupportedOperationException</tt>). 
+You will need to write a constructor for your <tt>MessageLoopIterator</tt>; 
+a package-access constructor that takes a <tt>DblListnode</tt> as a parameter is suggested. </p>
+
+</div>
+<div>
+  <a name="Testing"></a>
+  <h3>Testing</h3>
+  <p>Testing interactive programs can be frustrating if you aren't careful about
+    recording the commands that you've entered. A bug can suddenly occur and you
+    may not recall the exact sequence of commands to reproduce the bug. A
+    technique for testing interactive programs is to process a fixed set of
+    commands from an input file. Input files can be developed to test particular
+    aspects of the program and these tests are easily repeated by running the
+    program again on a particular input file.</p>
+  <p>Your program may be provided with two, optional, command-line
+  arguments: the first command line argument specifies the name of an input file containing browser commands and the second argument specifies the name of the file which stores the dot matrix representation of the characters. If the file specified as the first command line argument doesn't exist or is unable to be opened,
+  display "<tt>problem with input file</tt>" and quit. Otherwise, you may assume the
+  file contains lines that are either a single character, or  a single
+  character followed by one space and then another character, 
+  or a single character followed by one space and then an integer.
+  You may also assume that the last line always has a single "<tt>q</tt>" for quit.
+   The second command line argument will allow you to play around with new font styles or characters that we have not yet provided the dot matrix representations for.
+   For your assignment purposes, we have provided you with a sample file <b>alphabets.txt</b> that contains the dot matrix representation of all English alphabets.
+  If <b>single or more than two</b> command-line
+  arguments are given, display "<tt>invalid command-line arguments</tt>" and quit.</p>
+
+  <p>If no command-line argument is provided, your program should first prompt "<tt>Enter the dot-matrix alphabets file:</tt>".
+You need to enter the name of the dot matrix representation file (you could use the file that we have provided).
+  Then the program operates as an interactive console application reading commands from the console keyboard and displaying
+  the results in the console window.
+  </p>
+
+  <p>Input from either the console or a file can be accomplished easily. If no
+  command-line arguments are provided, construct  a
+  <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Scanner.html"><tt>Scanner</tt></tt></a> from <tt>System.in</tt> as shown (see also 
+  <a href="http://pages.cs.wisc.edu/~hasti/cs367-common/resources/JavaIO/JavaIO_Scanner.html">Java I/O</a>):  
+  <dir><pre>// assuming 'in' has been declared as a Scanner 
+in = new Scanner(System.in);
+</pre></dir>
+  Now you can read from the console keyboard using <tt>in</tt>.</p>
+
+  <p>If you are using two command-line arguments, do the following:<dir><pre>
+		boolean useFile = args.length == 2;
+                if (useFile) {
+                        File inFile = new File(args[0]);
+                        if (!inFile.exists() || !inFile.canRead()) {
+                            System.err.println("Problem with input file!");
+                            System.exit(1);
+                         }
+                        try {
+                         in = new Scanner(inFile);
+                        } catch (FileNotFoundException e) {
+                            System.err.println("Problem with input file!");
+                            System.exit(1);
+                        }
+                }
+                else
+                        in = new Scanner(System.in);
+</pre></dir>
+  Now <tt>in</tt> can be used to read from the input file.
+You can use a similar construct to handle the second command line argument (i.e. the file specifying the dot matrix representations).</p>
+
+</div>
+<div>
+<a name="Steps"></a>
+<h3>Steps</h3>
+    <p>After you have read this program page and given thought to the problem
+    we suggest the following steps:</p>
+
+    <ol>
+      <li>Review the collaboration policy
+      concerning <a href="?r=coursework#pp">pair programming</a></li>
+
+      <li>Review these
+      <a href="http://www.cs.wisc.edu/%7Ecs302/resources/guides/style.html">style</a> and
+      <a href="http://www.cs.wisc.edu/%7Ecs302/resources/guides/commenting.html">commenting</a>
+      standards that are used to evaluate your program's style.</li>
+
+	  <li>You may use the Java development environment of your choice in CS 367.
+      <em><b>However, all programs must compile and run on the lab computers
+      for grading.</b></em> If you are going to use the CS
+      <a href="?r=computerLabs">lab computers</a>, we recommend that you use
+      Eclipse. You may want to review the
+      <a href="http://pages.cs.wisc.edu/%7Ecs302/labs/EclipseTutorial/" target="_tab">Eclipse
+      tutorial</a> to learn the basics. Note that on the Linux lab computers,
+      you should enter "<tt>eclipse&amp;</tt>" at the prompt instead of what
+      is described in the tutorial.</li>
+
+      <li>Write the <tt>EmptyLoopException</tt> class.</li>
+      <li>Incrementally implement and test the methods <tt>MessageLoop</tt> class (leaving the <tt>iterator()</tt> method until the end).  You
+          might want to use a driver program for your tests.</li>
+     <li>Implement and test the <tt>MessageLoopIterator</tt> class and the <tt>iterator()</tt> method of the
+<tt>MessageLoop</tt> class.</li>      <li>Implement the <tt>DisplayEditor</tt> class, <a href="#DisplayEditor">as described above</a>, using a <tt>LoopADT</tt>
+          object.</li>
+          <a name="TestFiles"></a>
+      <li>Test your program by developing test files as described in the
+          <a href="#Testing">testing section</a> above.
+
+          <em>Try this sample input file,
+          <a href="assignments/p2/files/test.txt">test.txt</a> and make sure your program produces the  <b>exact same</b> output,
+          <a href="assignments/p2/files/testOutput.txt">testOutput.txt</a>.</em>          You can check if your program is producing the exact same output using the <tt>diff</tt> Unix command. First download both the sample input file and the corresponding output file into the same folder as your program.  Then enter the
+ following commands:
+<dir>
+<pre>javac *.java
+java DisplayEditor test.txt &gt; myOutput.txt
+diff myOutput.txt testOutput.txt
+</pre>
+</dir>The "<tt>&gt; myOutput.txt</tt>" part of the second command redirects the console output to a file named <tt>myOutput.txt
+</tt>
+(if <tt>myOutput.txt</tt> already exists, you'll need to delete it before executing the second command).The <tt>diff</tt> command compares the two files character by character and display any lines that differ (enter the comm
+and "<tt>man diff</tt>" for more information).  If anything gets displayed as a result of executing the
+<tt>diff</tt> command, then your program is not producing the correct output.
+          <br>
+          <b>Note: a sample input file and the output it should produce will be provided soon.</b>  
+         
+          </li>
+
+      <li>If you are not using the lab computers to develop your program, make sure you compile
+          and run your program to ensure that it works on the Linux lab computers. You can compile
+          your Java source files using <tt>javac</tt> in a terminal window as in this example:
+<pre>    javac *.java
+</pre>
+    and the run your program using <tt>java</tt> as in:
+
+<pre>    java DisplayEditor test.txt
+</pre>
+      </li>
+
+      <li>Submit your work for grading.</li>
+    </ol>
+
+</td></tr>
+
+<tr><td></td></tr> <!-- space between items -->
+
+</div>
+
+<div>
+
+<a name="Submission"></a>
+<h2>Submitting Your Work</h2>
+
+<p>Make sure your code follows the <a href="?r=styleGuide">style</a> and
+<a href="?r=commentingGuide">commenting</a> standards used in CS 302 and
+CS 367.</p>
+
+<p><a href="?r=coursework#Handin">Electronically submit</a> the following file
+to your <b><tt>in</tt></b> "handin" directory by the due date and time (or
+refer to the <a href="?r=coursework#Late">late policy</a>):</p>
+
+<b>Note: List of files to be submitted will be displayed here.</b>
+
+<ul>
+  <ul>
+  <li>If you are working with a partner, only one partner submits the program 
+      files, but <b>both partners must submit to his/her own hand-in directory
+      a completed
+      <a href="assignments/README.txt"><tt>README.txt</tt></a> file.</b>
+      Students working in pairs must follow the 
+      <a href="?r=coursework#pp">rules for pair programming</a>.</li>
+</ul>
+<br>
+<em><b>Please turn in only the files named above.</b></em> Extra files 
+clutter up the "handin" directories.
+
+</div>
+</content>

@@ -1,0 +1,13 @@
+list users
+list following
+list
+print 15
+unfollow Zach
+unfollow Zach
+print 30
+follow Zach
+print 30
+search java
+foo
+quit
+exit

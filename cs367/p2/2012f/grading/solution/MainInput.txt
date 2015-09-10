@@ -1,0 +1,21 @@
+p
+r 12
+u 0
+t 0 12
+l sampleLog.txt
+r 17
+p
+u 0
+u 1
+p
+t 1 5
+p
+s savedOutput.txt
+p
+l sampleLog.txt
+r a
+u -1
+t 56 bgf
+t bgf 56
+p
+x

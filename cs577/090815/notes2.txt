@@ -1,0 +1,13 @@
+p. 9
+  depth of recursion tree is b-1. length is computed on #edges, not #vertices
+
+p. 13
+  use mu(a,b) = a + b as potential fxn for termination proof of iterative gcd alg
+
+
+
+
+review:
+-----------------
+[ ] homework: show there cannot be an inf chain of recursive calls that get simpler, rather than explicit potential fxn
+[ ] correctness of recursive power fxn in one shot (p. 10)

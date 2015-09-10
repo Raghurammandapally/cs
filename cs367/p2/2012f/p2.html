@@ -1,0 +1,477 @@
+<content for="title">CS 367, Programming Assignment 2</content>
+
+<content for="top">
+<h2>CS 367 Programming Assignment 2</h2>
+<font size="+1" color="#990000"><b>DUE by 10:00 PM on Friday, November 2nd</b><br></font>
+
+<br>
+<a href="#Announcements">p2 Announcements</a> |
+<a href="#Overview">Overview</a> |
+<a href="#Specifications">Specifications</a> |
+<a href="#Steps">Steps</a> |
+<a href="#Submission">Submission</a>
+</content>
+
+<content for="main">
+
+<div class="announcements">
+
+<a name="Announcements"></a>
+<h2>p2 Announcements</h2>
+
+<p>Corrections, clarifications, and other announcements regarding this
+programming assignment will be found below.</p>
+
+<ul>
+  <ul>
+  <li><b>11/1/2012:</b> Command "t" had a comma in the table of 
+commands; this has been removed. The "t" command should not use a 
+comma.</li>
+  <li><b>10/19/2012:</b> Specifications for each console command were missing 
+    affirmations of success; these have been added.</li>
+  <li><b>10/12/2012:</b> Progam assigned.</li>
+</ul>
+
+</div>
+<div>
+
+<a name="Overview"></a>
+<h2>Overview</h2>
+
+<h3>Goals</h3>
+
+<p>The goals of this assignment are to:</p>
+<ul>
+  <li>Understand and implement a doubly-linked chain of nodes.</li>
+  <li>Gain experience working with Java references (i.e., pointers).</li>
+  <li>Implement an iterator.</li>
+  <li>Implement an exception.</li>
+  <li>Gain experience writing classes which implement Java interfaces.</li>
+  <li>Develop an application that processes input commands.</li>
+  <li>Get more practice with console and file I/O.</li>
+</ul>
+
+
+<h3>Description</h3>
+
+<p>For this assignment, you'll implement a <tt>LinkedList</tt> class that
+uses a chain of linked nodes as its data structure. You'll then implement
+an application that uses <tt>LinkedList</tt>s to represent a log of robot
+"commands", which we'll call the "Robot Log". The "commands" will be
+represented using Java <tt>String</tt>s as specified below.  Your application
+(i.e., the main class) will prompt the user to choose an operation from a
+set of options (described below) that manipulate the Robot Log.</p>
+
+<p>It is typical for today's programmers to use ADTs that are already
+implemented as part of a class library (e.g., C++ Standard Template Library)
+or an API (e.g., Java's Application Program Interface).  Understanding
+ADT <i>implementations</i> is still important to be able to make informed
+choices as to which ADT implementation is best suited for an application
+in terms of memory and time efficiencies. For example, knowing the tradeoffs
+between array and linked implementations of the <tt>List</tt> ADT helps us
+choose between Java's <tt>ArrayList</tt> and <tt>LinkedList</tt> classes. It
+is also important to be able to implement your own data structures when
+pre-built ones are not available or when standard ADTs (and their
+operations) are unsuitable for the intended application.</p>
+
+<p>We'll provide an interface for a <tt>LinkedListADT</tt>, which you'll
+implement as the <tt>LinkedList</tt> class using a doubly-linked chain of
+nodes. You'll also code iterator and exception classes needed to support
+your <tt>LinkedList</tt> implementation.</p>
+
+</div>
+<div>
+
+<a name="Specifications"></a>
+<h2>Specifications</h2>
+
+<a name="file"></a>
+<h3>Robot Log Text File</h3>
+
+<p>Your program will have the ability to load in a log from a text file,
+and save a log to a text file. You won't be required to write any robot
+"commands" yourself, and you can assume that any input file provided will
+have properly formatted "commands". An input file will be formatted such
+that each line is an individual robot command, followed by a blank line
+at the very end of the file. There is a 
+<a href="assignments/p2/files/sampleLog.txt">sample input file</a>
+here for you to use when testing your code. Each line will be stored in your
+Robot Log as a 
+<a href="http://download.oracle.com/javase/6/docs/api/java/lang/String.html" target="_tab"><tt>String</tt></a>.
+</p>
+
+<p><b>Note:</b> You are not required to do any text parsing for this assignment.
+Your code will read a file line by line, but we'll assume the lines are in the
+correct format for robot commands. We'll simply treat these commands as strings,
+and we'll not be dividing those strings into smaller parts.</p>
+
+<p>Information about Java I/O is  available in both a 
+<a href="assignments/p1/resources/JavaIO_summary.html">summary version</a> and a
+<a href="assignments/p1/resources/JavaIO_Scanner.html">detailed version</a>.
+Examples of file input are linked to in those documents.</p>
+      
+
+<h3>The <tt>LinkedListADT&lt;E&gt;</tt> interface</h3>
+
+<p>A <tt>LinkedListADT&lt;E&gt;</tt> interface is provided for you (see
+<a href="assignments/p2/files/LinkedListADT.java"><tt>LinkedListADT.java</tt></a>).
+<tt>LinkedListADT&lt;E&gt;</tt> is a generic interface that your
+<tt>LinkedList</tt> class will implement. The interface specifies the following
+methods, which you will implement in your <tt>LinkedList</tt> class.</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+<tbody>
+  <tr>
+    <th width="30%">Method</th>
+    <th width="70%">Description</th>
+  </tr>
+  <tr>
+    <td><tt>void add(E item)</tt></td>
+    <td>Adds the given item to the end of the list.</td>
+  </tr>
+  <tr>
+    <td><tt>void add(int pos, E item)</tt></td>
+    <td>Adds the given item to the specified position in the list.
+        Throws an <tt>InvalidListPositionException</tt> if the position is invalid.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>E remove(int pos)</tt></td>
+    <td>Removes the item at the specified position in the list.
+        Returns the item that was removed.
+        Throws an <tt>InvalidListPositionException</tt> if the position is invalid.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>E get(int pos)</tt></td>
+    <td>Returns the item at the given position in the list.
+        Throws an <tt>InvalidListPositionException</tt> if the position is invalid.
+    </td>
+  </tr>
+  <tr>
+    <td><tt>boolean isEmpty()</tt></td>
+    <td>Returns whether or not the list is empty.</td>
+  </tr>
+  <tr>
+    <td><tt>int size()</tt></td>
+    <td>Returns how many nodes are in the list.</td>
+  </tr>
+  <tr>
+    <td><tt>Iterator&lt;E&gt; iterator()</tt></td>
+    <td>Returns a <tt>LinkedListIterator&lt;E&gt;</tt> to the list.</td>
+  </tr>
+</tbody>
+</table>
+
+<p>You may <b><em>not</em></b> modify the <tt>LinkedListADT</tt> interface in
+any way.</p>
+
+
+<h3>The <tt>ListNode&lt;E&gt;</tt> class</h3>
+
+<p>The <tt>ListNode&lt;E&gt;</tt> class represents one node of a chain of nodes
+used by your <tt>LinkedList</tt> class. This class is also provided for you;
+see <a href="assignments/p2/files/ListNode.java"><tt>ListNode.java</tt></a>.
+You should <b><em>not</em></b> modify this class. It has the following methods
+and constructor:</p>
+
+<table border="1" cellspacing="0" cellpadding="2">
+<tbody>
+  <tr>
+    <th width="40%">Constructor</th>
+    <th width="60%">Description</th>
+  </tr>
+  <tr>
+    <td><tt>ListNode&lt;E&gt;()</tt></td>
+    <td>Constructs an empty <tt>ListNode&lt;E&gt;</tt> with no data and 
+        null pointers to its previous and next nodes.</td>
+  </tr>
+  <tr>
+    <td><tt>ListNode&lt;E&gt;(ListNode&lt;E&gt; prev,
+    E data, ListNode&lt;E&gt; next)</tt></td>
+    <td>Constructs an empty <tt>ListNode&lt;E&gt;</tt> with the specified data
+    and pointers to the specified previous and next nodes.</td>
+  </tr>
+  <tr>
+    <th>Method</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><tt>E getData()</tt></td>
+    <td>Returns the data stored in this node.</td>
+  </tr>
+  <tr>
+    <td><tt>ListNode&lt;E&gt; getPrev()</tt></td>
+    <td>Returns the <tt>ListNode&lt;E&gt;</tt> that comes before this <tt>ListNode&lt;E&gt;</tt>. Returns null if this node does not have a previous node.</td>
+  </tr>
+  <tr>
+    <td><tt>ListNode&lt;E&gt; getNext()</tt></td>
+    <td>Returns the <tt>ListNode&lt;E&gt;</tt> that comes after this <tt>ListNode&lt;E&gt;</tt>. Returns null if this node does not have a next node.</td>
+  </tr>
+  <tr>
+    <td><tt>void setData(E data)</tt></td>
+    <td>Sets the data stored in this node to the specified item.</td>
+  </tr>
+  <tr>
+    <td><tt>void setPrev(ListNode&lt;E&gt; prev)</tt></td>
+    <td>Sets the previous node to point to the given <tt>ListNode&lt;E&gt;</tt>.</td>
+  </tr>
+  <tr>
+    <td><tt>void setNext(ListNode&lt;E&gt; prev)</tt></td>
+    <td>Sets the next node to point to the given <tt>ListNode&lt;E&gt;</tt>.</td>
+  </tr>
+</tbody>
+</table>
+
+
+<h3>The <tt>LinkedList&lt;E&gt;</tt> class</h3>
+
+<p>You'll code a <tt>LinkedList&lt;E&gt;</tt> class that your application
+will use to store the Robot Log. This class must implement the
+<tt>LinkedListADT&lt;E&gt;</tt> interface, which requires you to implement
+each method listed in the <tt>LinkedListADT&lt;E&gt;</tt> interface. You may
+add other methods as necessary; however, any additional methods <i>other than a 
+constructor</i> should be private.</p>
+
+
+<h3>The <tt>LinkedListIterator&lt;E&gt;</tt> class</h3>
+
+<p>You'll code a <tt>LinkedListIterator&lt;E&gt;</tt> class for your
+<tt>LinkedList</tt> class.  This class must implement Java's
+<tt>Iterator&lt;E&gt;</tt>, which requires you to implement each of these
+methods: hasNext(), next() and remove(). Note for remove(), you only need
+to throw Java's <tt>UnsupportedOperationException</tt> as described in
+lecture.</p>
+
+
+<h3>The <tt>InvalidListPositionException</tt> class</h3>
+
+<p>You'll code an exception class to be used by your <tt>LinkedList</tt>
+class. It must be a checked exception. You may write any constructors and
+methods you deem necessary for this class.</p>
+
+
+<h3>The <tt>RobotLogMain</tt> class</h3>
+
+<p>The application program, <tt>RobotLogMain</tt>, creates and uses an
+<tt>LinkedList&lt;E&gt;</tt> to represent and process a log of robot
+"commands".  Similarly to <a href="?r=programs&programNumber=1">Program 1</a>,
+this will be a relatively simple application class. You'll write code for
+each of the options listed below. Your code should make appropriate use of
+the <tt>LinkedList</tt>, <tt>LinkedListIterator</tt>, and
+<tt>InvalidListPositionException</tt> classes you have written.</p>
+
+<p>To help you with this, we're provideing the
+<a href="assignments/p2/files/RobotLogMain.java"><tt>RobotLogMain.java</tt></a>
+file, which contains the outline of the <tt>RobotLogMain</tt> class. Download
+this file and use it as the starting point for your <tt>RobotLogMain</tt>
+implementation.</p>
+
+<a name="main"></a>
+<p>Note: Unlike <a href="?r=programs&programNumber=1">Program 1</a>, you will
+not read from a file given as a command-line argument. You'll instead load
+information from a file when given the 'l' command, described below.</p>
+
+<p>The command options are:</p>   
+
+<table border="1" cellpadding="2" cellspacing="0">
+<tbody>
+
+<tr>
+  <th width="15%">Command format</th>
+  <th width="85%">Description</th>
+</tr>
+<tr>
+  <td align="center"><tt>l <i>fileName</i></tt></td>
+  <td><b>L</b>oad the robot log from the given file. See the <a href="#file">
+      file description</a> of the file format. You'll write code to read in
+      from the file line by line until the end of the file (a blank line) is
+      reached. Each of these lines should be stored as one item in your robot
+      log. If the file cannot be found, display "<tt>Cannot find the specified
+      file.</tt>" Once the file is loaded, print each line according to the 
+      specifications under command 'p'.
+  </td>
+</tr>
+<tr>
+  <td align="center"><tt>p</tt></td>
+  <td><b>P</b>rint the robot log. The log should be printed line by line, with
+      each line preceded by its line number. For example:
+      <dir>
+      1 Name:Robot1 Move:Forward Distance:10 Speed:Fast<br>
+      2 Name:Robot2 Move:Right Distance:2 Speed:Slow<br>
+      3 Name:Robot1 Move:Right Distance:7 Speed:Fast<br>
+      4 Name:Robot2 Move:Back Distance:8 Speed:Middle<br>
+      </dir>
+      <p>Note that the lines are indexed starting at 1. You should not have a
+      line # 0. If the robot log is empty, print "<tt>Empty</tt>".</p>
+  </td>
+</tr>  
+<tr>
+  <td align="center"><tt>r <i>line#</i></tt></td>
+  <td>
+    <b>R</b>emove the specified line number from the list. If an
+    InvalidListPositionException is thrown, catch that exceptinon and print,
+    "<tt>Invalid line number.</tt>" If the argument is not an int, 
+print,
+    "<tt>Please enter a valid integer.</tt>" Once the line has been removed,
+    print "<tt>Successfully removed line <i>line#</i></tt>".
+  </td>
+</tr>
+<tr>
+  <td align="center"><tt>s <i>fileName</i></tt></td>
+  <td>
+    <b>S</b>ave the file to the specified fileName. This file should be saved
+    in the same format as an input file; see <a href="#file">file
+    description</a>. Do not save line numbers in the output file and make sure
+    the file ends with a blank line. If the specified file cannot be written
+    to, print, "<tt>Cannot write to the specified file.</tt>" If the robot log
+    is currently empty, print, "<tt>Cannot write to file, robot log is
+    empty.</tt>" Once the file is saved, print "<tt>Successfully saved</tt>".
+  </td>
+<tr>
+  <td align="center"><tt>t <i>line#1</i> <i>line#2</i></tt></td>
+  <td>
+    <b>T</b>akes a copy of the line <i>line#1</i> and inserts it at
+    <i>line#2</i>, shifting all commands after and including <i>line#2</i>
+    down the list. For example, given the list:
+    <dir>
+      1 ABCD<br>
+      2 EFGH<br>
+      3 IJKL<br>
+      4 MNOP<br>
+    </dir>
+    the command "t 2 4" would produce:
+    <dir>
+      1 ABCD<br>
+      2 EFGH<br>
+      3 IJKL<br>
+      4 EFGH<br>
+      5 MNOP<br>
+    </dir>
+    If an InvalidListPositionException is thrown, catch it and print,
+    "<tt>Invalid line number.</tt>" If either argument is not an integer,
+    print, "<tt>Please enter two valid integers.</tt>" Once the line is 
+    copied, print "<tt>Successfully copied</tt>".
+  </td>
+</tr>
+<tr>
+  <td align="center"><tt>u <i>line#</i></tt></td>
+  <td>
+    <b>U</b>pdates the log by coping the line at <i>line#</i> to the end of the
+    log. This does not remove the line at <i>line#</i>. If an
+    InvalidListPositionException is thrown, catch it and print, "<tt>Invalid
+    line number.</tt>" If the argument is not an integer, print, "<tt>Please
+    enter a valid integer.</tt>" Once the line is copied, print 
+    "<tt>Successfully copied</tt>".
+  </td>
+</tr>
+<tr>
+  <td align="center"><tt>x</tt></td>
+  <td>
+    Display &quot;<tt>exit</tt>&quot; and e<b>x</b>it the program. This
+    command has already been implemented for you.
+  </td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+<div>
+
+<a name="Steps"></a>
+<h2>Steps</h2>
+
+<p>After you have read this program page and given thought to the problem
+we suggest the following steps:</p>
+
+<ol>
+  <li>If you are working with a partner, review the
+      <a href="?r=coursework#pp">rules for pair programming</a>.</li>
+  <li>Review these <a href="?r=styleGuide">style</a> and
+      <a href="?r=commentingGuide">commenting</a> standards that are used to
+      evaluate your program.</li>
+  <li>You may use the Java development environment of your choice in CS 367.
+      <em><b>However, all programs must compile and run on the lab computers
+      for grading.</b></em> If you are going to use the CS
+      <a href="?r=computerLabs">lab computers</a>, we recommend that you use
+      Eclipse. You may want to review the
+      <a href="http://pages.cs.wisc.edu/%7Ecs302/labs/EclipseTutorial/" target="_tab">Eclipse
+      tutorial</a> to learn the basics. Note that on the Linux lab computers,
+      you should enter "<tt>eclipse&amp;</tt>" at the prompt instead of what
+      is described in the tutorial.</li>
+  <li>Download the following to your programming assignment 2 directory:
+      <ul>
+        <li><a href="assignments/p2/files/ListNode.java"><tt>ListNode.java</tt></a></li>
+        <li><a href="assignments/p2/files/LinkedListADT.java"><tt>LinkedListADT.java</tt></a></li>
+        <li><a href="assignments/p2/files/RobotLogMain.java"><tt>RobotLogMain.java</tt></a></li>
+      </ul>
+  </li>
+  <li>Implement and thoroughly test your <tt>LinkedList&lt;E&gt;</tt> class and any
+      additional supporting classes, including your <tt>LinkedListIterator&lt;E&gt;</tt>
+      and <tt>InvalidListPositionException</tt> classes.</li>
+  <li>Incrementally implement the <tt>RobotLogMain</tt> class as specified in
+      the <a href="#main">main program section</a> above. Test each step to
+      ensure your program is working correctly before implementing the next
+      step. Create a small text file for testing (it will be easier to debug
+      than larger ones) and make sure you test all the boundary and negative
+      cases as well as the positive cases.  
+      <!--<em>Sample input file with corresponding output to be added soon.</em>-->
+      <a name="InputFiles"></a> <em>Try this sample input file,
+      <a href="assignments/p2/files/sampleLog.txt">sampleLog.txt</a>, 
+      and make sure your program produces the <b>exact same</b> output, 
+      <a href="assignments/p2/files/sampleOutput.txt">sampleOutput.txt</a>
+      (i.e., when the user enters the same commands shown in the sample
+      output).</em> Once you've got your program working on the small
+      text file, create larger text files and make sure your program works 
+      on those as well. Remember that the exact format of the file is unimportant,
+      as long as it has one command per line, with a blank line at the end of the
+      file. You can test your program using any text file that fits this description.
+      </li>
+  <li>If you are not using the lab computers to develop your program, make
+      sure you compile and run your program to ensure that it works on the
+      Linux lab computers. You can compile your Java source using <tt>javac</tt>
+      in a terminal window as in this example: <dir><tt>javac *.java</tt></dir>
+      and the run your program using <tt>java</tt> as in:
+
+      <dir><tt>java RobotLogMain</tt></dir></li>
+
+  <li>Submit your work for grading.</li>
+</ol>
+
+
+</div>
+<div>
+
+<a name="Submission"></a>
+<h2>Submitting Your Work</h2>
+
+<p>Make sure your code follows the <a href="?r=styleGuide">style</a> and
+<a href="?r=commentingGuide">commenting</a> standards used in CS 302 and
+CS 367.</p>
+
+<p><a href="?r=coursework#Handin">Electronically submit</a> the following file
+to your <b><tt>in</tt></b> "handin" directory by the due date and time (or
+refer to the <a href="?r=coursework#Late">late policy</a>):</p>
+
+<ul>
+  <li>"<tt>RobotLogMain.java</tt>" containing your robot log processing application,</li>
+  <li>"<tt>LinkedList.java</tt>" containing your implementation of the <tt>LinkedList&lt;E&gt;</tt> class,
+  <li>"<tt>LinkedListIterator.java</tt>" containing your implementation of the <tt>LinkedListIterator&lt;E&gt;</tt> class,
+  <li>"<tt>InvalidListPositionException</tt>" containing your implementation of the 
+  <tt>InvalidListPositionException</tt>" class, and</li>
+  <li>"<tt>*.java</tt>" additional classes that you've implemented for your program.</li>
+  <br />
+  <li>If you are working with a partner, only one partner submits the program 
+      files, but <b>both partners must submit to his/her own hand-in directory
+      a completed
+      <a href="assignments/README.txt"><tt>README.txt</tt></a> file.</b>
+      Students working in pairs must follow the 
+      <a href="?r=coursework#pp">rules for pair programming</a>.</li>
+</ul>
+
+<p><em><b>Please turn in only the files named above.</b></em> Extra files 
+clutter up the "handin" directories.</p>
+
+</div>
+</content>
