@@ -9,7 +9,7 @@ public class SymTable {
 
   public SymTable() {
     //should initialize the SymTable's List field to contain a single, empty HashMap.
-    tableList = new LinkedList<HashMap<String,Sym>>();
+    tableList = new ArrayList<HashMap<String,Sym>>();
     addScope();
   }
 
