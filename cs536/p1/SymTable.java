@@ -80,6 +80,7 @@ public class SymTable {
     for(HashMap M : tableList) {
       System.out.println(M.toString());
     }
+    System.out.println("\n");
   }
 
   private HashMap<String,Sym> getFirst(List<HashMap<String,Sym>> symbolTable) {
