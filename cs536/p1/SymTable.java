@@ -13,7 +13,7 @@ public class SymTable {
     addScope();
   }
 
-  public void addDecl(String name, Sym sym) throws DuplicateSymException, EmptySymTableException {
+  public void addDecl(String name, Sym sym) throws EmptySymTableException,DuplicateSymException {
     if(tableList.isEmpty()) {
       // If this SymTable's list is empty, throw an EmptySymTableException. 
       throw new EmptySymTableException();
