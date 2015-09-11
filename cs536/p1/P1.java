@@ -72,6 +72,15 @@ public class P1 {
         out.println(exc);
       }
     }
+
+    out.println("Checking adding a symbol with null references...");
+    try {
+      s.addDecl(null, syms[0]);
+      s.addDecl("key0", null);
+      s.addDecl(null, null);
+    } catch (Exception e) {
+      out.println(err);
+    }
     
     out.println("Checking emptying a non-empty table...");
     try {
