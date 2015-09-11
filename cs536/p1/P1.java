@@ -54,15 +54,20 @@ public class P1 {
     }
 
     out.println("Checking retrieving those values globally...");
-    for(int i=0; i < 10; i++) {
-      if(s.lookupGlobal("key"+i) != syms[i]) {
-        out.println(err + "idx " + i);
+    try {
+      for(int i=0; i < 10; i++) {
+        if(s.lookupGlobal("key"+i) != syms[i]) {
+          out.println(err + "idx " + i);
+        }
       }
+    } catch (Exception e) {
+      out.println(err);
     }
 
-    out.println("Checking adding a duplicate value...");
+    out.println("Checking adding a duplicate key...");
     success = false;
     try {
+      //If the first HashMap in the list already contains the given name as a key, throw a DuplicateSymException.
       s.addDecl("key0", new Sym("diffval"));
       success = true;
     } catch (DuplicateSymException e) {
@@ -74,12 +79,19 @@ public class P1 {
     }
 
     out.println("Checking adding a symbol with null references...");
+    success = false;
     try {
+      //If either name or sym (or both) is null, throw a NullPointerException.
       s.addDecl(null, syms[0]);
       s.addDecl("key0", null);
       s.addDecl(null, null);
-    } catch (Exception e) {
-      out.println(err);
+      success = true;
+    } catch (NullPointerException e) {
+      //expected behavior
+    } finally {
+      if(success) {
+        out.println(exc);
+      }
     }
     
     out.println("Checking emptying a non-empty table...");
@@ -105,7 +117,7 @@ public class P1 {
     out.println("Checking adding to an empty table...");
     success = false;
     try {
-      s.addDecl("key", new Sym("val"));
+      s.addDecl("key0", syms[0]);
       success = true;
     } catch (EmptySymTableException e) {
       //expected behavior
@@ -115,6 +127,97 @@ public class P1 {
       }
     }
 
+    out.println("Checking retrieving local value from empty table...");
+    success = false;
+    try {
+      s.lookupLocal("key0");
+      success = true;
+    } catch (EmptySymTableException e) {
+      //expected behavior
+    } finally {
+      if(success) {
+        out.println(exc);
+      }
+    }
+
+    out.println("Checking retrieving global value from empty table...");
+    success = false;
+    try {
+      s.lookupGlobal("key0");
+      success = true;
+    } catch (EmptySymTableException e) {
+      //expected behavior
+    } finally {
+      if(success) {
+        out.println(exc);
+      }
+    }
+
+    s.addScope();
+
+    out.println("Checking adding multiple values to table with 1 scope...");
+    try {
+      s.addDecl("key0", syms[0]);
+      s.addDecl("key1", syms[1]);
+      s.addDecl("key2", syms[2]);
+    } catch (Exception e) {
+      out.println(err);
+    }
+
+    out.println("Checking retrieving those values locally...");
+    if(s.lookupLocal("key0") != syms[0]) out.println(err + "idx0");
+    if(s.lookupLocal("key1") != syms[1]) out.println(err + "idx1");
+    if(s.lookupLocal("key2") != syms[2]) out.println(err + "idx2");
+    if(s.lookupLocal("key3") != null) out.println(err + "idx3");
+
+    out.println("Checking retrieving those values globally...");
+    if(s.lookupGlobal("key0") != syms[0]) out.println(err + "idx0");
+    if(s.lookupGlobal("key1") != syms[1]) out.println(err + "idx1");
+    if(s.lookupGlobal("key2") != syms[2]) out.println(err + "idx2");
+    if(s.lookupGlobal("key3") != null) out.println(err + "idx3");
+
+    //adding another scope should not change global calls, but should make all local calls null
+    s.addScope();
+
+    out.println("Checking retrieving same values locally after adding a scope...");
+    if(s.lookupLocal("key0") != null) out.println(err + "idx0");
+    if(s.lookupLocal("key1") != null) out.println(err + "idx1");
+    if(s.lookupLocal("key2") != null) out.println(err + "idx2");
+    if(s.lookupLocal("key3") != null) out.println(err + "idx3");
+
+    out.println("Checking retrieving those values globally...");
+    if(s.lookupGlobal("key0") != syms[0]) out.println(err + "idx0");
+    if(s.lookupGlobal("key1") != syms[1]) out.println(err + "idx1");
+    if(s.lookupGlobal("key2") != syms[2]) out.println(err + "idx2");
+    if(s.lookupGlobal("key3") != null) out.println(err + "idx3");
+
+    out.println("Checking adding new local key to table with 2 scopes...");
+    try {
+      s.addDecl("key4", syms[4]);
+    } catch (Exception e) {
+      out.println(err);
+    }
+
+    out.println("Checking adding local key that overlaps with global scope to table with 2 scopes...");
+    try {
+      s.addDecl("key0", syms[6]);
+    } catch (Exception e) {
+      out.println(err);
+    }
+
+    out.println("Checking retrieving values locally...");
+    if(s.lookupLocal("key0") != syms[6]) out.println(err + "idx0");
+    if(s.lookupLocal("key1") != null) out.println(err + "idx1");
+    if(s.lookupLocal("key2") != null) out.println(err + "idx2");
+    if(s.lookupLocal("key3") != null) out.println(err + "idx3");
+    if(s.lookupLocal("key4") != syms[4]) out.println(err + "idx4");
+
+    out.println("Checking retrieving values globally...");
+    if(s.lookupGlobal("key0") != syms[6]) out.println(err + "idx0");
+    if(s.lookupGlobal("key1") != syms[1]) out.println(err + "idx1");
+    if(s.lookupGlobal("key2") != syms[2]) out.println(err + "idx2");
+    if(s.lookupGlobal("key3") != null) out.println(err + "idx3");
+    if(s.lookupGlobal("key4") != syms[4]) out.println(err + "idx4");
 
     //TEMPLATES
     /*
@@ -139,9 +242,6 @@ public class P1 {
     }
     */
 
-      
-    
-    
   }
 }
 
