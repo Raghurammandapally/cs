@@ -76,11 +76,12 @@ public class SymTable {
 
   public void print() {
     //This method is for debugging. First, print “\nSym Table\n”. Then, for each HashMap M in the list, print M.toString() followed by a newline. Finally, print one more newline. All output should go to System.out.
-    System.out.println("\nSym Table\n");
+    System.out.print("\nSym Table\n");
     for(HashMap M : tableList) {
-      System.out.println(M.toString());
+      System.out.print(M.toString());
+      System.out.print("\n");
     }
-    System.out.println("\n");
+    System.out.print("\n");
   }
 
   private HashMap<String,Sym> getFirst(List<HashMap<String,Sym>> symbolTable) {

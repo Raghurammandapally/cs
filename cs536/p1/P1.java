@@ -23,6 +23,15 @@ public class P1 {
     //initialize our SymTable
     SymTable s = new SymTable();
 
+    Sym sym1 = new Sym("test1");
+    Sym sym2 = new Sym("test2");
+
+    out.println("Checking that Sym getters return correct values...");
+    if (sym1.getType() != "test1") out.println(err + "[0]");
+    if (sym2.getType() != "test2") out.println(err + "[1]");
+    if (sym1.toString() != sym1.getType()) out.println(err + "[2]");
+    if (sym2.toString() != sym2.getType()) out.println(err + "[3]");
+
     //initialize an array of test Sym's
     //  syms[0] = new Sym("val0");
     //  syms[1] = new Sym("val1");
@@ -219,6 +228,16 @@ public class P1 {
     if(s.lookupGlobal("key3") != null) out.println(err + "idx3");
     if(s.lookupGlobal("key4") != syms[4]) out.println(err + "idx4");
 
+    //uncomment these lines to print out structure of symbol table
+    //leaving this commented out so minimize printed clutter for test
+    /*
+    s.print();
+    s.removeScope();
+    s.print();
+    s.removeScope();
+    s.print();
+    */
+
     //TEMPLATES
     /*
     out.println("Checking ...");
@@ -244,4 +263,3 @@ public class P1 {
 
   }
 }
-
