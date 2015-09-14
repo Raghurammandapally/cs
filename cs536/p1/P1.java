@@ -1,10 +1,12 @@
 import static java.lang.System.out;
 
 public class P1 {
-  public static void main (String[] args) throws EmptySymTableException,DuplicateSymException {
+  public static void main (String[] args) throws EmptySymTableException,
+                                                 DuplicateSymException {
     // setting up default strings for printing errors
     String err = "  ERROR!";
     String exc = "  THIS SHOULD HAVE FAILED!";
+     
     // this is used for testing exception throws
     boolean success = false;
 
@@ -46,14 +48,14 @@ public class P1 {
     //      ...
     //  syms[9] = new Sym("val9");
     Sym[] syms = new Sym[10];
-    for (int i=0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
       syms[i] = new Sym("val" + i);
     }
 
     // after this, the local scope of the table will have 10 key/value pairs
     out.println("Checking adding multiple values to empty table...");
     try {
-      for(int i=0; i < 10; i++) {
+      for (int i = 0; i < 10; i++) {
         s.addDecl("key"+i, syms[i]);
       }
     } catch (Exception e) {
@@ -63,7 +65,7 @@ public class P1 {
     // we should be able to retrieve those same values locally with no issue
     out.println("Checking retrieving those values locally...");
     try {
-      for(int i=0; i < 10; i++) {
+      for (int i = 0; i < 10; i++) {
         if(s.lookupLocal("key"+i) != syms[i]) {
           out.println(err + "idx " + i);
         }
@@ -72,10 +74,11 @@ public class P1 {
       out.println(err);
     }
 
-    // ...globally should be the same, since we only have one scope at this point
+    // ...globally should be the same, since we only have one scope at this 
+    // point
     out.println("Checking retrieving those values globally...");
     try {
-      for(int i=0; i < 10; i++) {
+      for (int i = 0; i < 10; i++) {
         if(s.lookupGlobal("key"+i) != syms[i]) {
           out.println(err + "idx " + i);
         }
@@ -84,7 +87,8 @@ public class P1 {
       out.println(err);
     }
 
-    // we should be throwing a DuplicateSymException for trying to add a duplicate key within the local scope
+    // we should be throwing a DuplicateSymException for trying to add a 
+    // duplicate key within the local scope
     out.println("Checking adding a duplicate key...");
     success = false;
     try {
@@ -98,12 +102,14 @@ public class P1 {
       }
     }
 
-    out.println("Checking that failed addition of duplicate key did not modify the previous value...");
+    out.println("Checking that failed addition of duplicate key did not " +
+        "modify the previous value...");
     if(!s.lookupLocal("key0").getType().equals("val0")) out.println(err);
     if(!s.lookupGlobal("key0").getType().equals("val0")) out.println(err);
 
 
-    // if either name or sym (or both) is null, we should throw a NullPointerException
+    // if either name or sym (or both) is null, we should throw a 
+    // NullPointerException
     out.println("Checking adding a symbol with null references...");
     success = false;
     try {
@@ -127,7 +133,8 @@ public class P1 {
       out.println(err);
     }
 
-    // after removing the (last) local scope, however, we should not be able to remove another
+    // after removing the (last) local scope, however, we should not be able 
+    // to remove another
     out.println("Checking emptying an empty table...");
     success = false;
     try {
@@ -141,7 +148,7 @@ public class P1 {
       }
     }
 
-    out.println("Checking adding to an empty table...");
+    out.println("Checking adding to a table with no scopes...");
     success = false;
     try {
       s.addDecl("key0", syms[0]);
@@ -203,10 +210,14 @@ public class P1 {
     if(s.lookupGlobal("key2") != syms[2]) out.println(err + "idx2");
     if(s.lookupGlobal("key3") != null) out.println(err + "idx3");
 
-    //adding another scope should not change global calls, but should make all local calls null
-    s.addScope();
+    //adding many more scopes should not change global calls, but should make 
+    //all local calls null
+    for (int i = 0; i < 10; i++) {
+      s.addScope();
+    }
 
-    out.println("Checking retrieving same values locally after adding a scope...");
+    out.println("Checking retrieving same values locally after adding a " + 
+        "scope...");
     if(s.lookupLocal("key0") != null) out.println(err + "idx0");
     if(s.lookupLocal("key1") != null) out.println(err + "idx1");
     if(s.lookupLocal("key2") != null) out.println(err + "idx2");
@@ -218,6 +229,8 @@ public class P1 {
     if(s.lookupGlobal("key2") != syms[2]) out.println(err + "idx2");
     if(s.lookupGlobal("key3") != null) out.println(err + "idx3");
 
+    //"key4", a new key, should return a value when searched locally or
+    //globally
     out.println("Checking adding new local key to table with 2 scopes...");
     try {
       s.addDecl("key4", syms[4]);
@@ -225,7 +238,10 @@ public class P1 {
       out.println(err);
     }
 
-    out.println("Checking adding local key that overlaps with global scope to table with 2 scopes...");
+    //"key0" should now return syms[6] if searched locally or globally, rather
+    //than syms[0] as previously
+    out.println("Checking adding local key that overlaps with global scope " + 
+        "to table with 2 scopes...");
     try {
       s.addDecl("key0", syms[6]);
     } catch (Exception e) {
@@ -247,36 +263,13 @@ public class P1 {
     if(s.lookupGlobal("key4") != syms[4]) out.println(err + "idx4");
 
     //uncomment these lines to print out structure of symbol table
-    //leaving this commented out so minimize printed clutter for test
+    //leaving this commented out to minimize printed clutter for test
     /*
     s.print();
     s.removeScope();
     s.print();
     s.removeScope();
     s.print();
-    */
-
-    //TEMPLATES
-    /*
-    out.println("Checking ...");
-    success = false;
-    try {
-      // do something that should throw an exception
-      success = true;
-    } catch (Exception e) {
-      //expected behavior
-    } finally {
-      if(success) {
-        out.println(exc);
-      }
-    }
-
-    out.println("Checking ...");
-    try {
-      // do something that shouldn't throw an exception
-    } catch (Exception e) {
-      out.println(err);
-    }
     */
 
   }
