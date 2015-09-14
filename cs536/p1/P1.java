@@ -1,6 +1,27 @@
 import static java.lang.System.out;
 
+/**
+ * P1 contains testing cases for SymTable. A description of SymTable and its 
+ * specification can be found here: 
+ *   http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p1/p1.html
+ *
+ * Bugs: none known
+ *
+ * @author       Keith Funkhouser
+ */
 public class P1 {
+///////////////////////////////////////////////////////////////////////////////
+//
+// Title:            P1.java (testing suite for SymTable implementation)
+// Files:            N/A
+// Semester:         CS536 Fall 2015
+//
+// Author:           Keith Funkhouser
+// Email:            wfunkhouser@cs.wisc.edu
+// CS Login:         wfunkhouser
+// Lecturer's Name:  Aws Albarghouthi
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
   public static void main (String[] args) throws EmptySymTableException,
                                                  DuplicateSymException {
     // setting up default strings for printing errors
