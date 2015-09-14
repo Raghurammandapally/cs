@@ -2,9 +2,10 @@ import static java.lang.System.out;
 
 public class P1 {
   public static void main (String[] args) throws EmptySymTableException,DuplicateSymException {
-    //can we test this using a try/catch block?
+    // setting up default strings for printing errors
     String err = "  ERROR!";
     String exc = "  THIS SHOULD HAVE FAILED!";
+    // this is used for testing exception throws
     boolean success = false;
 
     out.println("*****************************************");
@@ -25,14 +26,21 @@ public class P1 {
 
     Sym sym1 = new Sym("test1");
     Sym sym2 = new Sym("test2");
+    Sym sym3 = new Sym("test2");
 
     out.println("Checking that Sym getters return correct values...");
-    if (sym1.getType() != "test1") out.println(err + "[0]");
-    if (sym2.getType() != "test2") out.println(err + "[1]");
-    if (sym1.toString() != sym1.getType()) out.println(err + "[2]");
-    if (sym2.toString() != sym2.getType()) out.println(err + "[3]");
+    // getType should just return the strings they were instantiated with
+    if (!sym1.getType().equals("test1")) out.println(err + "[0]");
+    if (!sym2.getType().equals("test2")) out.println(err + "[1]");
+    // toString should return the same as getType
+    if (!sym1.toString().equals(sym1.getType())) out.println(err + "[2]");
+    if (!sym2.toString().equals(sym2.getType())) out.println(err + "[3]");
+    // their types should be the same ("test2")
+    if (!sym2.getType().equals(sym3.getType())) out.println(err + "[4]");
+    // these should be distinct instantiations
+    if (sym2 == sym3) out.println(err + "[5]");
 
-    //initialize an array of test Sym's
+    //initialize an array of test Sym's:
     //  syms[0] = new Sym("val0");
     //  syms[1] = new Sym("val1");
     //      ...
@@ -42,6 +50,7 @@ public class P1 {
       syms[i] = new Sym("val" + i);
     }
 
+    // after this, the local scope of the table will have 10 key/value pairs
     out.println("Checking adding multiple values to empty table...");
     try {
       for(int i=0; i < 10; i++) {
@@ -51,6 +60,7 @@ public class P1 {
       out.println(err);
     }
 
+    // we should be able to retrieve those same values locally with no issue
     out.println("Checking retrieving those values locally...");
     try {
       for(int i=0; i < 10; i++) {
@@ -62,6 +72,7 @@ public class P1 {
       out.println(err);
     }
 
+    // ...globally should be the same, since we only have one scope at this point
     out.println("Checking retrieving those values globally...");
     try {
       for(int i=0; i < 10; i++) {
@@ -73,10 +84,10 @@ public class P1 {
       out.println(err);
     }
 
+    // we should be throwing a DuplicateSymException for trying to add a duplicate key within the local scope
     out.println("Checking adding a duplicate key...");
     success = false;
     try {
-      //If the first HashMap in the list already contains the given name as a key, throw a DuplicateSymException.
       s.addDecl("key0", new Sym("diffval"));
       success = true;
     } catch (DuplicateSymException e) {
@@ -87,10 +98,15 @@ public class P1 {
       }
     }
 
+    out.println("Checking that failed addition of duplicate key did not modify the previous value...");
+    if(!s.lookupLocal("key0").getType().equals("val0")) out.println(err);
+    if(!s.lookupGlobal("key0").getType().equals("val0")) out.println(err);
+
+
+    // if either name or sym (or both) is null, we should throw a NullPointerException
     out.println("Checking adding a symbol with null references...");
     success = false;
     try {
-      //If either name or sym (or both) is null, throw a NullPointerException.
       s.addDecl(null, syms[0]);
       s.addDecl("key0", null);
       s.addDecl(null, null);
@@ -103,6 +119,7 @@ public class P1 {
       }
     }
     
+    // this should succeed with no error
     out.println("Checking emptying a non-empty table...");
     try {
       s.removeScope();
@@ -110,6 +127,7 @@ public class P1 {
       out.println(err);
     }
 
+    // after removing the (last) local scope, however, we should not be able to remove another
     out.println("Checking emptying an empty table...");
     success = false;
     try {
