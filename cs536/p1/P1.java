@@ -27,7 +27,7 @@ public class P1 {
     // setting up default strings for printing errors
     String err = "  ERROR!";
     String exc = "  THIS SHOULD HAVE FAILED!";
-     
+
     // this is used for testing exception throws
     boolean success = false;
 
