@@ -68,19 +68,25 @@ public class SymTable {
   }
 
 /**
- * Adds the key,value pair with key name and value sym to the symbol table.
+ * Adds an empty HashMap to the front of the list (i.e. new local scope).
  *
- * @param preconditions Name/sym are non-null
- * @param preconditions The first HashMap in the list does not contain the 
- *  given key
- * @param postconditions The first HashMap in the list contains the key,value
- *  pair
+ * @param preconditions None
+ * @param postconditions this.isEmpty() is false
  * @return void
  */
   public void addScope() {
     tableList.add(0, new HashMap<String,Sym>());
   }
 
+/**
+ * If the first HashMap in the list contains name as a key, returns the
+ * associated Sym. Otherwise, returns null. May throw an EmptySymTableException
+ * if the list is empty.
+ *
+ * @param preconditions this.isEmpty() is false
+ * @param postconditions None
+ * @return returned Sym is either the associated value in local scope, or null
+ */
   public Sym lookupLocal(String name) throws EmptySymTableException {
     if(tableList.isEmpty()) {
       throw new EmptySymTableException();
@@ -91,6 +97,16 @@ public class SymTable {
     }
   }
 
+/**
+ * If any HashMap in the list contains name as a key, returns the first
+ * associated Sym. Otherwise, returns null. May throw an EmptySymTableException
+ * if the list is empty.
+ *
+ * @param preconditions this.isEmpty() is false
+ * @param postconditions None
+ * @return either the associated value in the HashMap closest to the front of 
+ * the list, or null
+ */
   public Sym lookupGlobal(String name) throws EmptySymTableException {
     if(tableList.isEmpty()) {
       throw new EmptySymTableException();
@@ -104,6 +120,15 @@ public class SymTable {
     }
   }
 
+/**
+ * Removes the HashMap in the front of the list. May throw an exception if
+ * the list is already empty.
+ *
+ * @param preconditions this.isEmpty() is false
+ * @param postconditions the list has one less HashMap, and the HashMap
+ * previously in the second position is now in the first
+ * @return void
+ */
   void removeScope() throws EmptySymTableException {
     if(tableList.isEmpty()) {
       throw new EmptySymTableException();
@@ -112,6 +137,14 @@ public class SymTable {
     }
   }
 
+/**
+ * (FOR DEBUGGING) Calls toString() on every HashMap in the list and prints
+ * to System.out.
+ *
+ * @param preconditions None
+ * @param postconditions System.out receives output from printing
+ * @return void
+ */
   public void print() {
     System.out.print("\nSym Table\n");
     for(HashMap M : tableList) {
@@ -121,6 +154,14 @@ public class SymTable {
     System.out.print("\n");
   }
 
+
+/**
+ * (PRIVATE) shorthand method for pulling first HashMap from list
+ *
+ * @param preconditions this.isEmpty() is false
+ * @param postconditions None
+ * @return the first HashMap in the list
+ */
   private HashMap<String,Sym> getFirst(List<HashMap<String,Sym>> symbolTable) {
     return symbolTable.get(0);
   }
