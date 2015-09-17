@@ -8,7 +8,7 @@
  * 
  * @author Beck Hasti, copyright 2014
  */
-public class P1 {
+public class P1_solution {
     public static void main(String[] args) {
         testSym();
         testExceptions();
