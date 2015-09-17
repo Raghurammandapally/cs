@@ -1,14 +1,39 @@
 import java.util.*;
+///////////////////////////////////////////////////////////////////////////////
+//                   
+// Main Class File:  P1.java (turned in for part 1)
+// File:             SymTable.java
+// Semester:         CS536 Fall 2015
+//
+// Author:           Keith Funkhouser
+// CS Login:         wfunkhouser
+// Lecturer's Name:  Aws Albarghouthi
+// Lab Section:      1
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
 
-/*
- * It must be implemented using a List of HashMaps. (Think about the operations that will be done on a SymTable to decide whether to use an ArrayList or a LinkedList.) The HashMaps must map a String to a Sym. This means that the SymTable class will have a (private) field of type List<HashMap<String,Sym>>.
- * */
-
+/**
+ * SymTable is a class for representing a symbol table (i.e. a list of HashMaps
+ * which map String -> Sym). It has the following public methods:
+ *   SymTable()
+ *   void addDecl(String name, Sym sym) throws DuplicateSymException, 
+ *     EmptySymTableException 
+ *   void addScope() 
+ *   Sym lookupLocal(String name)
+ *   Sym lookupGlobal(String name)
+ *   void removeScope() throws EmptySymTableException
+ *   void print()
+ *
+ * <p>Bugs: none known
+ *
+ * @author Keith Funkhouser
+ */
 public class SymTable {
   private List<HashMap<String,Sym>> tableList;
 
   public SymTable() {
-    //should initialize the SymTable's List field to contain a single, empty HashMap.
+    //should initialize the SymTable's List field to contain a single, empty 
+    // HashMap.
     tableList = new ArrayList<HashMap<String,Sym>>();
     addScope();
   }
