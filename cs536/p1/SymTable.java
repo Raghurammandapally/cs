@@ -29,6 +29,8 @@ import java.util.*;
  * @author Keith Funkhouser
  */
 public class SymTable {
+
+/** The instance's list for keeping track of symbol tables (or scopes). */
   private List<HashMap<String,Sym>> tableList;
 
 /**

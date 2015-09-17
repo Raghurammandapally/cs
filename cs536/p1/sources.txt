@@ -3,3 +3,4 @@
 ./Sym.java
 ./P1.java
 ./SymTable.java
+./P1_solution.java
