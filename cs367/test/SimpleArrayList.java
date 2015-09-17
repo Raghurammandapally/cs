@@ -1,11 +1,13 @@
-public class SimpleArrayList implements ListADT<Object> {
+import java.util.Iterator;
+
+public class SimpleArrayList<Object> implements ListADT<Object> {
  
   // *** fields ***
     private Object[] items; // the items in the List
     private int numItems;   // the number of items in the List
  
   // *** constructor ***
-    public SimpleArrayList() { }      
+    public SimpleArrayList() { this.numItems = 0;}      
  
   //*** required ListADT methods ***
  
@@ -23,4 +25,13 @@ public class SimpleArrayList implements ListADT<Object> {
     public boolean contains (Object item) { return true; }
     public int size() { return 0; }      
     public boolean isEmpty() { return true; }  
+
+    //**********************************************************************
+    //// iterator
+    ////
+    //// return an iterator for this List
+    ////**********************************************************************
+    public Iterator<Object> iterator() {
+      return new SimpleArrayListIterator(this);
+    }
 }  

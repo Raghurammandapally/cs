@@ -8,7 +8,7 @@
  * 
  * @author Beck Hasti, copyright 2014
  */
-public class P1_solution {
+public class P1 {
     public static void main(String[] args) {
         testSym();
         testExceptions();
@@ -284,21 +284,19 @@ public class P1_solution {
             try {
                 if (symTab.lookupLocal("aaa") != null) {
                     error("SymTable.lookupLocal",
-                          "did not return null for SymTable with no maps");
+                          "did not throw Exception for SymTable with no maps");
                 } 
             } catch (Exception e) {
-                error("SymTable.lookupLocal", "unexpected exception for " +
-                      "lookup in SymTable with no maps");
+                //Expected
             }
 
             try {
                 if (symTab.lookupGlobal("aaa") != null) {
                     error("SymTable.lookupGlobal", 
-                          "did not return null for SymTable with no maps");
+                          "did not throw Exception for SymTable with no maps");
                 } 
             } catch (Exception e) {
-                error("SymTable.lookupGlobal", "unexpected exception for " +
-                      "lookup in SymTable with no maps");
+                //Expected
             }
 
             // test lookupLocal and lookupGlobal in a SymTable with one map

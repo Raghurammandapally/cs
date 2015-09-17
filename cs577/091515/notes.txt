@@ -1,0 +1,12 @@
+review:
+---------------
+O notation and notation for showing that a fxn is O(f(n))
+if f(n) is O(g(n)) and vice versa, then we say f(n) is theta(g(n))
+O, theta, omega
+sorting algorithms, worst and average cases
+  selection
+  insertion
+  merge
+  bubble
+  quick
+  bucket

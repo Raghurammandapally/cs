@@ -1,0 +1,75 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h2/h2.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style></head><body><p>This homework is due at <b>11 PM on Sept 22 2015</b>. <i>It will not be accepted late</i>.<br>
+
+</p><p class="reg">
+Java (as well as C and C++) allows comments delimited by "<tt>/*</tt>" and "<tt>*/</tt>".
+This kind of comment can be defined in English as follows:
+</p>
+<dir class="reg">
+A comment consists of three parts:
+<ol>
+  <li>a slash followed by a star, followed by</li>
+  <li>the body of the comment, followed by</li>
+  <li>a star followed by a slash.</li>
+</ol>
+The body of the comment can be empty, or can contain any characters except
+the two-character sequence "<tt>*/</tt>".
+</dir>
+
+<p class="reg">
+Note that the body of a comment <b><em>can</em></b> include stars and
+slashes, just not "<tt>*/</tt>".
+</p>
+
+<p class="reg">
+Assume that the following JLex macros have been defined:
+</p>
+<dir><pre>SLASH     = [/]
+STAR      = [*]
+</pre></dir>
+
+<h3 id="Question1">Question 1:</h3>
+<p class="reg">
+Below are 5 <b><em>incorrect</em></b> JLex patterns
+for the kind of comment defined above.
+For each pattern, explain what is wrong.
+For example, you might say
+<i>The pattern does not allow the comment body to include stars</i>,
+or <i>The pattern does allow the comment body to include */</i>.
+If the pattern both disallows some "good" comments and allows some
+"bad" comments, give two explanations, one for each problem with
+the pattern.
+Then, for each problem with the pattern, give a string that illustrates
+the problem;
+i.e.,
+give a string that is <b><em>not</em></b> matched by the pattern but is
+a "good" comment and/or
+give a string that <b><em>is</em></b> matched by the pattern but is a "bad"
+comment.
+<em><b>Be sure that it is clear whether your example strings are intended
+to be "good" or "bad" comments.</b></em>
+</p>
+<dir><pre>{SLASH}{STAR}[^(*/)]*{STAR}{SLASH}
+
+{SLASH}{STAR}(.)*{STAR}{SLASH}
+
+{SLASH}{STAR}([^*]*{STAR}+[^*/])*{STAR}+{SLASH}
+
+{SLASH}{STAR}([^*]|[^/])+{STAR}{SLASH}
+
+{SLASH}{STAR}[^*]*{STAR}+{SLASH}+
+</pre></dir>
+
+
+<h3 id="Question2">Question 2:</h3>
+<p class="reg">
+Give a correct JLex pattern for comments as defined above.
+You may define and use additional macros.
+Make your pattern as readable as possible.
+</p>
+
+
+
+
+</body><div></div><div></div></html>

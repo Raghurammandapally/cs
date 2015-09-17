@@ -1,0 +1,6 @@
+slide 5:
+  this nfa corresponds to (xx)*|(xxx)*
+
+
+review:
+-----------
