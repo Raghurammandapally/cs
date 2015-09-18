@@ -1,0 +1,41 @@
+The goals of this assignment are to:
+  Understand and implement a doubly-linked chain of nodes.
+  Gain experience writing classes that implement Java interfaces.
+  Gain experience working with Java references.
+  Implement exceptions.
+  Develop an application that processes input commands as words.
+  Get more practice with console and file I/O.
+
+Google's lead Gmail developer is stepping down, and they need YOU to put the finishing touches on a project code-named "UWmail". UWmail is a Java-based command-line interface that mirrors the basic capabilities of their popular email client. After all, who needs responsive web design when you can have the dim glow of a terminal and a blinky cursor? 
+
+Specifically, your UWmail application should provide these capabilities:
+- Load in text files which contain structured email data
+- User can browse through emails in the inbox, which appear as "conversations" or threads, in sorted order from most recent to oldest
+- User can "respond" to emails, which appends a new email to the end of the conversation with the to: and from: fields reversed
+
+For this programming assignment you will be implementing a doubly-linked list to represent the UWmail inbox. The main class you'll write will be the application, as was done in Program 1, that loads data from text files and prompts the user to choose operations for navigating the inbox.
+
+Specifications
+  XLinkedList<E> Class implements ListADT<E> Interface 
+    void add(E item)  
+    void add(int pos,E item)  
+    boolean contains(E item)  
+    E get(int pos)  
+    boolean isEmpty() 
+    E remove(int pos) 
+    int size()  
+  ListNode:
+    ListNode<E>(E data)
+    ListNode<E>(E data, ListNode<E> next, ListNode<E> prev)
+    E getData()
+    ListNode<E> getNext()
+    ListNode<E> getPrev()
+    void setData(E data)
+    void setNext(ListNode<E> next)
+    void setPrev(ListNode<E> prev)
+  Custom class(es):
+    Email
+      
+  Custom exception(s):
+  Main class:
+
