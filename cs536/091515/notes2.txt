@@ -1,0 +1,22 @@
+context-free grammar (cfg)
+
+example language: (a^n)(b^n)
+  cannot define a fsm or regex to recognize this
+
+example grammar:
+  terminals
+    begin
+    end
+    semicolon
+    assign
+    id
+    plus
+
+  rules:
+    S -> begin T end
+    T -> MT | epsilon
+    M -> id assign R semicolon | S
+    R -> id | id + R | R + id
+
+review:
+----------

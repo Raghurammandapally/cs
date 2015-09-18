@@ -1,0 +1,8 @@
+bucket sort, aka counter sort, aka radix sort
+  slide 12 for pseudocode
+  only works on integers
+
+  doesn't violate our theorem of lower bound (nlogn) because it is not comparison based. actually it uses the bit representation to index into our counter array C.
+
+review:
+--------------

@@ -1,20 +1,58 @@
-/*The Sym class must be in a file named Sym.java. You must implement the following Sym constructor and public methods (and no other public or protected methods):
-*/
+///////////////////////////////////////////////////////////////////////////////
+// Main Class File:  P1.java
+// File:             Sym.java
+// Semester:         CS536 Fall 2015
+//
+// Author:           Keith Funkhouser
+// CS Login:         wfunkhouser
+// Lecturer's Name:  Aws Albarghouthi
+// Lab Section:      1
+//
+//////////////////////////// 80 columns wide //////////////////////////////////
 
+/**
+ * The Sym class is a simplified representation of the information to be stored
+ * in our symbol table. Currently, the symbol is represented using a String.
+ *
+ * <p>Bugs: none known
+ *
+ * @author Keith Funkhouser
+ */
 public class Sym {
+
+/** This Sym's type. */
   private String type;
 
-  //Sym(String type)  This is the constructor; it should initialize the Sym to have the given type.
+/**
+ * Constructor initializes the Sym by storing the given type.
+ *
+ * @param preconditions none
+ * @param postconditions none
+ * @return a new Sym object with the given type
+ */
   public Sym(String type) {
     this.type = type;
   }
 
-  //String getType()  Return this Sym's type.
+/**
+ * The returned value is the type (currently a String) of this Sym.
+ *
+ * @param preconditions none
+ * @param postconditions none
+ * @return a String, the type of this Sym
+ */
   public String getType() {
     return type;
   }
 
-  //String toString() Return this Sym's type. (This method will be changed later in a future project when more information is stored in a Sym.)
+/**
+ * Currently, toString simply returns this Sym's type. This will be modified
+ * in the future as more information is stored in Sym.
+ *
+ * @param preconditions none
+ * @param postconditions none
+ * @return a String, the type of this Sym
+ */
   public String toString() {
     return getType();
   }
