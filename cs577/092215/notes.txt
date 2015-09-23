@@ -1,0 +1,11 @@
+assuming that we can find the median in linear time, then we can solve the selection problem in linear time.
+  after finding median in O(n), pick it as the pivot. copy the array into L and R, where elements in L are < median and in R are > median. this takes c*n time, and the recursion tree is n -> n/2 -> .... So in total this is c*n + c*(n/2) + c*(n/4) + ... = 2*c*n = O(n)
+
+
+review:
+------------
+geometric series:
+  1 + r + r^2 + ... + r^d = r^(d+1)/(r-1) if r!=1, otherwise d+1
+  (show by induction on d)
+median algorithm:
+  approximate median -> why is sorting an array of small size done in constant time instead of worse?

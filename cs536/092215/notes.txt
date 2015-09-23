@@ -1,0 +1,15 @@
+the application =>+ on slide 4 is + instead of * because we always start with a non-terminal
+
+review:
+------------
+S ->
+  id assign EXPR |
+  if COND then S |
+  if COND then S else S
+
+how can we modify this to make sure that else's are close-associative, i.e.
+  if true then if true then x=1 else x=0
+    ==>
+  if true then (if true then x=1 else x=0)
+    rather than
+  (if true then if true then x=1) else x=0
