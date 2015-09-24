@@ -1,0 +1,18 @@
+/**/
+/* */
+/* * */
+/* **** */
+/* / */
+/* //// */
+/* /* */
+/* //////****** */
+/* this is a comment */
+/* this* is a comment */
+/*a**k*/
+/*a**ka**k*/
+/*a**ka**k*****/
+/*   asdlk any text here **** */
+/*   asdlk any text here * */
+/*   asdlk any text here ** */
+/*   asdlk any text here **z*/
+/*comment* */
