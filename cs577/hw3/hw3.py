@@ -41,6 +41,9 @@ for N in range(100000):
   samples = getRand(n, 3)
 '''
 
+
+"""
+
 def printArr(A):
   print(["%.3f" % num for num in A])
 
@@ -54,6 +57,7 @@ while(start < len(ai)):
   printArr(wi[start:min(start+w, len(wi)-1)])
   start += w
 
+"""
 
 def bruteForceWeightedMedian(a,w):
   [sortA,sortW] = zip(*sorted(zip(a,w)))
@@ -81,8 +85,46 @@ def medianRec(a,left,right,n):
     return a[left]
   while(left!=right):
     pivot = pivot(a,left,right)
-    partition(a,left,right,pivot)
+    a = partition(a,left,right,pivot)
+    if(n == pivot):
+      return a[n]
+    elif(n < pivot):
+      right = pivot - 1
+      left = pivot + 1
+
+def pivot(a,left,right):
+  for i in range(left,right,W):
+    subRight = i + (W-1)
+    if(subRight > right):
+      subRight = right
+    medianW = myMedian(a,i,subRight)
+
+def myMedian(a,i,j):
+  A = a[i:j+1]
+  i = 0
+  j = len(A)-1
+  for i in range(1,j+1):
+    j = 1
+    while(j > 0 and A[j-1] > j):
+      A[j],A[j-1] = A[j-1],A[j]
+      j = j - 1
+  print(A)
+  #even
+  if(len(A)%2 == 0):
+    return A[len(A)/2]
+  #odd
+  else:
+    return A[(len(A)-1)/2]
+
+
+for i in range(0,1):
+  A = range(1,20)
+  random.shuffle(A)
+  print(A)
+  print(myMedian(A,0,len(A)-1))
   
+#see https://en.wikipedia.org/wiki/Quicksort#Lomuto_partition_scheme
+#  modified to include a pivot parameter
 def partition(a,left,right,pivot):
   i = left
   for j in range(left,right):
@@ -90,5 +132,5 @@ def partition(a,left,right,pivot):
       a[i],a[j] = a[j],a[i]
       i += 1
   a[i],a[right] = a[right],a[i]
+  return a
 
-print(partition(range(1,6),0,4,3))
