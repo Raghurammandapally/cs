@@ -1,3 +1,4 @@
+import pdb
 import random
 
 # n is the number of elements we are looking to have sum to 1
@@ -53,9 +54,6 @@ while(start < len(ai)):
   printArr(wi[start:min(start+w, len(wi)-1)])
   start += w
 
-print(wi)
-print(ai)
-
 
 def bruteForceWeightedMedian(a,w):
   [sortA,sortW] = zip(*sorted(zip(a,w)))
@@ -67,4 +65,30 @@ def bruteForceWeightedMedian(a,w):
   return sortA[ptr - 1]
 
 #example from pset
-print(bruteForceWeightedMedian([40,-5,4,0,2.5,6,-2],[.25,.1,.05,.18,.15,.2,.07]))
+#print(bruteForceWeightedMedian([40,-5,4,0,2.5,6,-2],[.25,.1,.05,.18,.15,.2,.07]))
+
+
+###############################################
+#    MEDIAN OF MEDIANS FOR WEIGHTED MEDIAN    #
+###############################################
+#constants
+W = 5
+def median(a):
+  return medianRec(a,0,len(a)-1,len(a))
+
+def medianRec(a,left,right,n):
+  if(left==right):
+    return a[left]
+  while(left!=right):
+    pivot = pivot(a,left,right)
+    partition(a,left,right,pivot)
+  
+def partition(a,left,right,pivot):
+  i = left
+  for j in range(left,right):
+    if(a[j] <= pivot):
+      a[i],a[j] = a[j],a[i]
+      i += 1
+  a[i],a[right] = a[right],a[i]
+
+print(partition(range(1,6),0,4,3))
