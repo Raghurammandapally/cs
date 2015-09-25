@@ -56,3 +56,15 @@ while(start < len(ai)):
 print(wi)
 print(ai)
 
+
+def bruteForceWeightedMedian(a,w):
+  [sortA,sortW] = zip(*sorted(zip(a,w)))
+  ptr = 0
+  sum = 0
+  while(sum<0.5):
+    sum += sortW[ptr]
+    ptr += 1
+  return sortA[ptr - 1]
+
+#example from pset
+print(bruteForceWeightedMedian([40,-5,4,0,2.5,6,-2],[.25,.1,.05,.18,.15,.2,.07]))
