@@ -108,6 +108,7 @@ def myMedian(a,i,j):
     while(j > 0 and A[j-1] > j):
       A[j],A[j-1] = A[j-1],A[j]
       j = j - 1
+    print("step : " + A)
   print(A)
   #even
   if(len(A)%2 == 0):
