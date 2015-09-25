@@ -1,5 +1,6 @@
 cs367/private/
 *.swp
 *.class
+*.pyc
 *.jar
 cs367/p2/solution/
