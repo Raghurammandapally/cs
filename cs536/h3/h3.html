@@ -1,0 +1,58 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h3/h3.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style></head><body>
+
+
+<h2 id="Questions">Questions</h2>
+<b>Due on Sept 30, 11pm</b><br>
+<p class="sectionDesc">Homework assignments must be done individually. Collaboration on homework assignments is
+<em>not</em> allowed.</p>
+
+<p class="reg">
+This homework is about the language of <i>regular expressions</i>. One way to define that language is using a context-free grammar (CFG). To make things a little simpler, rather than allowing any characters as operands in regular expressions, we will restrict ourselves to only allowing letters (that way we don't have to worry about how to specifiy characters that are the same as  operators or things like newlines). As usual, we will allow &#949; (epsilon) in our regular expressions. The operators for our language of regular expressions are:</p>
+<ul class="reg">
+  <li>| &nbsp;&nbsp;&nbsp;means "or" (alternation)</li>
+  <li>writing two or more things next to each other means "followed by" (catenation)</li>
+  <li>* &nbsp;&nbsp;&nbsp;means "zero or more" (closure or iteration)</li>
+  <li>+ &nbsp;&nbsp;&nbsp;means "one or more" (positive closure)</li>
+  <li>( ) &nbsp;&nbsp;&nbsp;are used for grouping</li>
+</ul>
+<p class="reg">
+In a regular expression, * and + have the same, highest precedence,
+"followed by" has middle precedence, and | has the lowest precedence. All of the operators are left associative.
+</p>
+
+<h3 id="Question1">Question 1:</h3>
+<p class="reg">
+Write an unambiguous CFG for this language of regular expressions
+so that parse trees correctly reflect the precedences and associativities
+of the operators.
+Use lower-case names for nonterminals and use
+the following terminals:
+</p><dir>
+<pre>LTR      // any letter 
+EPS      // epsilon
+OR       // |
+STAR     // *
+PLUS     // +
+LPAR     // left paren
+RPAR     // right paren
+</pre></dir>
+  
+<h3 id="Question2">Question 2:</h3>
+<p class="reg">
+Draw a parse tree for the string:
+</p>
+<dir>
+<pre>ab+|c*df|&#949;</pre>
+</dir>
+<p class="reg">
+Use <tt>LTR(a)</tt> in the parse tree to mean "the <tt>LTR</tt> token for the letter <i>a</i>" (and similarly for the other letters in the string).
+</p>
+
+
+
+
+
+
+</body><div></div><div></div></html>

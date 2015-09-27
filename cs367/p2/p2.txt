@@ -66,20 +66,21 @@ Specifications:
 
  TODO
  ---------
-   mention behavior of doing next at last convo, and doing prev at first
-   conversation class, storing pointer to previously looked at email
-   when opening a conversation for the first time, display all emails
-   when n/p pushed, display the first email and store the pointer
-   add doublylinkedlist
-   add "implementation" after classes that they need to code?
-   add quit option to trash
-   example input/output files
-   change foreach loop in ZipExapmleFile to while(hasNext)
-   add comment to ZipExample file saying "follow this approach" for <? extends ..>
- 
-   email jim by weds evening
-     add reminder about being out oct week
-   TA's should look at Thursday morning
-   change p2 links to p231
- 
-   find TA coverage for lab hours
+[x] mention behavior of doing next at last convo, and doing prev at first
+[ ] conversation class, storing pointer to previously looked at email
+[ ] when opening a conversation for the first time, display all emails
+[ ] when n/p pushed, display the first email and store the pointer
+[ ] add doublylinkedlist
+[ ] add "implementation" after classes that they need to code?
+[ ] add quit option to trash
+[ ] example input/output files
+[ ] change foreach loop in ZipExapmleFile to while(hasNext)
+[ ] add comment to ZipExample file saying "follow this approach" for <? extends ..>
+[ ] 
+[ ] email jim by weds evening
+[ ]   add reminder about being out oct week
+[ ] TA's should look at Thursday morning
+[ ] change p2 links to p231
+[ ] 
+[ ] find TA coverage for lab hours
+[ ] add date format string for emails

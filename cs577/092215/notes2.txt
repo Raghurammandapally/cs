@@ -1,0 +1,24 @@
+"linear time" graph alg means that it is O(n+m) when graph is given in an adjacency list representation
+
+dfs - if you construct a spanning tree, then look for which edges could have existed in the graph that produced that tree...
+  only non-tree edges are between a vertex and its ancestor or descendent
+
+dfs can't do bipartite, but it can find all bridges in linear time (a bridge is an edge s.t. removing it increases the number of connected components)
+
+
+
+review:
+------------
+"simple" graph - one without parallel paths or self-loops
+G = (V,E)
+path/connectedness
+every tree with >= 2 vertices has >=1 leaf
+  use this to prove |e| = |v| - 1
+proposition 5: a graph is a tree iff...
+sum(deg(v)) = 2*|E|
+bfs - iterative - stack
+  O(n+m)
+  solves shortest path - if length of path is # of edges
+dfs - recursive - queue
+bipartite graph has no odd cycles
+adding edge to tree creates a cycle

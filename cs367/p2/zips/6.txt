@@ -1,18 +1,6 @@
-In-Reply-To: <CACOyKaYj=LTEB0VNdO4D2vHiHtsTDXjNjdOxL-XnuHXUA3LMjQ@mail.gmail.com>
-References: <CACOyKaYi2mwiyAWBMkTGtUkyMWVRhUYTNDjRZdHxSeXk6C1N4w@mail.gmail.com>, <CACOyKaaGBrUyAKPUhpzBbReWs6qzAXv3WmENYpX8F0abW_EK+Q@mail.gmail.com>, <CACOyKaYj=LTEB0VNdO4D2vHiHtsTDXjNjdOxL-XnuHXUA3LMjQ@mail.gmail.com>
-Date: Fri, 18 Sep 2015 10:22:51 -0500
-Message-ID: <CACOyKaZFok9ZKkjCMU2Rm4ofaDvF6vJYWr0GHO1AsV5VdkAUBA@mail.gmail.com>
-Subject: Re: original subject
-From: Keith Funkhouser <keithfunkhouser@gmail.com>
-To: wfunkhouser@wisc.edu
-for sure
-
-On Fri, Sep 18, 2015 at 10:21 AM, Keith Funkhouser <wfunkhouser@wisc.edu> wrote:
-> second reply text
->
-> On Fri, Sep 18, 2015 at 10:20 AM, Keith Funkhouser
-> <keithfunkhouser@gmail.com> wrote:
->> reply text
->>
->> On Fri, Sep 18, 2015 at 10:20 AM, Keith Funkhouser <wfunkhouser@wisc.edu> wrote:
->>> original text
+Date: Fri, 18 Sep 2015 10:20:13 -0500
+Message-ID: <CACOyKaYi2mwiyAWBMkTGtUkyMWVRhUYTNDjRZdHxSeXk6C1N4w@mail.gmail.com>
+Subject: original subject
+From: Keith Funkhouser <wfunkhouser@wisc.edu>
+To: Keith Funkhouser <keithfunkhouser@gmail.com>
+original text

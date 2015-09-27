@@ -1,0 +1,476 @@
+
+<!-- saved from url=(0064)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/dextras.css">
+
+<script type="text/x-mathjax-config;executed=true">
+    // <![CDATA[
+    MathJax.Hub.Config({
+        TeX: {extensions: ["AMSmath.js", "AMSsymbols.js"]},
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        showProcessingMessages : false,
+        messageStyle : "none" ,
+        showMathMenu: false ,
+        tex2jax: {
+            processEnvironments: true,
+            inlineMath: [ ['$','$'] ],
+            displayMath: [ ['$$','$$'] ],
+            preview : "none",
+            processEscapes: true
+        },
+        "HTML-CSS": { linebreaks: { automatic:true, width: "latex-container"} }
+    });
+    // ]]>
+ // MathJax.Hub.Queue(reportReload);
+</script>
+<script type="text/javascript" src="./SDT.php_files/MathJax.js"></script><style type="text/css"></style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style>
+<script type="text/javascript" src="./SDT.php_files/latex2html5.min.js"></script>
+
+
+<script type="text/javascript" src="./SDT.php_files/jax.js"></script></head>
+<body><div id="MathJax_Message" style="display: none;"></div>
+<hr>
+<a name="contents" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#contents" class="subhead">Contents</a>
+
+<ul>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#overview">Motivation and Definition</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#ex1">Example 1: Value of an Arithmetic Expression</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#ex2">Example 2: Type of an Expression</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#youtry1">Test Yourself #1</a>
+  </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#ast">Building an Abstract-Syntax Tree</a>
+    <ul>
+    <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#astVsParse">The AST vs the Parse Tree</a>
+    </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#trans">Translation Rules That Build an AST</a>
+    </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#youtry2">Test Yourself #2</a>
+    </li></ul>
+</li></ul>
+
+<p>
+<a name="overview" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#overview" class="subhead">Motivation and Definition</a>
+</p><p>
+Recall that the parser must produce output (e.g., an abstract-syntax
+tree) for the next phase of the compiler.
+This involves doing a <b>syntax-directed translation</b> -- translating
+from a sequence of tokens to some other form, based on the underlying
+syntax.
+</p><p>
+A syntax-directed translation is defined by augmenting the CFG:
+a <b>translation rule</b> is defined for each production.
+A translation rule defines the translation of the left-hand side nonterminal
+as a function of:
+</p><ul>
+  <li> constants
+  </li><li> the right-hand-side nonterminals' translations
+  </li><li> the right-hand-side tokens' values (e.g., the integer value
+       associated with an <tt>INTLITERAL</tt> token, or the String value associated
+       with an ID token)
+</li></ul>
+To translate an input string:
+<ol>
+  <li> Build the parse tree.
+  </li><li> Use the translation rules to compute the translation of each nonterminal
+       in the tree, working bottom up (since a nonterminal's value may depend
+       on the value of the symbols on the right-hand side, you need to work
+       bottom-up so that those values are available).
+</li></ol>
+The translation of the string is the translation of the parse tree's root
+nonterminal.
+<p></p>
+<a name="ex1" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#ex1" class="subhead">Example 1</a>
+<p>
+Below is the definition of a syntax-directed translation that
+translates an arithmetic expression to its integer value.
+When a nonterminal occurs more than once in a grammar rule, the
+corresponding translation rule uses subscripts to identify a
+particular instance of that nonterminal.
+For example, the rule <i>exp</i> <script type="math/tex">\rightarrow</script> <i>exp</i> <tt>PLUS</tt> <i>term</i> has two <i>exp</i> nonterminals;
+<i>exp<sub>1</sub></i> means the left-hand-side <i>exp</i>, and
+<i>exp<sub>2</sub></i> means the right-hand-side <i>exp</i>.
+Also, the notation <tt>xxx.value</tt> is used to mean the value associated
+with token <tt>xxx</tt>.
+
+<table style="width:auto">
+<tbody><tr>
+<td colspan="3" style="align:center; border-bottom:1px solid"><b>CFG Production</b></td>
+<td style="padding-left:60px"></td>
+<td style="align:center; border-bottom:1px solid"><b>Translation rules</b></td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>exp</i> <tt>PLUS</tt> <i>term</i>
+</td><td></td>
+<td>exp<sub>1</sub>.trans = exp<sub>2</sub>.trans + <i>term</i>.trans</td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>term</i></td>
+<td></td>
+<td><i>exp</i>.trans = <i>term</i>.trans</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>term</i> <tt>TIMES</tt> <i>factor</i></td>
+<td></td>
+<td><i>term</i><sub>1</sub>.trans = <i>term</i><sub>2</sub>.trans * <i>factor</i>.trans</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>factor</i></td>
+<td></td>
+<td><i>term</i>.trans = <i>factor</i>.trans</td>
+</tr>
+
+<tr>
+<td align="right"><i>factor</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>INTLITERAL</tt></td>
+<td></td>
+<td><i>factor</i>.trans = <tt>INTLITERAL</tt>.value</td>
+</tr>
+
+<tr>
+<td align="right"><i>factor</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>LPARENS</tt> <i>exp</i> <tt>RPARENS</tt></td>
+<td></td>
+<td><i>factor</i>.trans = <i>exp</i>.trans</td>
+</tr>
+</tbody></table>
+</p><p>
+consider evaluating these rules on the input <tt>2 * (4 + 5)</tt>. The result is the following annotated parse tree:
+</p><div style="margin-top:20px" align="center"><img src="./SDT.php_files/sdt_annotated.png"></div>
+<p>
+<a name="ex2" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#ex2" class="subhead">Example 2</a>
+</p><p>
+Consider a language of expressions that use
+the three operators: +, &amp;&amp;, == using the terminal symbols <tt>PLUS</tt>, <tt>AND</tt>
+, <tt>EQUALS</tt>, respectively. Integer literals are represented by
+the same <tt>INTLITERAL</tt> token we've used before, and <tt>TRUE</tt> and <tt>FALSE</tt>
+represent the literals true and false (note that we could have just as well defined a
+single <tt>BOOLLITERAL</tt> token that the scanner would populate with either true or false).</p> 
+<p>
+Let's define a syntax-directed translation that type checks these
+expressions; i.e., for type-correct expressions, the translation
+will be the type of the expression (either <b>int</b> or <b>bool</b>), and
+for expressions that involve type errors, the translation will be
+the special value <b>error</b>.
+We'll use the following type rules:
+</p><ol class="style1">
+  <li> Both operands of the + operator must be of type <b>int</b>.
+  </li><li> Both operands of the &amp;&amp; operator must be of type <b>bool</b>.
+  </li><li> Both operands of the == operator must have the same (non-<b>error</b>) type.
+</li></ol>
+
+Here is the CFG and the translation rules:
+<table style="width:auto">
+<tbody><tr>
+<td colspan="3" style="align:center; border-bottom:1px solid"><b>CFG Production</b></td>
+<td style="padding-left:60px"></td>
+<td style="align:center; border-bottom:1px solid"><b>Translation rules</b></td>
+</tr>
+
+<tr style="padding-bottom:70px">
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-bottom:8em; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>exp</i> &nbsp;<tt>PLUS</tt>&nbsp; <i>term</i>
+</td><td></td>
+<td>if (<i>exp</i><sub>2</sub>.trans == <b>int</b> and (<i>term</i>.trans == <b>int</b>) then
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>exp</i><sub>1</sub>.trans = <b>int</b>
+<br>
+else
+<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>exp</i><sub>1</sub>.trans = <b>error</b>
+</td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-bottom:8em; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>exp</i> &nbsp;<tt>AND</tt>&nbsp; <i>term</i>
+</td><td></td>
+<td>if (<i>exp</i><sub>2</sub>.trans == <b>bool</b> and (<i>term</i>.trans == <b>bool</b>) then
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>exp</i><sub>1</sub>.trans = <b>bool</b>
+<br>
+else
+<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>exp</i><sub>1</sub>.trans = <b>error</b>
+</td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-bottom:120px; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>exp</i> &nbsp;<tt>EQUALS</tt>&nbsp; <i>term</i>
+</td><td></td>
+<td>if (<i>exp</i><sub>2</sub>.trans == <i>term</i>.trans) and (<i>term</i>.trans <script type="math/tex">\neq</script> <b>error</b>) then
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i>exp</i><sub>1</sub>.trans = <b>bool</b>
+<br>
+else
+<br> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>exp</i><sub>1</sub>.trans = <b>error</b>
+</td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-bottom:40px; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>term</i>
+</td><td></td>
+<td><i>exp</i>.trans = <i>term</i>.trans
+</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-bottom:40px; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>TRUE</tt>
+</td><td></td>
+<td><i>term</i>.trans = <b>bool</b>
+</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-bottom:40px; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>FALSE</tt>
+</td><td></td>
+<td><i>term</i>.trans = <b>bool</b>
+</td>
+</tr>
+
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-bottom:40px; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>INTLITERAL</tt>
+</td><td></td>
+<td><i>term</i>.trans = <b>int</b>
+</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-bottom:40px; padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>LPARENS<tt>&nbsp;<i>exp</i>&nbsp;<tt>RPARENS</tt>
+</tt></tt></td><td></td>
+<td><i>term</i>.trans = <i>exp</i>.trans
+</td>
+</tr>
+
+
+</tbody></table>
+
+<p>
+Here's an annotated parse tree for the input <tt>(2 + 2) == 4</tt>
+</p>
+
+
+<div style="margin-top:20px" align="center"><img src="./SDT.php_files/sdt_annotated_2.png"></div>
+<p>
+</p><hr>
+<a name="youtry1">
+<p>
+</p><center>
+<u><b>TEST YOURSELF #1</b></u>
+</center></a>
+<p>
+The following grammar defines the language of base-2 numbers:
+</p><ul>
+<pre>B -&gt; 0
+  -&gt; 1
+  -&gt; B 0
+  -&gt; B 1
+</pre>
+</ul>
+Define a syntax-directed translation so that the translation of a binary
+number is its base 10 value.
+Illustrate your translation scheme by drawing the parse tree for
+<tt>1001</tt> and annotating each nonterminal in the tree with
+its translation.       
+
+<p><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/sdt_answers.php#ans1">solution</a></p>
+<hr>
+<p>
+<a name="ast" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#ast" class="subhead">Building an Abstract-Syntax Tree</a>
+</p><p>
+So far, our example syntax-directed translations have produced simple
+values (an int or a type) as the translation of an input.
+In practice however, we want the parser to build an abstract-syntax tree
+as the translation of an input program.
+But that is not really so different from what we've seen so far;
+we just need to use tree-building operations in the translation
+rules instead of, e.g., arithmetic operations.
+</p><p>
+<a name="astVsParse" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#astVsParse" class="subsubhead">The AST vs the Parse Tree</a>
+</p><p>
+First, let's consider how an abstract-syntax tree (AST) differs
+from a parse tree.
+An AST can be thought of as a <em>condensed</em> form of the parse tree:
+</p><ul>
+  <li> Operators appear at <em>internal</em> nodes instead of at leaves.
+  </li><li> "Chains" of single productions are collapsed.
+  </li><li> Lists are "flattened".
+  </li><li> Syntactic details (e.g., parentheses, commas, semi-colons) are
+       omitted.
+</li></ul>
+In general, the AST is a better structure for later stages of the compiler
+because it omits details having to do with the source language, and just
+contains information about the essential structure of the program.
+<p>
+Below is an example of the parse tree and the AST for the expression
+<tt>3 * (4 + 2)</tt> (using the usual arithmetic-expression grammar that
+reflects the precedences and associativities of the operators).
+Note that the parentheses are not needed in the AST because the structure of
+the AST defines how the subexpressions are grouped.
+</p>
+<div style="margin-top:20px" align="center"><img src="./SDT.php_files/sdt_parse_and_ast.png"></div>
+<p>
+For constructs other than expressions, the compiler writer has some choices
+when defining the AST -- but remember that lists (e.g., lists of declarations
+lists of statements, lists of parameters) should be flattened, that operators
+(e.g., "assign", "while", "if") go at internal nodes, not at leaves, and
+that syntactic details are omitted.
+</p><p>
+</p><ul>
+For example:
+<pre>Input
+=====
+
+{               
+   x = 0;        
+   while (x&lt;10) { 
+      x = x+1;     
+   }      
+   y = x*2;
+}
+</pre>
+
+Parse Tree:
+<div width="100%" style="margin-top:20px" align="center"><img src="./SDT.php_files/sdt_parse_and_ast_method.png"></div>
+Abstract Syntax Tree:
+<div width="100%" style="margin-top:20px" align="center"><img src="./SDT.php_files/sdt_parse_and_ast_method_ast.png"></div>
+
+</ul>
+Note that in the AST there is just one <tt>stmtList</tt> node, with a list of three
+children (the list of statements has been "flattened").
+Also, the "operators" for the statements (<tt>assign</tt> and
+<tt>while</tt>) have been "moved up" to internal nodes (instead of
+appearing as tokens at the leaves).
+And finally, syntactic details (curly braces and semi-colons)
+have been omitted.
+<p>
+<a name="trans" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SDT.php#trans" class="subhead">Translation Rules That Build an AST</a>
+</p><p>
+To define a syntax-directed translation so that the translation of an input
+is the corresponding AST, we first need operations that create AST nodes.
+Let's use java code, and assume that we have the following class hierarchy:
+</p><ul>
+<pre>class ExpNode { }
+
+class IntLitNode extends ExpNode {
+    public IntLitNode(int val) {...}
+}
+
+class PlusNode extends ExpNode {
+    public PlusNode( ExpNode e1, ExpNode e2 ) { ... }
+}
+
+class TimesNode extends ExpNode {
+    public TimesNode( ExpNode e1, ExpNode e2 ) { ... }
+}
+</pre>
+</ul>
+Now we can define a syntax-directed translation for simple arithmetic expressions,
+so that the translation of an expression is its AST:
+<ul>
+
+<table style="width:auto">
+<tbody><tr>
+<td colspan="3" style="align:center; border-bottom:1px solid"><b>CFG Production</b></td>
+<td style="padding-left:60px"></td>
+<td style="align:center; border-bottom:1px solid"><b>Translation rules</b></td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>exp</i> <tt>PLUS</tt> <i>term</i>
+</td><td></td>
+<td>exp<sub>1</sub>.trans = new PlusNode(<i>exp</i><sub>2</sub>, <i>term</i>.trans)</td>
+</tr>
+
+<tr>
+<td align="right"><i>exp</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>term</i></td>
+<td></td>
+<td><i>exp</i>.trans = <i>term</i>.trans</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>term</i> <tt>TIMES</tt> <i>factor</i></td>
+<td></td>
+<td><i>term</i><sub>1</sub>.trans = new TimesNode(<i>term</i><sub>2</sub>.trans, <i>factor</i>.trans)</td>
+</tr>
+
+<tr>
+<td align="right"><i>term</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><i>factor</i></td>
+<td></td>
+<td><i>term</i>.trans = <i>factor</i>.trans</td>
+</tr>
+
+<tr>
+<td align="right"><i>factor</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>INTLITERAL</tt></td>
+<td></td>
+<td><i>factor</i>.trans = new IntLitNode(<tt>INTLITERAL</tt>.value)</td>
+</tr>
+
+<tr>
+<td align="right"><i>factor</i></td>
+<td align="center" style="padding-left:10px ; padding-right:10px"><script type="math/tex">\longrightarrow</script></td>
+<td align="left"><tt>LPARENS</tt> <i>exp</i> <tt>RPARENS</tt></td>
+<td></td>
+<td><i>factor</i>.trans = <i>exp</i>.trans</td>
+</tr>
+</tbody></table>
+<hr>
+<a name="youtry2"></a>
+<p>
+</p><center>
+<u><a name="youtry"><b>TEST YOURSELF #2</b></a></u>
+</center>
+<p>
+Illustrate the syntax-directed translation defined above by drawing the
+parse tree for the expression <tt>2 + 3 * 4</tt>, and annotating the
+parse tree with its translation (i.e., each nonterminal in the tree will have
+a pointer to the AST node that is the root of the subtree of the AST that
+is the nonterminal's translation).
+
+</p></ul>
+<p><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/sdt_answers.php#ans2">solution</a></p>
+<hr>
+
+
+<div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: STIXSizeOneSym, monospace;"></div></div></body><div></div><div></div></html>
