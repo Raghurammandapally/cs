@@ -35,5 +35,7 @@ def getRand(n, rnd):
 
 def generateInput(n=random.randint(5,100000)):
   W = getRand(n,3)
-  A = [(random.random() - 0.5)*100000 for i in range(0,len(wi))]
+  A = [(random.random() - 0.5)*100000 for i in range(0,len(W))]
   return [A,W]
+def printArr(A):
+  print(["%.3f" % num for num in A])
