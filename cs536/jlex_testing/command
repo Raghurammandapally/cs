@@ -1,0 +1,1 @@
+rm -f *.class; java JLex.Main ex.jlex; javac *.java; java Scanner

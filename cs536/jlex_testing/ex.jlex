@@ -1,0 +1,38 @@
+//**************************
+//given commands:
+//**************************
+// 1
+//{SLASH}{STAR}[^(*/)]*{STAR}{SLASH}\n              {System.out.println("passed: " + yytext().trim());}
+// 2
+//{SLASH}{STAR}(.)*{STAR}{SLASH}\n                  {System.out.println("passed: " + yytext().trim());}
+// 3
+//{SLASH}{STAR}([^*]*{STAR}+[^*/])*{STAR}+{SLASH}\n {System.out.println("passed: " + yytext().trim());}
+// 4
+//{SLASH}{STAR}([^*]|[^/])+{STAR}{SLASH}\n          {System.out.println("passed: " + yytext().trim());}
+//NOTE BELOW INCLUDES \n AFTER EACH OPTION TO CATCH THE NEWLINE. NOT SURE HOW TO EXPLAIN THIS BEHAVIOR BUT IT BORKS THE TEST CASES
+//{SLASH}{STAR}([^*\n]|[^/\n])+{STAR}{SLASH}\n {System.out.println("passed: " + yytext().trim());}
+// 5
+//{SLASH}{STAR}[^*]*{STAR}+{SLASH}+\n               {System.out.println("passed: " + yytext().trim());}
+
+//**************************
+//my custom command for problem 2
+//**************************
+//{SLASH}{STAR}([*][^/]|[^*])*{STAR}{SLASH}\n                {System.out.println("passed: " + yytext().trim());}
+%%
+
+LETTER= [a-zA-Z]
+DIGIT= [0-9]
+UNDERSCORE= [_]
+
+%implements java_cup.runtime.Scanner
+%function next_token
+%type java_cup.runtime.Symbol
+
+%line
+
+%%
+
+({LETTER}|{UNDERSCORE})({LETTER}|{UNDERSCORE}|{DIGIT})* { System.out.println("passed: " + yytext().trim());}
+\n                                                {}
+[^\n]*                                            {System.out.println("FAILED: " + yytext().trim());}
+.                                                 {}
