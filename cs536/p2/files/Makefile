@@ -15,7 +15,7 @@ JC = javac
 FLAGS = -g -cp $(CP)
 CP = ~cs536-1/public/tools/deps:.
 
-P2.class: P2.java Yylex.class sym.class
+P2.class: P2.java Yylex.class sym.class CFlat.jlex
 	$(JC) $(FLAGS) P2.java
 
 Yylex.class: CFlat.jlex.java ErrMsg.class sym.class
