@@ -4,18 +4,9 @@ import random
 from generateInput import printArr,generateInput
 from statistics import median_high
 
-def brutePivot(A,left,right):
-  B = A[left:right+1]
-  Bblk = [B[i:i+5] for i in range(0,len(B),5)]
-  medians = [median_high(a) for a in Bblk]
-  med = median_high(medians)
-  return B.index(med) + left
-
 def median(A):
   n = len(A)
   k = int(math.floor(n/2))+1
-  B = A[:]
-  B.sort()
   return A[select(A,0,n - 1,k)]
 
 def select(A,left,right,n):
@@ -23,7 +14,6 @@ def select(A,left,right,n):
   if(left == right):
     return left
   else:
-    pivotIndex = brutePivot(A,left,right)
     pivotIndex = pivot(A,left,right)
     pivotIndex = partition(A,left,right,pivotIndex)
 
@@ -51,6 +41,8 @@ def pivot(A,left,right):
   newN = int(math.floor((newR - left + 1)/2)) + 1
   return select(A,left,newR,newN)
   
+# our O(1) median finder, using insertion sort
+# https://en.wikipedia.org/wiki/Insertion_sort#Algorithm
 def partition5(A,left,right):
   for i in range(left + 1, right + 1):
     j = i
@@ -73,14 +65,14 @@ def partition(A,lo,hi,pivot):
   swap(A,hi,i)
   return i
 
-
-
-for i in range(1,1000):
+N = 1000
+for i in range(1,N+1):
   A = [random.randint(0,100) for j in range(0,i)]
   myMed = median(A)
   theirMed = median_high(A) 
   if(myMed != theirMed):
-    print("ERROR!!!! my %d their %d \n%s" % (myMed, theirMed, str(A)))
+    print("ERROR! our median algorithm found %d while theirs found %d. Dump of A:\n%s" % (myMed, theirMed, str(A)))
   else:
     continue
+print("done! ran through %d test cases." % N)
 
