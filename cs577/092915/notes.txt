@@ -16,3 +16,5 @@ strongly connected components
   a node in and of itself is a strongly connected component
 
 optimality of greedy algorithm with knapsack problem
+
+proof by induction^
