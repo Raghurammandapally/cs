@@ -4,13 +4,14 @@ import random
 from generateInput import printArr,generateInput
 from statistics import median_high
 
+tol = 0.000001
+
 def weightedMedian(A,W):
   return weightedMedianRec(A,W,0,len(A)-1,0.5)
 
 def weightedMedianRec(A,W,lo,hi,target):
-  pdb.set_trace()
+  #pdb.set_trace()
   if(lo == hi):
-    print("FOUND IT %d" % A[lo])
     return A[lo]
   else:
     n = hi - lo + 1
@@ -25,15 +26,19 @@ def weightedMedianRec(A,W,lo,hi,target):
       else:
         restSum += W[i]
     totalSum = medSum + restSum
+    #pdb.set_trace()
     if(totalSum < target):
       return weightedMedianRec(A,W,pivot+1,hi,target - totalSum)
     #totSum >= target
     else:
       if(totalSum - medSum < target):
-        print("FOUND IT %d" % A[pivot])
+        #print("FOUND IT %d" % A[pivot])
         return A[pivot]
       else:
-        return weightedMedianRec(A,W,lo,pivot - 1,target - W[pivot])
+        if(lo + 1 == hi):
+          return A[lo]
+        else:
+          return weightedMedianRec(A,W,lo,pivot,target)
 
 def median(A):
   n = len(A)
@@ -110,18 +115,21 @@ def bruteForceWM(a,w):
     ptr += 1
   return sortA[ptr - 1]
 
-#N = 10
-#for i in range(1,2*N+1):
-  #[A,W] = generateInput(i)
-A = [-81, -95, -49, -24, -16, -4, 24, 41, 50, 54, 98, 82, 46, 92]
-W = [0.019, 0.084, 0.057, 0.07, 0.096, 0.115, 0.068, 0.099, 0.076, 0.017, 0.12, 0.02400000000000002, 0.12299999999999989, 0.032]
-w = weightedMedian(A,W)
-b = bruteForceWM(A,W)
-if(w != b):
-  print("ERROR! our median algorithm found %d while theirs found %d. Dump of A:\n%s\n%s" % (w, b, str(A), str(W)))
-#else:
-  #continue
-#print("done! ran through %d test cases." % N)
+N = 100
+for i in range(1,2*N+1):
+  [A,W] = generateInput(i)
+#A = [-65, -76, -91, -69, -87, -63, -93, -60, -52, -45, -44, -37, -39, -42, -34, -27, -19, -12, -11, 10, 14, 15, 16, 62, 79, 17, 25, 64, 38, 91, 65, 31, 52, 52, 63, 39, 78, 82, 33, 100, 80]
+#W = [0.026, 0.01, 0.014, 0.047, 0.017, 0.034, 0.037, 0.013, 0.027, 0.024, 0.021, 0.039, 0.036, 0.039, 0.039, 0.013, 0.017, 0.047, 0.013, 0.008, 0.006, 0.044, 0.005, 0.04, 0.049, 0.041, 0.0, 0.038, 0.043, 0.026, 0.021, 0.003, 0.013, 0.028, 0.019, 0.008, 0.009, 0.022, 0.005, 0.023999999999999445, 0.035]
+
+
+  w = weightedMedian(A,W)
+  b = bruteForceWM(A,W)
+  if(w != b):
+    print("ERROR! our median algorithm found %d while theirs found %d. Dump of A:\n%s\n%s" % (w, b, str(A), str(W)))
+  else:
+    continue
+
+print("done! ran through %d test cases." % N)
 """
 
 #[-91, -68, -67, -62, -62, -60, -2, -18, 9, 25, 31, 51, 96, 56, 63, 60, 87, 81, 83, 78]

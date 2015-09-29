@@ -1,0 +1,18 @@
+correctness patterns for greedy:
+  "greedy stays ahead"
+    setup some measure for quality of partial solution
+    at every point, greedy does as well as any other possible soln
+  "exchange argument"
+    make small local changes at every stop, none of them making the soln worse
+    show that, after a finite number of steps, we arrive at the greedy soln
+
+
+review:
+----------
+digraph
+path
+strong connectivity (in a directed graph): v ~ w iff v -> w and w -> v
+strongly connected components
+  a node in and of itself is a strongly connected component
+
+optimality of greedy algorithm with knapsack problem
