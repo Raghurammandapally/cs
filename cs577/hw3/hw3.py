@@ -94,7 +94,7 @@ samples = True
 if samples:
   N = 1000
   for i in range(0,N):
-    [a,w] = generateInput(10)
+    [a,w] = generateInput(100)
     a_orig = a[:]
     w_orig = w[:]
     wm = weightedMedian(a,w)
