@@ -11,19 +11,20 @@ def weightedMedianRec(A,W,lo,hi,target):
     return A[lo]
   else:
     pivot = lowMedian(A,lo,hi)
-    pivot = partition(A,W,lo,hi,pivot)
-    total = sumWeights(A,W,lo,pivot)
+    [p,q] = partition(A,W,lo,hi,pivot)
+    totalL = sumWeights(A,W,lo,p)
+    totalM = sumWeights(A,W,p,q+1)
     #total > target, recurse on L
-    if total + tol > target:
-      return weightedMedianRec(A,W,lo,pivot - 1,target)
+    if totalL + tol > target:
+      return weightedMedianRec(A,W,lo,p - 1,target)
     #total <= target
     else:
       #total + W[pivot] >= target, return pivot value
-      if tol  >= target - (W[pivot] + total):
-        return A[pivot]
+      if tol  >= target - (totalM + totalL):
+        return A[p]
       #total + W[pivot] < target, recurse on R
       else:
-        return weightedMedianRec(A,W,pivot + 1,hi,target - total - W[pivot])
+        return weightedMedianRec(A,W,q + 1,hi,target - totalL - totalM)
 
 def sumWeights(A,W,lo,pivot):
   total = 0
@@ -43,22 +44,24 @@ def lowMedian(A,lo,hi):
   #return A.index(B[k])
   return lo + C.index(B[k])
 
-#partition s.t. A[i] >= A[pivot] for all i >= pivot
-# and A[i] < A[pivot] for all i < pivot
-# see Cormen, et al. p. 171
-def partition(A,W,lo,hi,pivot):
-  pivotVal = A[pivot]
-  swap(A,hi,pivot)
-  swap(W,hi,pivot)
-  i = lo 
-  for j in range(lo,hi):
-    if( A[j] < pivotVal ):
-      swap(A,i,j)
-      swap(W,i,j)
-      i += 1
-  swap(A,hi,i)
-  swap(W,hi,i)
-  return i
+def partition(a,w,lo,hi,pivot):                                                         
+  pivotValue = a[pivot]                                                         
+  i = lo                                                                        
+  j = lo                                                                        
+  n = hi                                                                        
+  while(j <= n):                                                                
+    if(a[j] < pivotValue):                                                      
+      swap(a,i,j)                                                               
+      swap(w,i,j)
+      i += 1                                                                    
+      j += 1                                                                    
+    elif a[j] > pivotValue:                                                     
+      swap(a,j,n)                                                               
+      swap(w,j,n)                                                               
+      n -= 1                                                                    
+    else:                                                                       
+      j += 1                                                                    
+  return [i,j-1]
 
 def swap(A,i,j):
   A[i],A[j] = A[j],A[i]
