@@ -1,0 +1,138 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{forest}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{syntax}
+\setlength{\grammarindent}{8em} % increase separation between LHS/RHS 
+
+\usepackage[letterpaper, margin=1in]{geometry}
+\usepackage{listings}
+
+
+% Top and Bottom Margin:  1  1/2"; Right and Left Margin:  1  1/2"
+%\setlength{\topmargin}{0in}
+%\setlength{\oddsidemargin}{0.5in}
+%\setlength{\textwidth}{5.5in}
+%\pagestyle{empty}
+%\setlength{\parskip}{0.2in}
+
+\title{CS536: Homework 4}
+\author{Keith Funkhouser }
+\date{October 6th, 2015}
+
+\begin{document}
+
+\maketitle
+
+
+% *********************************
+% TODO: translate from HTML
+% *********************************
+%<p class="reg">
+%For this homework you will define a syntax-directed translation
+%for the CFG given below, which defines a very simple programming language.
+%</p>
+%
+%<dir>
+%<pre>program &#8594; MAIN LPAREN RPAREN LCURLY list RCURLY
+%
+%list &#8594; list oneItem
+     %| epsilon
+      %
+%oneItem &#8594; decl
+        %| stmt
+        %
+%decl &#8594; BOOL ID SEMICOLON
+     %| INT ID SEMICOLON
+          %
+%stmt &#8594; ID ASSIGN exp SEMICOLON 
+     %| IF LPAREN exp RPAREN stmt
+     %| LCURLY list RCURLY 
+%
+%exp &#8594; exp PLUS exp
+%   | exp LESS exp
+%   | exp EQUALS exp
+%   | ID
+%   | BOOLLITERAL
+%   | INTLITERAL
+%</pre></dir>
+
+
+\section{}
+
+Write a syntax-directed translation for the CFG given above, so that the
+translation of an input program is the \emph{set} of variables used
+somewhere in the program. Note: here the term \emph{use} is in contrast
+to \emph{declaration}; any appearance of a variable that is not a
+variable declaration counts as a \emph{use} of that variable. For the
+example code in
+\href{http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h4/h4.html\#Question2}{Question
+2}, the translation should be \texttt{\{\ x,\ a,\ b\ \}}.
+
+Your translation rules should use the following notation:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{\{\ \}} is an empty set
+\item
+  \texttt{\{\ ID.value\ \}} is a set containing the variable whose name
+  is the value associated with this \texttt{ID} token
+\item
+  \texttt{S1} \cap \texttt{S2} is the intersection of sets \texttt{S1} and
+  \texttt{S2}
+\item
+  \texttt{S1} \cup \texttt{S2} is the union of sets \texttt{S1} and
+  \texttt{S2}
+\item
+  \texttt{S1\ -\ S2} is the set of all items that are in \texttt{S1} but
+  not in \texttt{S2}
+\end{itemize}
+
+Note that you should not try to use something like
+"\texttt{\{\ a,\ b\ \}}" to mean a set with two elements; instead, use
+set union to combine two sets that each contain one element.
+
+Use the notation that was used in class and in the on-line readings;
+i.e., use \texttt{nonterminal.trans} to mean the translation of a
+nonterminal, and \texttt{terminal.value} to mean the value of a
+terminal. Assume that \texttt{ID.value} is a \texttt{String} (the name
+of the identifier). Use subscripts for translation rules that include
+the same nonterminal or the same terminal more than once.
+
+\section{}
+
+Draw a parse tree for the program given below and annotate each
+nonterminal in the tree with its translation.
+
+\begin{verbatim}
+main ( ) { 
+    int x;
+    bool y;
+    x = a;
+    int z;
+    if (x == a) {
+        int x;
+        b = x < 18;
+    }
+}
+\end{verbatim}
+
+\begin{center}
+\begin{forest}
+  [expr:\\ \fbox{$a < b$}, align=center, base=bottom]
+
+  [INTLIT\\ ``val'', align=center, base=bottom]
+  [ID\\ ``val'', align=center, base=bottom]
+  [list\\ \fbox{${}$}, align=center, base=bottom]
+  [exp\\ \fbox{${}$}, align=center, base=bottom]
+  [exp\\ \fbox{${}$}, align=center, base=bottom]
+   
+\end{forest}
+\end{center}
+
+                    
+\end{document}
+
