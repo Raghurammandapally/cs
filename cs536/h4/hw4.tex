@@ -60,6 +60,9 @@
 %</pre></dir>
 
 
+%*********************
+%P1
+%*********************
 \section{}
 
 Write a syntax-directed translation for the CFG given above, so that the
@@ -102,6 +105,58 @@ terminal. Assume that \texttt{ID.value} is a \texttt{String} (the name
 of the identifier). Use subscripts for translation rules that include
 the same nonterminal or the same terminal more than once.
 
+%*********************
+%ANSWER
+%*********************
+Consider the following translation rules:
+
+\begin{grammar}
+<program> ::= <MAIN> <LPAREN> <RPAREN> LCURLY> <list> <RCURLY>
+
+<list> ::= <list> <oneItem>
+    \alt epsilon
+
+<oneItem> ::= <decl>
+    \alt <stmt>
+
+<decl> ::= <BOOL> <ID> <SEMICOLON>
+    \alt <INT> <ID> <SEMICOLON>
+
+stmt ::= <ID> <ASSIGN> <exp> <SEMICOLON> 
+     \alt <IF> <LPAREN> <exp> <RPAREN> <stmt>
+     \alt <LCURLY> <list> <RCURLY> 
+
+exp ::= <exp> <PLUS> <exp>
+    \alt <exp> <LESS> <exp>
+    \alt <exp> <EQUALS> <exp>
+    \alt <ID>
+    \alt <BOOLLITERAL>
+    \alt <INTLITERAL>
+\end{grammar}
+
+Then, the following translation rules apply:
+\texttt{program.trans = list.trans}
+\texttt{list$_1$.trans = list$_2$.trans $\cup$ oneItem.trans}
+\texttt{list.trans = \{ \}}
+\texttt{oneItem.trans = \{ \}}
+\texttt{oneItem.trans = stmt.trans}
+\texttt{decl.trans = \{ \}}
+\texttt{decl.trans = \{ \}}
+\texttt{stmt.trans = \{ ID.value \} $\cup$ exp.trans}
+\texttt{stmt$_1$.trans = exp.trans $\cup$ stmt$_2$.trans}
+\texttt{stmt.trans = list.trans}
+\texttt{exp$_1$.trans = exp$_2$.trans $\cup$ exp$_3$.trans}
+\texttt{exp$_1$.trans = exp$_2$.trans $\cup$ exp$_3$.trans}
+\texttt{exp$_1$.trans = exp$_2$.trans $\cup$ exp$_3$.trans}
+\texttt{exp.trans = \{ ID.value \}}
+\texttt{exp.trans = \{ \}}
+\texttt{exp.trans = \{ \}}
+
+
+
+%*********************
+%P2
+%*********************
 \section{}
 
 Draw a parse tree for the program given below and annotate each
@@ -119,10 +174,12 @@ main ( ) {
     }
 }
 \end{verbatim}
-
+%*********************
+%ANSWER
+%*********************
+Consider the following parse tree, where at each node the translation has been done for all of the nodes below it, according to the translation rules given in problem 1.
 \begin{center}
 \begin{forest}
-
   [program\\ \fbox{ \texttt{\{ a, b, x \} }}, align=center, base=bottom
     [MAIN\\ ``\texttt{main}'', align=center, base=bottom]
     [LPAREN\\ ``\texttt{(}'', align=center, base=bottom]
@@ -224,52 +281,6 @@ main ( ) {
     ]
     [RCURLY\\ ``\texttt{\}}'', align=center, base=bottom]
   ]
-
-  [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
-  [INTLIT\\ ``\texttt{val}'', align=center, base=bottom]
-  [ID\\ ``\texttt{val}'', align=center, base=bottom]
-  [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom]
-
-  [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom
-    [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom]
-    [oneItem\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom]
-  ]
-
-  [decl\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
-    [BOOL\\ ``\texttt{bool}'', align=center, base=bottom]
-    [ID\\ ``\texttt{id}'', align=center, base=bottom]
-    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
-  ]
-
-  [stmt\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
-    [ID\\ ``\texttt{id}'', align=center, base=bottom]
-    [ASSIGN\\ ``\texttt{=}'', align=center, base=bottom]
-    [exp\\ \fbox{ \texttt{ \{ x \} }}, align=center, base=bottom]
-    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
-  ]
-
-  [stmt\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
-    [ID\\ ``\texttt{id}'', align=center, base=bottom]
-    [ASSIGN\\ ``\texttt{=}'', align=center, base=bottom]
-    [exp\\ \fbox{ \texttt{ \{ x \} }}, align=center, base=bottom]
-    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
-  ]
-
-  [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
-    [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom]
-    [PLUS\\ ``\texttt{+}'', align=center, base=bottom]
-    [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom]
-  ]
-
-  [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
-    [ID\\ ``\texttt{id}'', align=center, base=bottom]
-  ]
-
-  [exp\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
-    [INTLIT\\ ``\texttt{val}'', align=center, base=bottom]
-  ]
-
-   
 \end{forest}
 \end{center}
 
