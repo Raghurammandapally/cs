@@ -122,13 +122,153 @@ main ( ) {
 
 \begin{center}
 \begin{forest}
-  [expr:\\ \fbox{$a < b$}, align=center, base=bottom]
 
-  [INTLIT\\ ``val'', align=center, base=bottom]
-  [ID\\ ``val'', align=center, base=bottom]
-  [list\\ \fbox{${}$}, align=center, base=bottom]
-  [exp\\ \fbox{${}$}, align=center, base=bottom]
-  [exp\\ \fbox{${}$}, align=center, base=bottom]
+  [program\\ \fbox{ \texttt{\{ a, b, x \} }}, align=center, base=bottom
+    [MAIN\\ ``\texttt{main}'', align=center, base=bottom]
+    [LPAREN\\ ``\texttt{(}'', align=center, base=bottom]
+    [RPAREN\\ ``\texttt{)}'', align=center, base=bottom]
+    [LCURLY\\ ``\texttt{\{}'', align=center, base=bottom]
+    [list\\ \fbox{ \texttt{\{ a, b, x \} }}, align=center, base=bottom
+      [list\\ \fbox{ \texttt{\{ a, x \} }}, align=center, base=bottom
+        [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom
+          [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom
+            [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom
+              [list\\ \fbox{ \texttt{\{  \} }}, align=center, base=bottom
+                [epsilon\\ $\epsilon$, align=center, base=bottom]
+              ]
+              [oneItem\\ \fbox{ \texttt{\{  \} }}, align=center, base=bottom
+                [decl\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
+                  [INT\\ ``\texttt{int}'', align=center, base=bottom]
+                  [ID\\ ``\texttt{x}'', align=center, base=bottom]
+                  [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+                ]
+              ]
+            ]
+            [oneItem\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom
+              [decl\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
+                [BOOL\\ ``\texttt{bool}'', align=center, base=bottom]
+                [ID\\ ``\texttt{y}'', align=center, base=bottom]
+                [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+              ]
+            ]
+          ]
+          [oneItem\\ \fbox{ \texttt{\{ a, x \} }}, align=center, base=bottom
+            [stmt\\ \fbox{ \texttt{ \{ a, x \} } }, align=center, base=bottom
+              [ID\\ ``\texttt{x}'', align=center, base=bottom]
+              [ASSIGN\\ ``\texttt{=}'', align=center, base=bottom]
+              [exp\\ \fbox{ \texttt{ \{ a \} }}, align=center, base=bottom
+                [ID\\ ``\texttt{a}'', align=center, base=bottom]
+              ]
+              [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+            ]
+          ]
+        ]
+        [oneItem\\ \fbox{ \texttt{\{  \} }}, align=center, base=bottom
+          [decl\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
+            [BOOL\\ ``\texttt{bool}'', align=center, base=bottom]
+            [ID\\ ``\texttt{z}'', align=center, base=bottom]
+            [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+          ]
+        ]
+      ]
+      [oneItem\\ \fbox{ \texttt{\{ a, b, x \} }}, align=center, base=bottom
+        [stmt\\ \fbox{ \texttt{ \{ a, b, x \} } }, align=center, base=bottom
+          [IF\\ ``\texttt{if}'', align=center, base=bottom]
+          [LPAREN\\ ``\texttt{(}'', align=center, base=bottom]
+          [exp\\ \fbox{ \texttt{ \{ a, x \} } }, align=center, base=bottom
+            [exp\\ \fbox{ \texttt{ \{ x \} } }, align=center, base=bottom
+              [ID\\ ``\texttt{x}'', align=center, base=bottom]
+            ]
+            [EQUALS\\ ``\texttt{=}'', align=center, base=bottom]
+            [exp\\ \fbox{ \texttt{ \{ a \} } }, align=center, base=bottom
+              [ID\\ ``\texttt{a}'', align=center, base=bottom]
+            ]
+          ]
+          [RPAREN\\ ``\texttt{)}'', align=center, base=bottom]
+          [stmt\\ \fbox{ \texttt{ \{ b, x \} } }, align=center, base=bottom
+            [LCURLY\\ ``\texttt{\{}'', align=center, base=bottom]
+            [list\\ \fbox{ \texttt{\{ b, x \} }}, align=center, base=bottom
+              [list\\ \fbox{ \texttt{\{  \} }}, align=center, base=bottom
+                [list\\ \fbox{ \texttt{\{  \} }}, align=center, base=bottom
+                  [epsilon\\ $\epsilon$, align=center, base=bottom]
+                ]
+                [oneItem\\ \fbox{ \texttt{\{  \} }}, align=center, base=bottom
+                  [decl\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
+                    [INT\\ ``\texttt{int}'', align=center, base=bottom]
+                    [ID\\ ``\texttt{x}'', align=center, base=bottom]
+                    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+                  ]
+                ]
+              ]
+              [oneItem\\ \fbox{ \texttt{\{ b, x \} }}, align=center, base=bottom
+                [stmt\\ \fbox{ \texttt{ \{ b, x \} } }, align=center, base=bottom
+                  [ID\\ ``\texttt{b}'', align=center, base=bottom]
+                  [ASSIGN\\ ``\texttt{=}'', align=center, base=bottom]
+                  [exp\\ \fbox{ \texttt{ \{ x \} }}, align=center, base=bottom
+                    [exp\\ \fbox{ \texttt{ \{ x \} } }, align=center, base=bottom
+                      [ID\\ ``\texttt{x}'', align=center, base=bottom]
+                    ]
+                    [LESS\\ ``\texttt{<}'', align=center, base=bottom]
+                    [exp\\ \fbox{ \texttt{ \{  \} } }, align=center, base=bottom
+                      [INTLIT\\ ``\texttt{18}'', align=center, base=bottom]
+                    ]
+                  ]
+                  [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+                ]
+              ]
+            ]
+            [RCURLY\\ ``\texttt{\}}'', align=center, base=bottom]
+          ]
+        ]
+      ]
+    ]
+    [RCURLY\\ ``\texttt{\}}'', align=center, base=bottom]
+  ]
+
+  [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+  [INTLIT\\ ``\texttt{val}'', align=center, base=bottom]
+  [ID\\ ``\texttt{val}'', align=center, base=bottom]
+  [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom]
+
+  [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom
+    [list\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom]
+    [oneItem\\ \fbox{ \texttt{\{ x \} }}, align=center, base=bottom]
+  ]
+
+  [decl\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
+    [BOOL\\ ``\texttt{bool}'', align=center, base=bottom]
+    [ID\\ ``\texttt{id}'', align=center, base=bottom]
+    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+  ]
+
+  [stmt\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
+    [ID\\ ``\texttt{id}'', align=center, base=bottom]
+    [ASSIGN\\ ``\texttt{=}'', align=center, base=bottom]
+    [exp\\ \fbox{ \texttt{ \{ x \} }}, align=center, base=bottom]
+    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+  ]
+
+  [stmt\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
+    [ID\\ ``\texttt{id}'', align=center, base=bottom]
+    [ASSIGN\\ ``\texttt{=}'', align=center, base=bottom]
+    [exp\\ \fbox{ \texttt{ \{ x \} }}, align=center, base=bottom]
+    [SEMICOLON\\ ``\texttt{;}'', align=center, base=bottom]
+  ]
+
+  [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
+    [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom]
+    [PLUS\\ ``\texttt{+}'', align=center, base=bottom]
+    [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom]
+  ]
+
+  [exp\\ \fbox{ \texttt{ \{ id \} } }, align=center, base=bottom
+    [ID\\ ``\texttt{id}'', align=center, base=bottom]
+  ]
+
+  [exp\\ \fbox{ \texttt{ \{ \} } }, align=center, base=bottom
+    [INTLIT\\ ``\texttt{val}'', align=center, base=bottom]
+  ]
+
    
 \end{forest}
 \end{center}
