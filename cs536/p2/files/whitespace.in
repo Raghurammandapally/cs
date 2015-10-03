@@ -2,7 +2,9 @@ main ( ) {
 	int x;
 	bool y;
 	x = a;
+
 	int z;
+
 	if (x == a) {
 		int x;
 		b = x < 18;

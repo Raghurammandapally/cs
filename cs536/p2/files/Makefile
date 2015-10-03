@@ -36,11 +36,22 @@ ErrMsg.class: ErrMsg.java
 # to expected results
 ###
 test:
+	##################ILLEGAL CHARS######################
+	# We are expecting errors on lines 1-7 of invalid.in.
+	# 	e.g. for characters @, $$, and %
 	java -cp $(CP) P2 
+	# ************EXPECTED ERRORS (see above)************
+	#####################################################
 	diff allTokens.in allTokens.out
-	# comments_expected.out is a blank file, as all comments should be ignored
+	# comments_expected.out is a blank file, as all valid comments should be 
+	# ignored
 	diff comments.out comments_expected.out
+	# whitespace tests for both ignoring whitespace (spaces, tabs, and newlines)
+	# and correctly finding the location of symbols (line#, character#).
 	diff whitespace.out whitespace_expected.out
+	# "bad" strings tests have one trailing id on line 2, which we should output
+	# to badStrings.out:
+	#diff stringErrors.out stringErrors_expected.out
 
 ###
 # clean up
