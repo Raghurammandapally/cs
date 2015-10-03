@@ -142,17 +142,37 @@ return new Symbol(sym.EOF);
             return S;
           }
 
+\"((\\[nt'\"?\\])|[^\n\"\\])*$ 
+          { 
+            ErrMsg.fatal(yyline+1, CharNum.num, "unterminated string literal ignored");
+            CharNum.num = 1;
+          }
+\".*(\\[^nt'\"?\\]).*\" 
+          {  ErrMsg.fatal(yyline+1, CharNum.num, "string literal with bad escaped character ignored " + yytext());
+            CharNum.num += yytext().length();
+          }
+\"((\\[^nt'\"?\\])|[^\n\"\\])*$ 
+          {  
+            ErrMsg.fatal(yyline+1, CharNum.num, "unterminated string literal with bad escaped character ignored");
+            CharNum.num = 1;
+          }
+
+\"((\\[nt'\"?\\])|[^\n\"\\])*\" 
+          { 
+            Symbol S = new Symbol(sym.STRINGLITERAL, new StrLitTokenVal(yyline+1,
+                  CharNum.num, yytext()));
+            CharNum.num += yytext().length();
+            return S;
+          }
+
 {DIGIT}+  { // NOTE: the following computation of the integer value does NOT
             //       check for overflow.  This must be changed.
-            double d = (new Double(yytext())).doubleValue(); // convert String to double
             int k;
-            System.out.println(d);
-            System.out.println(Integer.MAX_VALUE);
-            if(d > Integer.MAX_VALUE) {
-              ErrMsg.warn(yyline+1, CharNum.num, "integer literal too large; using max value");
-              k =  (new Integer(yytext())).intValue();    // convert to int
-            } else {
-              k = (new Integer(Integer.MAX_VALUE)).intValue();
+            try {
+              k = Integer.parseInt(yytext());
+            } catch (NumberFormatException e) {
+              ErrMsg.warn(yyline+1,CharNum.num, "integer literal too large; using max value");
+              k = Integer.MAX_VALUE;
             }
             Symbol S = new Symbol(sym.INTLITERAL, new IntLitTokenVal(yyline+1,
                   CharNum.num, k));
@@ -162,14 +182,116 @@ return new Symbol(sym.EOF);
 
 \n        { CharNum.num = 1; }
 
-{WHITESPACE}+  { CharNum.num += yytext().length(); }
+{WHITESPACE}+
+          { CharNum.num += yytext().length(); }
 
+"++"      { Symbol S = new Symbol(sym.PLUSPLUS, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+">>"      { Symbol S = new Symbol(sym.READ, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"&&"      { Symbol S = new Symbol(sym.AND, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"||"      { Symbol S = new Symbol(sym.OR, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"<="      { Symbol S = new Symbol(sym.LESSEQ, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"--"      { Symbol S = new Symbol(sym.MINUSMINUS, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"<<"      { Symbol S = new Symbol(sym.WRITE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"!="      { Symbol S = new Symbol(sym.NOTEQUALS, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+">="      { Symbol S = new Symbol(sym.GREATEREQ, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+"=="      { Symbol S = new Symbol(sym.EQUALS, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
 "+"       { Symbol S = new Symbol(sym.PLUS, new TokenVal(yyline+1, CharNum.num));
             CharNum.num++;
             return S;
           }
+"{"       { Symbol S = new Symbol(sym.LCURLY, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"}"       { Symbol S = new Symbol(sym.RCURLY, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"*"       { Symbol S = new Symbol(sym.TIMES, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"."       { Symbol S = new Symbol(sym.DOT, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"/"       { Symbol S = new Symbol(sym.DIVIDE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+","       { Symbol S = new Symbol(sym.COMMA, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"="       { Symbol S = new Symbol(sym.ASSIGN, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+">"       { Symbol S = new Symbol(sym.GREATER, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"("       { Symbol S = new Symbol(sym.LPAREN, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"<"       { Symbol S = new Symbol(sym.LESS, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"-"       { Symbol S = new Symbol(sym.MINUS, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+")"       { Symbol S = new Symbol(sym.RPAREN, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+"!"       { Symbol S = new Symbol(sym.NOT, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+";"       { Symbol S = new Symbol(sym.SEMICOLON, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num++;
+            return S;
+          }
+
+
+
+((//)|#).*\n  {CharNum.num = 1;}
+
         
 .         { ErrMsg.fatal(yyline+1, CharNum.num,
-                         "ignoring illegal character: " + yytext());
-            CharNum.num++;
+                         "illegal character ignored: " + yytext());
+            CharNum.num += yytext().length();
           }

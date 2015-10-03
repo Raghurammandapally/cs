@@ -1,0 +1,7 @@
+// this is a valid comment
+//as is the one below this
+//
+#//
+# */
+identifier
+ bool

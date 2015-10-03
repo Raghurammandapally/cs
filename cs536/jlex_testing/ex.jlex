@@ -32,7 +32,9 @@ UNDERSCORE= [_]
 
 %%
 
-({LETTER}|{UNDERSCORE})({LETTER}|{UNDERSCORE}|{DIGIT})* { System.out.println("passed: " + yytext().trim());}
+\".*(\\[^nt'\"?\\]).*\" 
+{ System.out.println("passed: " + yytext().trim());}
 \n                                                {}
 [^\n]*                                            {System.out.println("FAILED: " + yytext().trim());}
 .                                                 {}
+

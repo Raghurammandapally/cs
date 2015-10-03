@@ -223,17 +223,27 @@ class Yylex implements java_cup.runtime.Scanner {
 		/* 0 */ YY_NO_ANCHOR,
 		/* 1 */ YY_NO_ANCHOR,
 		/* 2 */ YY_NO_ANCHOR,
-		/* 3 */ YY_NO_ANCHOR,
-		/* 4 */ YY_NO_ANCHOR
+		/* 3 */ YY_NOT_ACCEPT,
+		/* 4 */ YY_NO_ANCHOR,
+		/* 5 */ YY_NO_ANCHOR,
+		/* 6 */ YY_NO_ANCHOR,
+		/* 7 */ YY_NO_ANCHOR,
+		/* 8 */ YY_NO_ANCHOR,
+		/* 9 */ YY_NO_ANCHOR,
+		/* 10 */ YY_NO_ANCHOR,
+		/* 11 */ YY_NO_ANCHOR,
+		/* 12 */ YY_NO_ANCHOR,
+		/* 13 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"4:10,3,4:37,2:10,4:7,1:26,4:4,1,4,1:26,4:5,0:2")[0];
+"4:10,6,4:2,5,4:20,1,4:4,2,4:23,2,4:28,3,4:17,2,4:5,2,4:11,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,5,
-"0,1,2,1,3")[0];
+	private int yy_rmap[] = unpackFromString(1,14,
+"0,1:2,2,3,4,2,5,3,6,7:2,8,7")[0];
 
-	private int yy_nxt[][] = unpackFromString(4,5,
-"1,2,4,3,4,-1:6,2:2,-1,4,-1,4:2,-1,4");
+	private int yy_nxt[][] = unpackFromString(9,7,
+"1,5,12:4,2,-1:8,6,3:3,-1:3,4,8,9,8,12,-1:2,5:2,7,5,12,-1:2,5:2,7,8,13,3,-1," +
+"4,8,9,8,13,3,-1,11,10:3,12,-1:2,12:5,-1");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -288,16 +298,48 @@ class Yylex implements java_cup.runtime.Scanner {
 					case -3:
 						break;
 					case 2:
-						{ System.out.println("passed: " + yytext().trim());}
+						{}
 					case -4:
 						break;
-					case 3:
-						{}
+					case 4:
+						{ System.out.println("passed: " + yytext().trim());}
 					case -5:
 						break;
-					case 4:
+					case 5:
 						{System.out.println("FAILED: " + yytext().trim());}
 					case -6:
+						break;
+					case 6:
+						{ System.out.println("passed: " + yytext().trim());}
+					case -7:
+						break;
+					case 7:
+						{System.out.println("FAILED: " + yytext().trim());}
+					case -8:
+						break;
+					case 8:
+						{System.out.println("FAILED: " + yytext().trim());}
+					case -9:
+						break;
+					case 9:
+						{System.out.println("FAILED: " + yytext().trim());}
+					case -10:
+						break;
+					case 10:
+						{System.out.println("FAILED: " + yytext().trim());}
+					case -11:
+						break;
+					case 11:
+						{ System.out.println("passed: " + yytext().trim());}
+					case -12:
+						break;
+					case 12:
+						{System.out.println("FAILED: " + yytext().trim());}
+					case -13:
+						break;
+					case 13:
+						{System.out.println("FAILED: " + yytext().trim());}
+					case -14:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

@@ -38,6 +38,9 @@ ErrMsg.class: ErrMsg.java
 test:
 	java -cp $(CP) P2 
 	diff allTokens.in allTokens.out
+	# comments_expected.out is a blank file, as all comments should be ignored
+	diff comments.out comments_expected.out
+	diff whitespace.out whitespace_expected.out
 
 ###
 # clean up

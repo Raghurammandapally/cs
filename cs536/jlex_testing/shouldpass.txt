@@ -1,8 +1,8 @@
-_hello
-xxx
-_
-a
-_x
-x_
-x_9
-_x999
+""
+"&!88"
+"use \n to denote a newline character"
+"include a quote like this \" and a backslash like this \\"
+"\mhello world"
+""
+"this is a long string literal but it doesn't contain a newline"
+"&!88"
