@@ -19,7 +19,6 @@ identifierwhile
 0
 12345
 2147483647
-""
 "\n"
 "\t"
 "\'"
@@ -27,9 +26,6 @@ identifierwhile
 "\?"
 "\\"
 "hello\nworld\?zz!@#$)*(!@#$"
-"this is a long string literal but it doesn't contain a newline"
-""
-"&!88"
 "use \n to denote a newline character"
 "include a quote like this \" and a backslash like this \\"
 {

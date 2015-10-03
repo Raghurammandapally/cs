@@ -51,7 +51,7 @@ test:
 	diff whitespace.out whitespace_expected.out
 	# "bad" strings tests have one trailing id on line 2, which we should output
 	# to badStrings.out:
-	#diff stringErrors.out stringErrors_expected.out
+	diff stringErrors.out stringErrors_expected.out
 
 ###
 # clean up

@@ -1,4 +1,12 @@
 "string literal \n"
 "string literal \with bad escape char"
 "string literal \w ith bad escape char"
-
+"backslash followed by space: \ is not allowed"
+"unterminated
+" still i haven't terminated
+"
+abc
+"also unterminated \"
+abc
+"bad escaped character: \a AND not terminated
+abc

@@ -144,20 +144,20 @@ return new Symbol(sym.EOF);
 
 \"((\\[^nt'\"?\\])|[^\n\"\\])*\" 
           {  ErrMsg.fatal(yyline+1, CharNum.num, "string literal with bad escaped character ignored");
-          System.out.println("string: \"" + yytext() + "\"");
             CharNum.num += yytext().length();
-            /*
-\"((\\[nt'\"?\\])|[^\n\"\\])*$ 
-          { 
-            ErrMsg.fatal(yyline+1, CharNum.num, "unterminated string literal ignored");
-            CharNum.num = 1;
           }
-\".*\\$
+
+
+\"((\\[nt'\"?\\])|[^\n\"\\])*(\\[^nt'\"?\\])[^\n]*$
           {  
             ErrMsg.fatal(yyline+1, CharNum.num, "unterminated string literal with bad escaped character ignored");
             CharNum.num = 1;
           }
-          */
+
+\"((\\[nt'\"?\\])|[^\n\"\\])*$
+          { 
+            ErrMsg.fatal(yyline+1, CharNum.num, "unterminated string literal ignored");
+            CharNum.num = 1;
           }
 
 \"((\\[nt'\"?\\])|[^\n\"\\])*\" 

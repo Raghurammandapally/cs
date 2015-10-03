@@ -11,15 +11,20 @@ import java_cup.runtime.*;  // defines Symbol
 public class P2 {
     public static void main(String[] args) throws IOException {
                                            // exception may be thrown by yylex
-        // test all tokens
+        // test all tokens (diff)
         testAllTokens();
         CharNum.num = 1;
+        // test whether comments are ignored correctly (diff)
         testComments();
         CharNum.num = 1;
+        // test whether whitespace gets ignored correctly (diff)
         testWhitespace();
         CharNum.num = 1;
-        //testInvalidChars();
+        // test that invalid characters error out appropriately (Makefile
+        //  comments)
+        testInvalidChars();
         CharNum.num = 1;
+        // test that strings error out appropriately (Makefile comments/diff)
         testStringErrors();
         CharNum.num = 1;
     }
@@ -32,7 +37,8 @@ public class P2 {
      * corresponding String in sym.java. This aids in printing out helpful
      * information to file or stdout.
      */
-    private static String symToString(int symbol) {
+    private static String symToString(TokenVal token) {
+      int symbol = token.sym;
       switch (symbol) {
         case sym.BOOL:
           return("bool"); 
@@ -307,7 +313,7 @@ public class P2 {
         while (token.sym != sym.EOF) {
           int linenum = ((TokenVal)token.value).linenum;
           int charnum = ((TokenVal)token.value).charnum;
-          outFile.println(symToString(token.sym) + " found at [L" + linenum + ", C" + 
+          outFile.println(symToString(token) + " found at [L" + linenum + ", C" + 
               charnum + "]");
           token = scanner.next_token();
         } // end while
@@ -375,7 +381,7 @@ public class P2 {
         while (token.sym != sym.EOF) {
           int linenum = ((TokenVal)token.value).linenum;
           int charnum = ((TokenVal)token.value).charnum;
-          outFile.println(symToString(token.sym) + " found at [L" + linenum + ", C" + 
+          outFile.println(symToString(token) + " found at [L" + linenum + ", C" + 
               charnum + "]");
           token = scanner.next_token();
         } // end while
