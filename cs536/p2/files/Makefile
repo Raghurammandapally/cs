@@ -38,6 +38,7 @@ ErrMsg.class: ErrMsg.java
 test:
 	# ************EXPECTED ERRORS (see below)************
 	# We are expecting errors for:
+	# -integer overflow on line 22 of allTokens.in
 	# -illegal chars on lines 1-7 of invalid.in
 	# -illegal strings on lines 1-6,8, and 10 of 
 	# 	stringErrors.in
