@@ -1,7 +1,4 @@
-"very bad string \
-abc
-"unterminated
-"also unterminated \"
-"backslash followed by space: \ is not allowed"
-"bad escaped character: \a AND not terminated
-"unterminated string (eof)
+"string literal \n"
+"string literal \with bad escape char"
+"string literal \w ith bad escape char"
+
