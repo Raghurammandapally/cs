@@ -1,0 +1,109 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h5/h5.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 Homework Assignment 5</title>
+<link rel="stylesheet" type="text/css" href="./CS536 Homework Assignment 5_files/webpage.css">
+
+
+<style type="text/css"></style></head><body>
+<h1>CS536 Homework 5<br>
+<b>Due Oct 13, 11pm</b> (not accepted late)
+</h1>
+
+    
+
+
+ <!-- space between items -->
+
+
+ <!-- space between items -->
+
+
+
+<h2 id="Questions">Questions</h2>
+<p class="sectionDesc">Homework assignments must be done individually. Collaboration on homework assignments is
+<em>not</em> allowed.</p>
+
+<p class="reg">
+Recall that for <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h3/h3.html">homework assignment 3</a> we defined the language of
+<i>regular expressions</i> as follows:
+</p>
+
+<p class="reg">The operands in our language regular expressions are single  letters or &#949; (epsilon). The operators  are:
+</p>
+<ul class="reg">
+  <li>| &nbsp;&nbsp;&nbsp;means "or" (alternation)</li>
+  <li>writing two or more things next to each other means "followed by" (catenation)</li>
+  <li>* &nbsp;&nbsp;&nbsp;means "zero or more" (closure or iteration)</li>
+  <li>+ &nbsp;&nbsp;&nbsp;means "one or more" (positive closure)</li>
+  <li>( ) &nbsp;&nbsp;&nbsp;are used for grouping</li>
+</ul>
+<p class="reg">
+  In a regular expression, * and + have the same, highest precedence,
+  "followed by" has middle precedence, and | has the lowest precedence. All of the operators are left associative.
+</p>
+
+<p class="reg">
+Below are 6 incorrect CFGs for the language of regular expressions.
+For each CFG, do <b><em>one</em></b> of the following:
+</p>
+
+<ol type="a" class="reg">
+  <li>Give one string that is a legal regular expression (given our definition above), but is not in
+       the language of the CFG.</li>
+  <li>Give one string that is not a legal regular expression (given our definition above), but is in
+       the language of the CFG.</li>
+  <li>Show that the CFG is ambiguous by drawing two different parse
+       trees for some string in the language of the CFG.</li>
+</ol>
+<p class="reg">For cases (a) and (b),
+  be sure to say which of the two cases you are illustrating. </p>
+<p class="reg">Note that the terminals are 
+<tt>LTR</tt>, <tt>EPS</tt>, <tt>OR</tt>, <tt>STAR</tt>, <tt>PLUS</tt>, <tt>LPAR</tt>, and <tt>RPAR</tt>. 
+Note also that there is a difference between the terminal <tt>EPS</tt> (which represents the token epsilon in our language of regular expressions) and the symbol &#949; (which is used on the right-hand-side of a grammar production indicating the non-terminal on the left-hand-side derives an empty sequence of symbols).</p>
+
+<h3 id="CFG1">CFG 1:</h3>
+<dir><pre>expr &#8594; expr OR term | term
+term &#8594; term item | item
+factor &#8594; item STAR | item PLUS | item
+item &#8594; LTR | EPS | LPAR expr RPAR</pre></dir>
+
+
+<h3 id="CFG2">CFG 2:</h3>
+<dir><pre>expr &#8594; expr OR term | term
+term &#8594; term item | item
+item &#8594; expr STAR | expr PLUS | LTR | EPS | LPAR expr RPAR</pre></dir>
+
+
+<h3 id="CFG3">CFG 3:</h3>
+<dir><pre>expr &#8594; LPAR expr RPAR | term
+term &#8594; term OR factor | factor
+factor &#8594; factor item | item
+item &#8594; item STAR | item PLUS | LTR | EPS</pre></dir>
+
+
+<h3 id="CFG4">CFG 4:</h3>
+<dir><pre>expr &#8594; expr OR term | term
+term &#8594; term item | &#949;
+item &#8594; item STAR | item PLUS | LTR | EPS | LPAR expr RPAR </pre></dir>
+
+
+<h3 id="CFG5">CFG 5:</h3>
+<dir><pre>expr &#8594; expr OR term | term
+term &#8594; term item | LPAR expr RPAR | item
+item &#8594; item STAR | item PLUS | LTR | EPS</pre></dir>
+
+
+<h3 id="CFG6">CFG 6:</h3>
+<dir><pre>expr &#8594; LTR | EPS | term
+term &#8594; term OR factor | factor
+factor &#8594; factor item | item
+item &#8594; item STAR | item PLUS | LPAR item RPAR | expr</pre></dir>
+
+
+
+
+
+
+
+</body><div></div><div></div></html>

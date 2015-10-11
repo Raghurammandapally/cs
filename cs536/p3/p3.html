@@ -1,0 +1,380 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style></head><body>
+<h1>CS536 Programming Assignment 3<br>
+<b> Due on Oct 27, 11pm</b><br>
+
+
+</h1><h2 id="Overview">Overview</h2>
+<p class="reg">For this assignment you will use the parser-generator <b>Java Cup</b>
+to write a parser for the YES language.
+The parser will find syntax errors and, for syntactically correct programs,
+it will build an abstract-syntax tree (AST) representation of the program.
+You will also write methods to <b>unparse</b> the AST built by
+your parser and an input file to test your parser. A main program, 
+<a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/P3.java"><tt>P3.java</tt></a>, that
+calls the parser and then the unparser is  provided for you to use.
+You will be graded on the correctness of your parser and your unparse methods
+and on how thoroughly your input file tests the parser.
+In particular, you should write an input file that causes  the action associated with every grammar rule in your Java CUP specification to be executed at least once.</p>
+
+
+ <!-- space between items -->
+
+
+<h2 id="Specifications">Specifications</h2>
+
+<ul class="reg">
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#starting">Getting started</a></li>
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#prec">Operator Precedences and Associativities</a></li>
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#ast">Building an AST</a></li>
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#unparsing">Unparsing</a></li>
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#astJava">Modifying <tt>ast.java</tt></a></li>
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#testing">Testing</a></li>
+  <li> <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#suggest">Suggestions for How to Work on This Assignment</a></li>
+</ul>
+
+<h3 id="starting">Getting Started</h3>
+<p class="reg">
+Skeleton files on which you should build are in:
+<tt>~cs536-1/public/html/assignments/p3/files</tt>
+</p>
+<p class="reg">
+The files are:
+</p>
+<b><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.tar.gz">p3.tar.gz</a> contains all files below.</b>
+
+<ul class="reg">
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/CFlat.jlex"><tt>CFlat.jlex</tt></a>:
+       A JLex specification for the YES language (a solution to program 2).
+       Use this if there were problems with your JLex specification.</li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/CFlat.cup"><tt>CFlat.cup</tt></a>:
+       A Java CUP specification for a very small subset of the YES
+       language (you will need to add to this file).</li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/CFlat.grammar"><tt>CFlat.grammar</tt></a>:
+       A CFG for the YES language.  Use this to guide the enhancements
+       you make to <tt>CFlat.cup</tt>.</li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/ast.java"><tt>ast.java</tt></a>:
+       Contains class definitions for the AST structure that the parser
+       will build (you will need to add unparsing code to this file, but         you should <em>not</em> add any new classes, fields, or methods).</li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/P3.java"><tt>P3.java</tt></a>:
+       The main program that calls the parser, then, for a successful
+       parse, calls the unparser (no changes needed).
+       <br>
+       Use <tt>make test</tt> to run P3 using <tt>test.cf</tt> as the input,
+       and sending the unparsed output to file <tt>test.out</tt>.
+       Alternatively run it as follows:
+        <p><tt>java P3 test.cf test.out</tt></p>
+       </li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/Makefile"><tt>Makefile</tt></a>: A Makefile for
+       program 3 (no changes needed).</li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/test.cf"><tt>test.cf</tt></a>:
+       Input for the current version of the parser (you will need to
+       change this file).</li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/ErrMsg.java"><tt>ErrMsg.java</tt></a>:
+       Same as for program 2 (no changes needed).</li>
+
+  <b>
+  </b><li><b><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/files/configure.sh"><tt>configure.sh</tt></a>:
+    This script configures your environment variable CLASSPATH
+    for CS computers. Run it as follows:
+    </b>
+    <p>
+    <tt>$. configure.sh</tt>
+    </p>
+    That is, type "." followed by a space followed by "<tt>configure.sh</tt>"
+    in the command line.
+    <br>
+    <b>To set up the environment on your own computer,
+      please see <a href="https://www.youtube.com/watch?v=6bZIsOJFbrE&feature=youtu.be">THIS LINK</a> in the <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/resources.html">resources section</a>
+    </b>
+</li></ul>
+
+<p class="reg">
+Here is a link to the Java CUP
+<a href="http://www.cs.princeton.edu/~appel/modern/java/CUP/manual.html">
+reference manual</a>. There is also a link in the "Tools" section of the "Quick Links" menu on the course website.</p>
+
+<h3 id="prec">Operator Precedences and Associativities</h3>
+<p class="reg">
+The YES grammar in the file <tt>CFlat.grammar</tt> is ambiguous;
+it does not uniquely define the precedences and associativities of
+the arithmetic, relational, equality, and logical operators.
+You will need to add appropriate precedence and associativity declarations
+to your Java CUP specification.
+</p><ul>
+  <li><p class="reg">Assignment is right associative.</p></li>
+  
+  <li>
+    <p class="reg">The dot operator  is left associative.</p></li>
+  
+  <li><p class="reg">The relational
+    and equality operators (&lt;, &gt;, &lt;=, &gt;=, ==, and !=) are
+    non-associative (i.e., expressions like <tt>a &lt; b &lt; c</tt>
+    are not allowed and should cause a syntax error).
+    </p></li>
+    
+  <li><p class="reg">All of the other binary operators are left associative. 
+  </p></li>
+  
+    <li><p class="reg">The unary minus and not (!) operators have the highest
+       precedence, then multiplication and division,
+       then addition and subtraction,
+       then the relational and equality operators, then the logical
+       <i>and</i> operator (&amp;&amp;), then the logical <i>or</i> operator (||), and finally the assignment operator (=).
+       </p></li>
+</ul>
+<p class="reg">
+Note that the same token (MINUS) is used for both the unary and binary minus 
+operator, and that they have different precedences;
+however, the YES grammar has been written so that the unary minus operator
+has the correct (highest) precedence;
+therefore, you can declare MINUS to have
+the precedence appropriate for the binary minus operator.</p>
+<p class="reg">
+Java Cup will print a message telling you how many <em>conflicts</em>
+it found in your grammar.
+If the number is not zero, it means that your grammar is still
+ambiguous and the parser is unlikely to work correctly.
+<b>Do not ignore this!</b>
+Go back and fix your specification so that your grammar is not ambiguous.
+</p>
+
+<h3 id="ast">Building an Abstract-Syntax Tree</h3>
+<p class="reg">
+To make your parser build an abstract-syntax tree, you must add new
+productions, declarations, and actions to <tt>CFlat.cup</tt>.
+You will need to decide, for each nonterminal that you add, what
+type its associated value should have.
+Then you must add the appropriate nonterminal
+declaration to the specification.
+For most nonterminals, the value will either be some kind of tree node
+(a subclass of <tt>ASTnode</tt>) or a <tt>LinkedList</tt>
+of some kind of node
+(use the information in <tt>ast.java</tt> to guide your decision).
+Note that you cannot use parameterized types for the types of  nonterminals;  so if the translation of a nonterminal is a <tt>LinkedList</tt>  of some kind of node, you will have to declare its type as  just plain <tt>LinkedList</tt>.  </p>
+<p class="reg">You must also add actions to each new grammar production that you add to <tt>CFlat.cup</tt>. Make sure that each action ends by  assigning
+  an appropriate value to <tt>RESULT</tt>.
+  Note that the parser will return a <tt>Symbol</tt> whose <tt>value</tt>
+  field contains the value assigned to <tt>RESULT</tt> in the production
+  for the root nonterminal (nonterminal <tt>program</tt>).
+</p>
+
+
+<h3 id="unparsing">Unparsing</h3>
+<p class="reg">
+To test your parser, you must write the <tt>unparse</tt>
+methods for the subclasses of <tt>ASTnode</tt> (in the file <tt>ast.java</tt>).
+When the <tt>unparse</tt> method of the root node of the program's
+abstract-syntax tree is called, it should print a nicely formatted
+version of the program (this is called <em>unparsing</em>
+the abstract-syntax tree).
+The output produced by calling <tt>unparse</tt> should be the
+same as the input to the parser except that:
+</p>
+<ol class="reg">
+  <li>There will be no comments in the output.</li>
+  <li>The output will be "pretty printed" (newlines and indentation
+       will be used to make the program readable); and</li>
+  <li> Expressions will be fully parenthesized to reflect the order of
+       evaluation.</li>
+</ol>
+
+<p class="reg">
+For example, if the input program includes:
+</p>
+<dir>
+<pre>if (b == -1) { x = 4+3*5-y; while (c) { y = y*2+x; } } else { x = 0; }
+</pre>
+</dir>
+<p class="reg">
+the output of <tt>unparse</tt> should be something like the following:
+</p>
+<dir>
+<pre>if ((b == (-1))) {
+    x = ((4 + (3 * 5)) - y);
+    while (c) {
+        y = ((y * 2) + x);
+    }
+}
+else {
+    x = 0;
+}
+</pre>
+</dir>
+<p class="reg">
+To make grading easier, put open curly braces on the <em>same</em>
+line as the preceding code and put closing curly braces on a line with no
+other code (as in the example above).
+Put the first statement in the body of an <tt>if</tt> or <tt>while</tt>
+on the line following the open curly brace.
+Whitespace within a line is up to you (as long as it looks reasonable).
+</p>
+<p class="reg">
+Note: Trying to unparse a tree will help you determine whether you have
+built the tree correctly in the first place.
+Besides looking at the output of your unparser, you should try
+using it as the input to your parser;
+if it doesn't parse, you've made a mistake either in how you built
+your abstract-syntax tree or in how you've written your unparser.
+</p>
+<p class="reg">
+Another good way to test your code is to try compiling the output
+of your unparser using the C++ compiler (g++).
+If your input program uses I/O (<tt>cin</tt> or <tt>cout</tt>),
+you will first need to add: <tt>#include &lt;iostream&gt;</tt>
+at the beginning of the file.
+</p>
+<p class="reg">
+It is a good idea to work incrementally
+ (see <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#suggest">Suggestions for How to Work on This Assignment</a> below for more detailed suggestions):
+ </p>
+<ul class="reg">
+  <li>Add a few grammar productions to <tt>CFlat.cup</tt>.
+  </li><li>Write the corresponding <tt>unparse</tt> operations.
+  </li><li>Write a test program that uses the new language constructs.
+  </li><li>Create a parser (using <tt>make</tt>) and run it on your test program.
+</li></ul>
+
+
+<h3 id="astJava">Modifying <tt>ast.java</tt></h3>
+<p class="reg">
+We will test your program by using our <tt>unparse</tt>
+methods on your abstract-syntax trees and by using your <tt>unparse</tt> methods
+on our abstract-syntax trees.
+To make this work, you will need to:
+</p>
+<ol class="reg">
+  <li>Modify <tt>ast.java</tt> <b>only</b> by filling in
+       the bodies of the <tt>unparse</tt> methods (and you must fill in all of the
+       method bodies).
+  </li><li>Make sure that no <tt>LinkedList</tt> field is null (i.e., when you call the
+       constructor of a class with a <tt>LinkedList</tt> argument, that argument should
+       never be null).
+       Note that it is OK to make the <tt>ExpNode</tt> field of a <tt>ReturnStmtNode</tt> null
+       (when no value is returned), likewise for the <tt>ExpListNode</tt> field of a <tt>CallExpNode</tt> (when the call has no arguments).
+  </li><li>Follow the convention that the <tt>mySize</tt> field of a
+       <tt>VarDeclNode</tt> has the value <tt>VarDeclNode.NOT_STRUCT</tt> if the type
+       of the declared variable
+       is a non-struct type.
+</li></ol>
+
+
+<h3 id="testing">Testing</h3>
+<p class="reg">
+Part of your task will be to write an input file called <tt>test.cf</tt> that thoroughly
+tests your parser and your unparser.
+You should be sure to include code that corresponds to every grammar  rule in the file <tt>CFlat.grammar</tt>.  
+</p>
+<p class="reg">Note that since you are to provide only <em>one</em> input file,
+  <tt>test.cf</tt> should contain no syntax errors (you should also test your
+  parser on some bad inputs, but don't hand those in).
+</p>
+<p class="reg">You will probably find it helpful to use comments  in <tt>test.cf</tt> to explain what aspects of the parser are  being tested, but your testing grade will depend only on how  thoroughly the file tests the parser.</p>
+<h3 id="suggest">Suggestions for How to Work on This Assignment</h3>
+<p class="reg">
+This assignment involves three main tasks:
+</p>
+<ol class="reg">
+  <li>Writing the parser specification (<tt>CFlat.cup</tt>).</li>
+  <li>Writing the unparse methods for the AST nodes (in <tt>ast.java</tt>).</li>
+  <li>Writing an input file (<tt>test.cf</tt>) to test your implementation.</li>
+</ol>
+<p class="reg">
+If you work with a partner,  it is a good idea to share responsibility for all tasks  to ensure that both partners understand all aspects of the assignment.
+</p>
+<p class="reg">
+I suggest that you proceed as follows, testing your parser
+after each change
+(if you are working alone, I still suggest that you follow the basic steps outlined below, just do them all yourself):
+</p>
+<ul>
+  <li><p class="reg">Working together, start by making a very small change
+       to <tt>CFlat.cup</tt>.
+       For example, add the rules and actions for:</p>
+       <dir><pre>type ::= BOOL
+type ::= VOID</pre></dir>
+<p class="reg">
+       Also update the appropriate <tt>unparse</tt> method in
+       <tt>ast.java</tt>.
+       Make sure that you can create and run the parser after making
+       this small change.
+         (To create the parser, just type <tt>make</tt> in the directory         where you are working.)
+         </p></li>
+  <li>
+    <p class="reg">Next, add the rules needed to allow struct declarations.
+  </p></li>
+  <li>
+    <p class="reg">Next, add the rules needed to allow programs to include functions
+       with no formal parameters and with empty statement lists only, and update the
+       corresponding <tt>unparse</tt> methods.
+       </p></li>
+  <li><p class="reg">Still working together, add the rules (and <tt>unparse</tt> methods)
+       for the simplest kind of expressions -- just plain identifiers.
+       </p></li>
+  <li><p class="reg">Now divide up the statement nonterminals into two parts, one part for
+       each person.
+       </p></li>
+  <li><p class="reg">Each person should extend their own copy of <tt>CFlat.cup</tt>
+       by adding rules for their half of the statements, and should extend
+       their own copy of <tt>ast.java</tt> to define the unparse methods
+       needed for those statements.
+       </p></li>
+  <li>
+    <p class="reg">Write test inputs for your statements and your partner's statements.
+  </p></li>
+  <li><p class="reg">After each person makes sure that their parser and unparser
+       work on their own statements, combine the two by cutting and
+       pasting one person's grammar rules into the other person's
+       <tt>CFlat.cup</tt> (and similarly for <tt>ast.java</tt>).
+       </p></li>
+  <li>
+    <p class="reg">Now divide up the expression nonterminals into two parts and
+       implement those using a similar approach.
+       Note that you will also need to give the operators the right
+       precedences and associativities during this step (see
+       <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p3/p3.html#prec">above</a>).
+       </p></li>
+  <li><p class="reg">Divide up any remaining productions that need to be added,
+       and add them.
+       </p></li>
+  <li>
+    <p class="reg">Talk about what needs to be tested and decide together what your
+       final version of <tt>test.cf</tt> should include.
+       </p></li>
+  <li>
+    <p class="reg">When working on your own, do <em>not</em> try to implement all of
+       your nonterminals at once.  Instead, add one new rule at a time
+       to the Java CUP specification, make the corresponding changes
+       to the <tt>unparse</tt> methods in <tt>ast.java</tt>, and test
+       your work by augmenting your <tt>test.cf</tt> or by writing a YES
+       program that includes the new construct you added, and make sure
+       that it is parsed and unparsed correctly.</p></li>
+</ul>
+<p class="reg">
+If you worked alone on the previous program and are now working with
+a partner, see programming assignment 2 for more suggestions on how to work in pairs.
+
+
+
+ <!-- space between items -->
+
+
+</p><h2 id="Handin">Handing in</h2>
+    
+    Submit
+    all of the files that are needed to
+create and run your parser and your main program (including your <tt>test.cf</tt>) as well as your <tt>Makefile</tt>.
+
+    <p class="reg"><em><b>Do not turn in any <tt>.class</tt> files and do not create any subdirectories in your submission.</b></em> 
+
+ 
+
+
+ <!-- space between items -->
+
+
+
+
+
+</p></body><div></div><div></div></html>

@@ -1,7 +1,0 @@
-tokens
-comments
-strings
-123abc - warning
-char/line numbers
-try/catch warnings/errors
-\"((\\[nt'\"?\\])|[^\n\"\\])*\" 
