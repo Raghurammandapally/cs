@@ -1,0 +1,16 @@
+
+
+
+review:
+------------
+[ ] cs577 midterm 10/21 7:15-10:15pm
+  a-l chem 1351
+  m-z chem 1361
+
+  prog correctness
+  graph primitives
+  d&c
+  greedy
+
+  practice problems (all old midterm ex ?'s)
+    discussed during review session next week
