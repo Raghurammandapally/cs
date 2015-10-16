@@ -1,0 +1,679 @@
+
+<!-- saved from url=(0071)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/parsingSDT.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/dextras.css">
+
+<script type="text/x-mathjax-config;executed=true">
+    // <![CDATA[
+    MathJax.Hub.Config({
+        TeX: {extensions: ["AMSmath.js", "AMSsymbols.js"]},
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        showProcessingMessages : false,
+        messageStyle : "none" ,
+        showMathMenu: false ,
+        tex2jax: {
+            processEnvironments: true,
+            inlineMath: [ ['$','$'] ],
+            displayMath: [ ['$$','$$'] ],
+            preview : "none",
+            processEscapes: true
+        },
+        "HTML-CSS": { linebreaks: { automatic:true, width: "latex-container"} }
+    });
+    // ]]>
+ // MathJax.Hub.Queue(reportReload);
+</script>
+<script type="text/javascript" src="./parsingSDT.php_files/MathJax.js"></script><style type="text/css"></style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style>
+<script type="text/javascript" src="./parsingSDT.php_files/latex2html5.min.js"></script>
+
+
+<style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">.MathJax_Display {text-align: center; margin: 1em 0em; position: relative; display: block!important; text-indent: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; width: 100%}
+.MathJax .merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MathJax .MJX-monospace {font-family: monospace}
+.MathJax .MJX-sans-serif {font-family: sans-serif}
+#MathJax_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true'); padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.MathJax {display: inline; font-style: normal; font-weight: normal; line-height: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; padding: 0; margin: 0}
+.MathJax img, .MathJax nobr, .MathJax a {border: 0; padding: 0; margin: 0; max-width: none; max-height: none; min-width: 0; min-height: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+img.MathJax_strut {border: 0!important; padding: 0!important; margin: 0!important; vertical-align: 0!important}
+.MathJax span {display: inline; position: static; border: 0; padding: 0; margin: 0; vertical-align: 0; line-height: normal; text-decoration: none}
+.MathJax nobr {white-space: nowrap!important}
+.MathJax img {display: inline!important; float: none!important}
+.MathJax * {transition: none; -webkit-transition: none; -moz-transition: none; -ms-transition: none; -o-transition: none}
+.MathJax_Processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MathJax_Processed {display: none!important}
+.MathJax_ExBox {display: block!important; overflow: hidden; width: 1px; height: 60ex; min-height: 0; max-height: none}
+.MathJax .MathJax_EmBox {display: block!important; overflow: hidden; width: 1px; height: 60em; min-height: 0; max-height: none}
+.MathJax .MathJax_HitBox {cursor: text; background: white; opacity: 0; filter: alpha(opacity=0)}
+.MathJax .MathJax_HitBox * {filter: none; opacity: 1; background: transparent}
+#MathJax_Tooltip * {filter: none; opacity: 1; background: transparent}
+@font-face {font-family: MathJax_Blank; src: url('about:blank')}
+</style></head>
+<body><div style="visibility: hidden; overflow: hidden; position: absolute; top: 0px; height: 1px; width: auto; padding: 0px; border: 0px; margin: 0px; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal;"><div id="MathJax_Hidden"></div></div><div id="MathJax_Message" style="display: none;"></div>
+<hr>
+<span class="subhead">Contents</span>
+
+<ul>
+    <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/parsingSDT.php#ex3">Example: Counting Parentheses</a>
+    </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/parsingSDT.php#youtry3">Test Yourself #1</a>
+    </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/parsingSDT.php#nonLL1">Handling Non-LL(1) Grammars</a>
+    </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/parsingSDT.php#youtry4">Test Yourself #2</a>
+    </li><li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/parsingSDT.php#summ">Summary</a>
+</li></ul>
+
+<p>
+Now we consider how to implement a syntax-directed translation using
+a predictive parser.
+It is not obvious how to do this, since the predictive parser works by
+building the parse tree top-down, while the syntax-directed translation
+needs to be computed bottom-up.
+Of course, we could design the parser to actually build the parse tree
+(top-down), then use the translation rules to build the translation
+(bottom-up).
+However, that would not be very efficient.
+</p><p>
+Instead, we avoid explicitly building the parse tree by giving the parser
+a second stack called the <b>semantic stack</b>:
+</p><ul>
+  <li> The semantic stack holds nonterminals' translations; when the parse
+       is finished, it will hold just one value: the translation of the
+       root nonterminal (which is the translation of the whole input).
+  </li><li> Values are pushed onto the semantic stack (and popped off) by
+       adding <b>actions</b> to the grammar rules.  The action for one
+       rule must:
+       <ul>
+         <li> Pop the translations of all right-hand-side nonterminals.
+	 </li><li> Compute and push the translation of the left-hand-side
+	      nonterminal.
+       </li></ul>
+  </li><li> The actions themselves are represented by <b>action numbers</b>,
+       which become part of the right-hand sides of the grammar rules.
+       They are pushed onto the (normal) stack along with the terminal
+       and nonterminal symbols.  When an action number is the top-of-stack
+       symbol, it is popped and the action is carried out.
+</li></ul>
+So what actually happens is that the action for a grammar rule 
+<span class="MathJax" id="MathJax-Element-1-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-1" style="width: 8.729em; display: inline-block;"><span style="display: inline-block; position: relative; width: 8.199em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.182em 1000.003em 2.715em -0.528em); top: -2.179em; left: 0.003em;"><span class="mrow" id="MathJax-Span-2"><span class="mi" id="MathJax-Span-3"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">X</span></span><span class="mo" id="MathJax-Span-4" style="padding-left: 0.298em;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span><span class="msubsup" id="MathJax-Span-5" style="padding-left: 0.298em;"><span style="display: inline-block; position: relative; width: 1.123em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-6"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.71em;"><span class="mn" id="MathJax-Span-7" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">1</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span><span class="mspace" id="MathJax-Span-8" style="height: 0.003em; vertical-align: 0.003em; width: 0.298em; display: inline-block; overflow: hidden;"></span><span class="msubsup" id="MathJax-Span-9"><span style="display: inline-block; position: relative; width: 1.123em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-10"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.71em;"><span class="mn" id="MathJax-Span-11" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">2</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span><span class="mspace" id="MathJax-Span-12" style="height: 0.003em; vertical-align: 0.003em; width: 0.298em; display: inline-block; overflow: hidden;"></span><span class="mo" id="MathJax-Span-13" style="padding-left: 0.18em;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">…</span></span><span class="mspace" id="MathJax-Span-14" style="height: 0.003em; vertical-align: 0.003em; width: 0.298em; display: inline-block; overflow: hidden;"></span><span class="msubsup" id="MathJax-Span-15" style="padding-left: 0.18em;"><span style="display: inline-block; position: relative; width: 1.123em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-16"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.71em;"><span class="mi" id="MathJax-Span-17" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">n</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.185em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.378em; vertical-align: -0.434em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-1">X \longrightarrow Y_1 \; Y_2 \; \ldots \; Y_n</script>
+is pushed onto the (normal) stack when the derivation step
+<span class="MathJax" id="MathJax-Element-2-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-18" style="width: 7.786em; display: inline-block;"><span style="display: inline-block; position: relative; width: 7.314em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.182em 1000.003em 2.715em -0.528em); top: -2.179em; left: 0.003em;"><span class="mrow" id="MathJax-Span-19"><span class="mi" id="MathJax-Span-20"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">X</span></span><span class="mo" id="MathJax-Span-21" style="padding-left: 0.298em;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span><span class="msubsup" id="MathJax-Span-22" style="padding-left: 0.298em;"><span style="display: inline-block; position: relative; width: 1.123em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-23"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.71em;"><span class="mn" id="MathJax-Span-24" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">1</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span><span class="msubsup" id="MathJax-Span-25"><span style="display: inline-block; position: relative; width: 1.123em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-26"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.71em;"><span class="mn" id="MathJax-Span-27" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">2</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span><span class="mo" id="MathJax-Span-28" style="padding-left: 0.18em;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">…</span></span><span class="msubsup" id="MathJax-Span-29" style="padding-left: 0.18em;"><span style="display: inline-block; position: relative; width: 1.123em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-30"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.71em;"><span class="mi" id="MathJax-Span-31" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">n</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.185em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.378em; vertical-align: -0.434em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-2">X \longrightarrow Y_1 Y_2 \ldots Y_n</script> is made,
+but the action is not actually performed until complete derivations for all
+of the <span class="MathJax" id="MathJax-Element-3-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-32" style="width: 0.769em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.71em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-33"><span class="mi" id="MathJax-Span-34"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">Y</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-3">Y</script>s have been carried out.
+<p>
+<a name="ex3"></a>
+<span class="example">Counting Parentheses</span>
+</p><p>
+For example, consider the following syntax-directed translation for the
+language of balanced parentheses and square brackets.
+The translation of a string in the language is the number of parenthesis
+pairs in the string.
+</p>
+
+<table class="cfg">
+<tbody><tr>
+<td align="left" style="border-bottom: 1px solid" colspan="3"><b>CFG</b></td>
+<td align="left" style="padding-left:40px">&nbsp;</td>
+<td align="left" style="border-bottom: 1px solid"><b>Transition Rules</b></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-4-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-35" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-36"><span class="mi" id="MathJax-Span-37"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-38"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-39"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-4">Exp</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-5-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-40" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-41"><span class="mo" id="MathJax-Span-42"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-5">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-6-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-43" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-44"><span class="mi" id="MathJax-Span-45"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-6">\varepsilon</script></td>
+<td></td>
+<td><span class="MathJax" id="MathJax-Element-7-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-46" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-47"><span class="mi" id="MathJax-Span-48"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-49"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-50"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-7">Exp</script>.trans = 0</td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>(</b> <span class="MathJax" id="MathJax-Element-8-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-51" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-52"><span class="mi" id="MathJax-Span-53"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-54"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-55"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-8">Exp</script> <b>)</b></td>
+<td></td>
+<td><span class="MathJax" id="MathJax-Element-9-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-56" style="width: 2.067em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.949em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.597em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-57"><span class="mi" id="MathJax-Span-58"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-59"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="msubsup" id="MathJax-Span-60"><span style="display: inline-block; position: relative; width: 0.887em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-61"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.475em;"><span class="mn" id="MathJax-Span-62" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">1</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.378em; vertical-align: -0.434em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-9">Exp_1</script>.trans = <span class="MathJax" id="MathJax-Element-10-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-63" style="width: 2.067em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.949em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.597em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-64"><span class="mi" id="MathJax-Span-65"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-66"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="msubsup" id="MathJax-Span-67"><span style="display: inline-block; position: relative; width: 0.887em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-68"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.475em;"><span class="mn" id="MathJax-Span-69" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">2</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.378em; vertical-align: -0.434em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-10">Exp_2</script>.trans + 1</td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>[</b> <span class="MathJax" id="MathJax-Element-11-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-70" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-71"><span class="mi" id="MathJax-Span-72"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-73"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-74"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-11">Exp</script> <b>]</b></td>
+<td></td>
+<td><span class="MathJax" id="MathJax-Element-12-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-75" style="width: 2.067em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.949em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.597em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-76"><span class="mi" id="MathJax-Span-77"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-78"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="msubsup" id="MathJax-Span-79"><span style="display: inline-block; position: relative; width: 0.887em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-80"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.475em;"><span class="mn" id="MathJax-Span-81" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">1</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.378em; vertical-align: -0.434em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-12">Exp_1</script>.trans = <span class="MathJax" id="MathJax-Element-13-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-82" style="width: 2.067em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.949em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.597em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-83"><span class="mi" id="MathJax-Span-84"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-85"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="msubsup" id="MathJax-Span-86"><span style="display: inline-block; position: relative; width: 0.887em; height: 0px;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mi" id="MathJax-Span-87"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span><span style="position: absolute; top: -1.471em; left: 0.475em;"><span class="mn" id="MathJax-Span-88" style="font-size: 70.7%;"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">2</span></span><span style="display: inline-block; width: 0px; height: 1.713em;"></span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.378em; vertical-align: -0.434em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-13">Exp_2</script>.trans</td>
+</tr>
+
+</tbody></table>
+
+<p>
+The first step is to replace the transition rules with <b>translation
+actions</b>.
+Each action must:
+</p><ul>
+  <li> Pop all right-hand-side nonterminals' translations from the
+       semantic stack.
+  </li><li> Compute and push the left-hand-side nonterminal's translation.
+</li></ul>
+Here are the transition actions:
+<p></p>
+
+<table class="cfg">
+<tbody><tr>
+<td align="left" style="border-bottom: 1px solid" colspan="3"><b>CFG</b></td>
+<td align="left" style="padding-left:40px">&nbsp;</td>
+<td align="left" style="border-bottom: 1px solid"><b>Transition Actions</b></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-14-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-89" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-90"><span class="mi" id="MathJax-Span-91"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-92"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-93"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-14">Exp</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-15-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-94" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-95"><span class="mo" id="MathJax-Span-96"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-15">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-16-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-97" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-98"><span class="mi" id="MathJax-Span-99"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-16">\varepsilon</script></td>
+<td></td>
+<td>push 0;</td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>(</b> <span class="MathJax" id="MathJax-Element-17-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-100" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-101"><span class="mi" id="MathJax-Span-102"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-103"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-104"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-17">Exp</script> <b>)</b></td>
+<td></td>
+<td><tt>exp2trans</tt> = pop() ; push(<tt>exp2trans</tt> + 1)</td>
+</tr>
+
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>[</b> <span class="MathJax" id="MathJax-Element-18-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-105" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-106"><span class="mi" id="MathJax-Span-107"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-108"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-109"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-18">Exp</script> <b>]</b></td>
+<td></td>
+<td><tt>exp2trans</tt> = pop() ; push(<tt>exp2trans</tt>)</td>
+</tr>
+
+
+</tbody></table>
+<p>
+Next, each action is represented by a unique action number, and those
+action numbers become part of the grammar rules:
+
+<table class="cfg">
+<tbody><tr>
+<td align="left" style="border-bottom: 1px solid" colspan="3"><b>CFG with Embedded Actions</b></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-19-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-110" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-111"><span class="mi" id="MathJax-Span-112"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-113"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-114"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-19">Exp</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-20-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-115" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-116"><span class="mo" id="MathJax-Span-117"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-20">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-21-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-118" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-119"><span class="mi" id="MathJax-Span-120"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-21">\varepsilon</script> #1</td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>(</b> <span class="MathJax" id="MathJax-Element-22-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-121" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-122"><span class="mi" id="MathJax-Span-123"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-124"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-125"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-22">Exp</script> <b>)</b> #2</td>
+</tr>
+
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>[</b> <span class="MathJax" id="MathJax-Element-23-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-126" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-127"><span class="mi" id="MathJax-Span-128"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-129"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-130"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-23">Exp</script> <b>]</b> #3</td>
+</tr>
+</tbody></table>
+
+</p><p>where</p>
+
+<table class="cfg" style="margin-left:20px; margin-top:5px">
+<tbody><tr>
+<td style="padding-right:20px">#1 is </td>
+<td>push 0;</td>
+</tr>
+
+<tr>
+<td style="padding-right:20px">#2 is </td>
+<td><tt>exp2trans</tt> = pop() ; push(<tt>exp2trans</tt> + 1)</td>
+</tr>
+
+<tr>
+<td>#3 is </td>
+<td><tt>exp2trans</tt> = pop() ; push(<tt>exp2trans</tt>)</td>
+</tr>
+
+</tbody></table>
+
+<p>
+Note that since action #3 just pushes exactly what is popped, that action
+is redundant, and it is not necessary to have any action associated with
+the third grammar rule.
+Here's a picture that illustrates what happens when the input "([])" is
+parsed (assuming that we have removed action #3):
+
+<table class="cfg" style="margin-left:20px; margin-top:5px">
+<tbody><tr style="border-collapse:separate">
+<td style="border-bottom:1px solid"><b>Input so far</b></td>
+<td style="padding-left:10px; padding-right:10px">&nbsp;</td>
+<td style="border-bottom:1px solid" align="center"><b>Stack</b></td>
+<td style="padding-left:10px; padding-right:10px">&nbsp;</td>
+<!--<td style="border-collapse:separate; ; padding-left:20px; border-bottom:1px solid"><b>Semantic Stack</b></td>-->
+<td style="border-bottom:1px solid"><b>Semantic Stack</b></td>
+<td style="padding-left:20px">&nbsp;</td>
+<td align="center" style="border-bottom:1px solid"><b>Action</b></td>
+</tr>
+
+<tr>
+<td><b>(</b></td><td></td>
+<td><span class="MathJax" id="MathJax-Element-24-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-131" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-132"><span class="mi" id="MathJax-Span-133"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-134"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-135"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-24">Exp</script> <span class="EOF"></span></td><td></td>
+<td>&nbsp;</td><td></td>
+<td>pop, push ( exp ) #2</td>
+</tr>
+
+<tr>
+	<td><b>(</b></td><td></td>
+	<td>
+		<span class="term">(</span>
+		<span class="MathJax" id="MathJax-Element-25-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-136" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-137"><span class="mi" id="MathJax-Span-138"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-139"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-140"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-25">Exp</script>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+
+	<td>&nbsp;</td><td></td>
+	<td>pop, scan</td>
+</tr>
+
+<tr>
+	<td><b>([</b></td><td></td>
+	<td>
+		<span class="MathJax" id="MathJax-Element-26-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-141" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-142"><span class="mi" id="MathJax-Span-143"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-144"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-145"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-26">Exp</script>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+
+	<td>&nbsp;</td><td></td>
+	<td>pop, push "[ exp ]"</td>
+</tr>
+
+<tr>
+	<td><b>([</b></td><td></td>
+	<td>
+		<span class="term">[</span>
+		<span class="MathJax" id="MathJax-Element-27-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-146" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-147"><span class="mi" id="MathJax-Span-148"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-149"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-150"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-27">Exp</script>
+		<span class="term">]</span>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+
+	<td>&nbsp;</td><td></td>
+	<td>pop, scan</td>
+</tr>
+
+<tr>
+	<td><b>([]</b></td><td></td>
+	<td>
+		<span class="MathJax" id="MathJax-Element-28-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-151" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-152"><span class="mi" id="MathJax-Span-153"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-154"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-155"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-28">Exp</script>
+		<span class="term">]</span>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+
+	<td>&nbsp;</td><td></td>
+	<td>pop, push <span class="MathJax" id="MathJax-Element-29-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-156" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-157"><span class="mi" id="MathJax-Span-158"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-29">\varepsilon</script> <span class="action">1</span></td>
+</tr>
+
+<tr>
+	<td><b>([]</b></td><td></td>
+	<td>
+		<span class="action">1</span>
+		<span class="term">]</span>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+
+	<td>&nbsp;</td><td></td>
+	<td>pop, do action <span class="action">1</span></td>
+</tr>
+
+<tr>
+	<td><b>([]</b></td><td></td>
+	<td>
+		<span class="term">]</span>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+	<td align="center">0</td><td>&nbsp;</td>
+
+	<td>pop, scan</td>
+</tr>
+
+<tr>
+	<td><b>([]</b></td><td></td>
+	<td>
+		<span class="term">)</span>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+	<td align="center">0</td><td>&nbsp;</td>
+
+	<td>pop, scan</td>
+</tr>
+
+<tr>
+	<td><b>([])</b><span class="EOF"></span></td><td></td>
+	<td>
+		<span class="action">2</span>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+	<td align="center">0</td><td></td>
+
+	<td>pop, do action <span class="action">2</span></td>
+</tr>
+
+<tr>
+	<td><b>([])</b><span class="EOF"></span></td><td></td>
+	<td>
+		<span class="EOF"></span>
+	</td>
+	<td></td>
+	<td align="center">1</td><td>&nbsp;</td>
+	<td>pop, scan</td>
+</tr>
+
+<tr>
+	<td><b>([])</b><span class="EOF"></span></td><td></td>
+	<td></td>
+	<td></td>
+	<td align="center"></td><td>&nbsp;</td>
+	<td>empty stack, accept</td>
+</tr>
+</tbody></table>
+</p><p>
+<span align="center" style="display:block">translation of input = 1</span>
+</p>
+
+<p>
+In the example above, there is no grammar rule with more than one
+nonterminal on the right-hand side.
+If there were, the translation action for that rule would have to
+do one pop for each right-hand-side nonterminal.
+For example, suppose we are using a grammar that includes the rule:
+</p>
+<div align="center">
+<span class="MathJax" id="MathJax-Element-30-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-159" style="width: 5.31em; display: inline-block;"><span style="display: inline-block; position: relative; width: 5.015em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-160"><span class="mi" id="MathJax-Span-161"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">M</span></span><span class="mi" id="MathJax-Span-162"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-163"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-164"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">h</span></span><span class="mi" id="MathJax-Span-165"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-166"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">d</span></span><span class="mi" id="MathJax-Span-167"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">B</span></span><span class="mi" id="MathJax-Span-168"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-169"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">d</span></span><span class="mi" id="MathJax-Span-170"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">y</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-30">MethodBody</script>&nbsp;<span class="MathJax" id="MathJax-Element-31-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-171" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-172"><span class="mo" id="MathJax-Span-173"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-31">\longrightarrow</script>&nbsp;<b>{</b>&nbsp;<span class="MathJax" id="MathJax-Element-32-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-174" style="width: 3.835em; display: inline-block;"><span style="display: inline-block; position: relative; width: 3.6em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-175"><span class="mi" id="MathJax-Span-176"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">V</span></span><span class="mi" id="MathJax-Span-177"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">a</span></span><span class="mi" id="MathJax-Span-178"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-179"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">D</span></span><span class="mi" id="MathJax-Span-180"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-181"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">c</span></span><span class="mi" id="MathJax-Span-182"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">l</span></span><span class="mi" id="MathJax-Span-183"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">s</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-32">VarDecls</script>&nbsp;<span class="MathJax" id="MathJax-Element-33-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-184" style="width: 2.302em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.185em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-185"><span class="mi" id="MathJax-Span-186"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">S</span></span><span class="mi" id="MathJax-Span-187"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-188"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span><span class="mi" id="MathJax-Span-189"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-190"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">s</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-33">Stmts</script>&nbsp;<b>}</b>
+</div>
+
+and that the
+syntax-directed translation is counting the number of declarations
+and statements in each method body (so the translation of <span class="MathJax" id="MathJax-Element-34-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-191" style="width: 3.835em; display: inline-block;"><span style="display: inline-block; position: relative; width: 3.6em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-192"><span class="mi" id="MathJax-Span-193"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">V</span></span><span class="mi" id="MathJax-Span-194"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">a</span></span><span class="mi" id="MathJax-Span-195"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-196"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">D</span></span><span class="mi" id="MathJax-Span-197"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-198"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">c</span></span><span class="mi" id="MathJax-Span-199"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">l</span></span><span class="mi" id="MathJax-Span-200"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">s</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-34">VarDecls</script>
+is the number of derived declarations, the translation of <span class="MathJax" id="MathJax-Element-35-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-201" style="width: 2.302em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.185em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-202"><span class="mi" id="MathJax-Span-203"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">S</span></span><span class="mi" id="MathJax-Span-204"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-205"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span><span class="mi" id="MathJax-Span-206"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-207"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">s</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-35">Stmts</script>
+is the number of derived statements, and the translation of
+<span class="MathJax" id="MathJax-Element-36-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-208" style="width: 5.31em; display: inline-block;"><span style="display: inline-block; position: relative; width: 5.015em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-209"><span class="mi" id="MathJax-Span-210"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">M</span></span><span class="mi" id="MathJax-Span-211"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-212"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-213"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">h</span></span><span class="mi" id="MathJax-Span-214"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-215"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">d</span></span><span class="mi" id="MathJax-Span-216"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">B</span></span><span class="mi" id="MathJax-Span-217"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-218"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">d</span></span><span class="mi" id="MathJax-Span-219"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">y</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-36">MethodBody</script> is the number of derived declarations and statements).
+<ul>
+<pre>CFG Rule:              methodBody -&gt; { varDecls stmts }
+Translation Rule:      methodBody.trans = varDecls.trans + stmts.trans
+Translation Action:    stmtsTrans = pop(); declsTrans = pop();
+	               push( stmtsTrans + declsTrans );
+CFG rule with Action:  methodBody -&gt; { varDecls stmts } #1
+                       #1: stmtsTrans = pop();
+		           declsTrans = pop();
+			   push( stmtsTrans + declsTrans );
+
+</pre>
+</ul>
+Note that the right-hand-side nonterminals' translations are popped from
+the semantic stack <em>right-to-left</em>.
+That is because the predictive parser does a leftmost derivation,
+so the <tt>varDecls</tt> nonterminal gets "expanded" first;
+i.e., its parse tree is created before the parse tree for the
+<tt>stmts</tt> nonterminal.
+This means that the actions that create the translation of the
+<tt>varDecls</tt> nonterminal are performed first, and thus its
+translation is pushed onto the semantic stack first.
+<p>
+Another issue that has not been illustrated yet arises when a
+left-hand-side nonterminal's translation depends on the value of a
+right-hand-side <em>terminal</em>.
+In that case, it is important to put the action number <em>before</em>
+that terminal symbol when incorporating actions into grammar rules.
+This is because a terminal symbol's value is available during the parse
+only when it is the "current token".
+For example, if the translation of an arithmetic expression is the
+value of the expression:
+</p><ul>
+<pre>CFG Rule:              factor -&gt; INTLITERAL
+Translation Rule:      factor.trans = INTLITERAL.value
+Translation Action:    push( INTLITERAL.value )
+CFG rule with Action:  factor -&gt; #1 INTLITERAL       // action BEFORE terminal
+                       #1: push( currToken.value )
+</pre>
+</ul>
+<hr>
+<a name="youtry3">
+<p>
+</p><center>
+<u><b>TEST YOURSELF #1</b></u>
+</center></a>
+<p>
+For the following grammar, give (a) translation rules, (b) translation
+actions with numbers, and (c) a CFG with action numbers,
+so that the translation of an
+input expression is the value of the expression.
+Do not worry about the fact that the grammar is not LL(1).
+</p><ul>
+<pre>exp    -&gt; exp + term
+       -&gt; exp - term
+       -&gt; term
+term   -&gt; term * factor
+       -&gt; term / factor
+       -&gt; factor
+factor -&gt; INTLITERAL
+       -&gt; ( exp )
+</pre>
+</ul>
+<p><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SOLUTIONS/LL-TRANS-ANSWERS.html#ans1">solution</a></p>
+<hr>
+<p>
+<a name="nonLL1"></a>
+</p><h2>Handling Non-LL(1) Grammars</h2>
+<p>
+Recall that a non-LL(1) grammar must be transformed to an equivalent
+LL(1) grammar if it is to be parsed using a predictive parser.
+Recall also that the transformed grammar usually
+does not reflect the underlying structure the way the original grammar did.
+For example, when left recursion is removed from the grammar for
+arithmetic expressions, we get grammar rules like this:
+</p>
+<table class="cfg" style="margin-top:5px">
+<tbody><tr>
+<td align="left" style="border-bottom: 1px solid" colspan="3"><b>CFG</b></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-37-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-220" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-221"><span class="mi" id="MathJax-Span-222"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-223"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-224"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-37">Exp</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-38-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-225" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-226"><span class="mo" id="MathJax-Span-227"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-38">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-39-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-228" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-229"><span class="mi" id="MathJax-Span-230"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-231"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-232"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-233"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-39">Term</script> <span class="MathJax" id="MathJax-Element-40-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-234" style="width: 1.949em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.831em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-235"><span class="mi" id="MathJax-Span-236"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-237"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-238"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span class="mo" id="MathJax-Span-239"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-40">Exp`</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-41-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-240" style="width: 1.949em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.831em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-241"><span class="mi" id="MathJax-Span-242"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-243"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-244"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span class="mo" id="MathJax-Span-245"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-41">Exp`</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-42-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-246" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-247"><span class="mo" id="MathJax-Span-248"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-42">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-43-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-249" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-250"><span class="mi" id="MathJax-Span-251"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-43">\varepsilon</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><b>+</b> <span class="MathJax" id="MathJax-Element-44-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-252" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-253"><span class="mi" id="MathJax-Span-254"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-255"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-256"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-257"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-44">Term</script> <span class="MathJax" id="MathJax-Element-45-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-258" style="width: 1.949em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.831em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-259"><span class="mi" id="MathJax-Span-260"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-261"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-262"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span class="mo" id="MathJax-Span-263"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-45">Exp`</script></td>
+</tr>
+
+</tbody></table>
+It is not at all clear how to define
+a syntax-directed translation for rules like these.
+The solution is to define the syntax-directed translation
+using the <em>original</em> grammar (define translation rules,
+convert them to actions that push and pop using the semantic stack, and
+then incorporate the action numbers into the grammar rules).
+Then convert the grammar to be LL(1), <em>treating the action numbers
+just like terminal grammar symbols</em>!
+<p>
+For example:
+</p><ul>
+<!--
+<table class="cfg" style="margin-top:5px; border-bottom:1px solid; width:auto">
+<tr>
+<td>
+<b>Non-LL(1) Grammar Rules With Actions</b>
+</td>
+</tr>
+</table>
+-->
+<b>Non-LL(1) Grammar Rules With Actions</b>
+
+<table class="cfg" style="margin-top:5px">
+<tbody><tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-46-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-264" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-265"><span class="mi" id="MathJax-Span-266"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-267"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-268"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-46">Exp</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-47-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-269" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-270"><span class="mo" id="MathJax-Span-271"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-47">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-48-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-272" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-273"><span class="mi" id="MathJax-Span-274"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-275"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-276"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-48">Exp</script> + <span class="MathJax" id="MathJax-Element-49-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-277" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-278"><span class="mi" id="MathJax-Span-279"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-280"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-281"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-282"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-49">Term</script> #1</td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-50-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-283" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-284"><span class="mi" id="MathJax-Span-285"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-286"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-287"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-288"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-50">Term</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-51-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-289" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-290"><span class="mi" id="MathJax-Span-291"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-292"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-293"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-294"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-51">Term</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-52-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-295" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-296"><span class="mo" id="MathJax-Span-297"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-52">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-53-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-298" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-299"><span class="mi" id="MathJax-Span-300"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-301"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-302"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-303"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-53">Term</script> * <span class="MathJax" id="MathJax-Element-54-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-304" style="width: 2.597em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.42em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-305"><span class="mi" id="MathJax-Span-306"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">F</span></span><span class="mi" id="MathJax-Span-307"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">a</span></span><span class="mi" id="MathJax-Span-308"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">c</span></span><span class="mi" id="MathJax-Span-309"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-310"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-311"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-54">Factor</script> #2</td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<!--<td class=cfg_rhs>$Factor$</td>-->
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-55-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-312" style="width: 2.597em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.42em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-313"><span class="texatom" id="MathJax-Span-314"><span class="mrow" id="MathJax-Span-315"><span class="mi" id="MathJax-Span-316"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">F</span></span><span class="mi" id="MathJax-Span-317"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">a</span></span><span class="mi" id="MathJax-Span-318"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">c</span></span><span class="mi" id="MathJax-Span-319"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-320"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-321"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-55">\mathit{Factor}</script></td>
+</tr>
+</tbody></table>
+
+<table class="cfg" style="margin-top:5px">
+<tbody><tr>
+<td style="padding-right:10px">#1 is </td>
+<td><tt>TTrans</tt> = pop() ; <tt>ETrans</tt> = pop() ; push(<tt>ETrans</tt> + <tt>TTrans</tt>);</td>
+</tr>
+
+<tr>
+<td style="padding-right:10px">#2 is </td>
+<td><tt>FTrans</tt> = pop() ; <tt>TTrans</tt> = pop() ; push(<tt>TTrans</tt> * <tt>FTrans</tt>);</td>
+</tr>
+
+</tbody></table>
+
+<b>After Removing Immediate Left Recursion</b>
+
+
+<table class="cfg" style="margin-top:5px">
+<tbody><tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-56-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-322" style="width: 1.654em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.536em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-323"><span class="mi" id="MathJax-Span-324"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-325"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-326"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-56">Exp</script></td>
+<td class="cfg_trans"><span class="MathJax" id="MathJax-Element-57-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-327" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-328"><span class="mo" id="MathJax-Span-329"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-57">\longrightarrow</script></td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-58-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-330" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-331"><span class="mi" id="MathJax-Span-332"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-333"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-334"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-335"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-58">Term</script> <span class="MathJax" id="MathJax-Element-59-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-336" style="width: 1.949em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.831em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-337"><span class="mi" id="MathJax-Span-338"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-339"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-340"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span class="mo" id="MathJax-Span-341"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-59">Exp`</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-60-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-342" style="width: 1.949em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.831em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-343"><span class="mi" id="MathJax-Span-344"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-345"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-346"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span class="mo" id="MathJax-Span-347"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-60">Exp`</script></td>
+<td class="cfg_trans" align="center"><span class="MathJax" id="MathJax-Element-61-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-348" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-349"><span class="mo" id="MathJax-Span-350"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-61">\longrightarrow</script></td>
+<td class="cfg_rhs">+ <span class="MathJax" id="MathJax-Element-62-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-351" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-352"><span class="mi" id="MathJax-Span-353"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-354"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-355"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-356"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-62">Term</script> #1 <span class="MathJax" id="MathJax-Element-63-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-357" style="width: 1.949em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.831em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-358"><span class="mi" id="MathJax-Span-359"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">E</span></span><span class="mi" id="MathJax-Span-360"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">x</span></span><span class="mi" id="MathJax-Span-361"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">p</span></span><span class="mo" id="MathJax-Span-362"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-63">Exp`</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-64-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-363" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-364"><span class="mi" id="MathJax-Span-365"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-64">\varepsilon</script></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td></td>
+<td></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-65-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-366" style="width: 2.185em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.067em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-367"><span class="texatom" id="MathJax-Span-368"><span class="mrow" id="MathJax-Span-369"><span class="mi" id="MathJax-Span-370"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-371"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-372"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-373"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-65">\mathit{Term}</script></td>
+<td class="cfg_trans" align="center"><span class="MathJax" id="MathJax-Element-66-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-374" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-375"><span class="mo" id="MathJax-Span-376"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-66">\longrightarrow</script></td>
+<!--<td class=cfg_rhs>$Factor$</td>-->
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-67-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-377" style="width: 2.597em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.42em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-378"><span class="texatom" id="MathJax-Span-379"><span class="mrow" id="MathJax-Span-380"><span class="mi" id="MathJax-Span-381"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">F</span></span><span class="mi" id="MathJax-Span-382"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">a</span></span><span class="mi" id="MathJax-Span-383"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">c</span></span><span class="mi" id="MathJax-Span-384"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-385"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-386"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-67">\mathit{Factor}</script> <span class="MathJax" id="MathJax-Element-68-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-387" style="width: 2.538em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.361em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-388"><span class="texatom" id="MathJax-Span-389"><span class="mrow" id="MathJax-Span-390"><span class="mi" id="MathJax-Span-391"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-392"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-393"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-394"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span></span><span class="mo" id="MathJax-Span-395"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-68">\mathit{Term}`</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"><span class="MathJax" id="MathJax-Element-69-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-396" style="width: 2.538em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.361em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-397"><span class="texatom" id="MathJax-Span-398"><span class="mrow" id="MathJax-Span-399"><span class="mi" id="MathJax-Span-400"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-401"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-402"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-403"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span></span><span class="mo" id="MathJax-Span-404"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-69">\mathit{Term}`</script></td>
+<td class="cfg_trans" align="center"><span class="MathJax" id="MathJax-Element-70-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-405" style="width: 1.477em; display: inline-block;"><span style="display: inline-block; position: relative; width: 1.359em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.123em 1000.003em 2.479em -0.528em); top: -2.12em; left: 0.003em;"><span class="mrow" id="MathJax-Span-406"><span class="mo" id="MathJax-Span-407"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#10230;</span></span></span><span style="display: inline-block; width: 0px; height: 2.126em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-70">\longrightarrow</script></td>
+<!--<td class=cfg_rhs>$Factor$</td>-->
+<td class="cfg_rhs">* <span class="MathJax" id="MathJax-Element-71-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-408" style="width: 2.597em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.42em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-409"><span class="texatom" id="MathJax-Span-410"><span class="mrow" id="MathJax-Span-411"><span class="mi" id="MathJax-Span-412"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">F</span></span><span class="mi" id="MathJax-Span-413"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">a</span></span><span class="mi" id="MathJax-Span-414"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">c</span></span><span class="mi" id="MathJax-Span-415"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">t</span></span><span class="mi" id="MathJax-Span-416"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">o</span></span><span class="mi" id="MathJax-Span-417"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span></span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-71">\mathit{Factor}</script> <span class="action">2</span> <span class="MathJax" id="MathJax-Element-72-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-418" style="width: 2.538em; display: inline-block;"><span style="display: inline-block; position: relative; width: 2.361em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-419"><span class="texatom" id="MathJax-Span-420"><span class="mrow" id="MathJax-Span-421"><span class="mi" id="MathJax-Span-422"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">T</span></span><span class="mi" id="MathJax-Span-423"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">e</span></span><span class="mi" id="MathJax-Span-424"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">r</span></span><span class="mi" id="MathJax-Span-425"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">m</span></span></span></span><span class="mo" id="MathJax-Span-426"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">‘</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-72">\mathit{Term}`</script></td>
+</tr>
+
+<tr>
+<td class="cfg_lhs"></td>
+<td class="cfg_trans" align="center">|</td>
+<!--<td class=cfg_rhs>$Factor$</td>-->
+<td class="cfg_rhs"><span class="MathJax" id="MathJax-Element-73-Frame" role="textbox" aria-readonly="true"><nobr><span class="math" id="MathJax-Span-427" style="width: 0.475em; display: inline-block;"><span style="display: inline-block; position: relative; width: 0.416em; height: 0px; font-size: 106%;"><span style="position: absolute; clip: rect(1.064em 1000.003em 2.42em -0.528em); top: -2.061em; left: 0.003em;"><span class="mrow" id="MathJax-Span-428"><span class="mi" id="MathJax-Span-429"><span style="font-family: STIXGeneral, &#39;Arial Unicode MS&#39;, serif; font-size: 94%; font-style: normal; font-weight: normal;">&#949;</span></span></span><span style="display: inline-block; width: 0px; height: 2.067em;"></span></span></span><span style="border-left-width: 0.003em; border-left-style: solid; display: inline-block; overflow: hidden; width: 0px; height: 1.191em; vertical-align: -0.247em;"></span></span></nobr></span><script type="math/tex" id="MathJax-Element-73">\varepsilon</script></td>
+</tr>
+</tbody></table>
+</ul>
+<hr>
+<a name="youtry4">
+<p>
+</p><center>
+<u><b>TEST YOURSELF #2</b></u>
+</center></a>
+<p>
+Transform the grammar rules with actions that you wrote for the
+"Test Yourself #1" exercise to LL(1) form.
+Trace the actions of the predictive parser on the input <tt>2 + 3 * 4</tt>.
+</p><p>
+</p><p><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/readings/SOLUTIONS/LL-TRANS-ANSWERS.html#ans2">solution</a></p>
+<hr>
+<p>
+<a name="summ"></a>
+<span class="subhead">Summary</span>
+</p><p>
+A <b>syntax-directed translation</b> is used to define the translation of a
+sequence of tokens to some other value, based on a CFG for the input.
+A syntax-directed translation is defined by associating a translation
+rule with each grammar rule.
+A translation rule defines the translation of the left-hand-side
+nonterminal as a function of the right-hand-side nonterminals' translations,
+and the values of the right-hand-side terminals.
+To compute the translation of a string, build the parse tree, and use
+the translation rules to compute the translation of each nonterminal
+in the tree, bottom-up; the translation of the string is the
+translation of the root nonterminal.
+</p><p>
+There is no restriction on the type of a translation;
+it can be a simple type like an integer, or a complex type list an
+abstract-syntax tree.
+</p><p>
+To <b>implement</b> a syntax-directed translation using a predictive parser,
+the translation rules are converted to actions that manipulate the
+parser's <b>semantic stack</b>.
+Each action must pop all right-hand-side nonterminals' translations from
+the semantic stack, then compute and push the left-hand-side nonterminal's
+translation.
+Next, the actions are incorporated (as action numbers) into the grammar rules.
+Finally, the grammar is converted to LL(1) form (treating the action numbers
+just like terminal or nonterminal symbols).
+
+
+</p><div style="position: absolute; width: 0px; height: 0px; overflow: hidden; padding: 0px; border: 0px; margin: 0px;"><div id="MathJax_Font_Test" style="position: absolute; visibility: hidden; top: 0px; left: 0px; width: auto; padding: 0px; border: 0px; margin: 0px; white-space: nowrap; text-align: left; text-indent: 0px; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; font-size: 40px; font-weight: normal; font-style: normal; font-family: STIXSizeOneSym, monospace;"></div></div></body><div></div><div></div></html>
