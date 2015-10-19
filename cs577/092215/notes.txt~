@@ -5,7 +5,7 @@ assuming that we can find the median in linear time, then we can solve the selec
 review:
 ------------
 geometric series:
-  1 + r + r^2 + ... + r^d = r^(d+1)-1/(r-1) if r!=1, otherwise d+1
+  1 + r + r^2 + ... + r^d = r^(d+1)/(r-1) if r!=1, otherwise d+1
   (show by induction on d)
 median algorithm:
   approximate median -> why is sorting an array of small size done in constant time instead of worse?
