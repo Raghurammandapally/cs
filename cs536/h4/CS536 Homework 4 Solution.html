@@ -1,0 +1,121 @@
+
+<!-- saved from url=(0083)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/hw_solutions/hw4_soln/hw4_soln.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 Homework 4 Solution</title>
+
+<style><!--
+body { font-family: Helvetica, Arial, sans-serif; background-color: white; text-color: black; font-size: 10pt }
+h1 h2 h3 { font-family: Arial }
+h1 { font-size: 140%; font-family: sans-serif; color: black}
+h2 { font-size: 130%; color: rgb(0%, 0%, 50%) }
+h3 { font-size: 110%; font-style:italic; color: rgb(0%, 0%, 75%) }
+h4 { font-size: 120%; color: purple }
+em { font-weight: bold }
+table { font-size: 10pt }
+.button   { font-family: Arial; font-style: bold; color: blue }
+.note     { font-style: italic; color: green }
+.subtitle { font-family: sans-serif; text-align: center; font-size: 120% }
+.attop    { vertical-align: top; text-align: justify }
+.prompt   { font-weight: bold; color: blue }
+.response { font-weight: bold; color: black }
+--></style>
+<style type="text/css"></style></head>
+
+<body>
+
+
+<h1>CS536 Homework 4 Solution</h1>
+<hr>
+<h2 id="Question1">Question 1:</h2>
+
+<table cellpadding="8" cellspacing="8">
+
+<tbody><tr>
+<td><tt>program &#8594; MAIN LPAREN RPAREN LCURLY list RCURLY</tt></td>
+<td><tt>program.trans = list.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>list &#8594; list oneItem</tt></td>
+<td><tt>list<sub>1</sub>.trans = list<sub>2</sub>.trans &#8746; oneItem.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>list &#8594; epsilon </tt></td>
+<td><tt>list.trans = { }</tt></td>
+</tr>
+
+<tr>
+<td><tt>oneItem &#8594; decl</tt></td>
+<td><tt>oneItem.trans = { }</tt>
+</td>
+</tr>
+
+<tr>
+<td><tt>oneItem &#8594; stmt</tt></td>
+<td><tt>oneItem.trans = stmt.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>decl &#8594; BOOL ID SEMICOLON</tt></td>
+<td>no translation rule needed</td>
+</tr>
+
+<tr>
+<td><tt>decl &#8594; INT ID SEMICOLON</tt></td>
+<td>no translation rule needed</td>
+</tr>
+
+<tr>
+<td><tt>stmt &#8594; ID ASSIGN exp SEMICOLON </tt></td>
+<td><tt>stmt.trans = { ID.value } &#8746; exp.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>stmt &#8594; IF LPAREN exp RPAREN stmt</tt></td>
+<td><tt>stmt<sub>1</sub>.trans = exp.trans &#8746; stmt<sub>2</sub>.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>stmt &#8594; LCURLY list RCURLY</tt></td>
+<td><tt>stmt.trans = list.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>exp &#8594; exp PLUS exp</tt></td>
+<td><tt>exp<sub>1</sub>.trans = exp<sub>2</sub>.trans &#8746; exp<sub>3</sub>.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>exp &#8594; exp LESS exp</tt></td>
+<td><tt>exp<sub>1</sub>.trans = exp<sub>2</sub>.trans &#8746; exp<sub>3</sub>.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>exp &#8594; exp EQUALS exp</tt></td>
+<td><tt>exp<sub>1</sub>.trans = exp<sub>2</sub>.trans &#8746; exp<sub>3</sub>.trans</tt></td>
+</tr>
+
+<tr>
+<td><tt>exp &#8594; ID</tt></td>
+<td><tt>exp.trans = { ID.value }</tt></td>
+</tr>
+
+<tr>
+<td><tt>exp &#8594; BOOLLITERAL</tt></td>
+<td><tt>exp.trans = { }</tt></td>
+</tr>
+
+<tr>
+<td><tt>exp &#8594; INTLITERAL</tt></td>
+<td><tt>exp.trans = { }</tt></td>
+</tr>
+</tbody></table>
+
+<hr>
+<h2 id="Question2">Question 2:</h2>
+<p>&nbsp;</p>
+ <img src="./CS536 Homework 4 Solution_files/q2annotatedParseTree.png">
+
+
+</body><div></div><div></div></html>

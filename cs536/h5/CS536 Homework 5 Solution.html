@@ -1,0 +1,92 @@
+
+<!-- saved from url=(0083)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/hw_solutions/hw5_soln/hw5_soln.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 Homework 5 Solution</title>
+
+<style><!--
+body { font-family: Helvetica, Arial, sans-serif; background-color: white; text-color: black; font-size: 10pt }
+h1 h2 h3 { font-family: Arial }
+h1 { font-size: 140%; font-family: sans-serif; color: black}
+h2 { font-size: 130%; color: rgb(0%, 0%, 50%) }
+h3 { font-size: 110%; font-style:italic; color: rgb(0%, 0%, 75%) }
+h4 { font-size: 120%; color: purple }
+em { font-weight: bold }
+table { font-size: 10pt }
+.button   { font-family: Arial; font-style: bold; color: blue }
+.note     { font-style: italic; color: green }
+.subtitle { font-family: sans-serif; text-align: center; font-size: 120% }
+.attop    { vertical-align: top; text-align: justify }
+.prompt   { font-weight: bold; color: blue }
+.response { font-weight: bold; color: black }
+--></style>
+<style type="text/css"></style></head>
+
+<body>
+
+
+<h1>CS536 Homework 5 Solution</h1>
+<hr>
+<h2 id="CFG1">CFG 1:</h2>
+<p>
+This CFG doesn't allow two or more *'s or +'s in a row.
+Here is a legal regular expression that is not in the language of the CFG:</p>
+<dir><tt>a * *</tt></dir>
+
+
+<h2 id="CFG2">CFG 2:</h2>
+<p>
+This CFG is ambiguous.
+Below are two different parse trees for the string <tt>a|b+</tt>.
+</p>
+<table cellpadding="12">
+<tbody><tr>
+<td valign="top"><img src="./CS536 Homework 5 Solution_files/cfg2parseTree1.png"></td>
+<td>&nbsp;</td>
+<td valign="top"><img src="./CS536 Homework 5 Solution_files/cfg2parseTree2.png"></td>
+</tr>
+</tbody></table>
+
+
+<h2 id="CFG3">CFG 3:</h2>
+<p>
+This CFG only allows parentheses around the very outside of the expression.
+Here are two legal regular expressions that are not in the language of the CFG:
+</p>
+<dir><tt>( a | b ) c</tt></dir>
+<dir><tt>a ( b | c )</tt></dir>
+
+
+<h2 id="CFG4">CFG 4:</h2>
+<p>
+This CFG allows the right operand of the | operator to be missing.
+Here is a string that is <b>not</b> a legal regular expression but is
+in the language of the CFG:</p>
+<dir><tt>a | </tt></dir>
+
+
+<h2 id="CFG5">CFG 5:</h2>
+<p>
+This CFG doesn't allow parentheses around the operand of a * or +.
+Here is a legal regular expression that is not in the language of the CFG:</p>
+<dir><tt>( a b ) *</tt></dir>
+
+
+<h2 id="CFG6">CFG 6:</h2>
+<p>
+This CFG is ambiguous.
+Below are two different parse trees for the string <tt>a</tt>.
+</p>
+<dir><pre>   expr         expr
+    |            |
+  LTR(a)        term
+                 |
+               factor
+                 |
+                expr
+                 |
+                LTR(a)
+</pre></dir>
+
+
+
+</body><div></div><div></div></html>

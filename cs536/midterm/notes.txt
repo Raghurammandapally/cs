@@ -1,0 +1,3 @@
+through material covered on thurs, oct 8 (topdown parsing, lec11.pdf)
+
+Midterm exam is during class on Oct 22, in CS 1240 (the auditorium across our lecture room).

@@ -1,0 +1,70 @@
+
+<!-- saved from url=(0083)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/hw_solutions/hw2_soln/hw2_soln.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 Homework 2 Solution</title>
+
+<style><!--
+body { font-family: Helvetica, Arial, sans-serif; background-color: white; text-color: black; font-size: 10pt }
+h1 h2 h3 { font-family: Arial }
+h1 { font-size: 140%; font-family: sans-serif; color: black}
+h2 { font-size: 130%; color: rgb(0%, 0%, 50%) }
+h3 { font-size: 110%; font-style:italic; color: rgb(0%, 0%, 75%) }
+h4 { font-size: 120%; color: purple }
+em { font-weight: bold }
+table { font-size: 10pt }
+.button   { font-family: Arial; font-style: bold; color: blue }
+.note     { font-style: italic; color: green }
+.subtitle { font-family: sans-serif; text-align: center; font-size: 120% }
+.attop    { vertical-align: top; text-align: justify }
+.prompt   { font-weight: bold; color: blue }
+.response { font-weight: bold; color: black }
+--></style>
+<style type="text/css"></style></head>
+
+<body>
+
+
+<h1>CS536 Homework 2 Solution</h1>
+<hr>
+<h2 id="Question1">Question 1:</h2>
+
+<p><tt>{SLASH}{STAR}[^(*/)]*{STAR}{SLASH}</tt></p>
+<ul>
+<li>Doesn't allow parentheses, stars, or slashes in the comment body: <tt>/* (*)(/) */</tt></li>
+</ul>
+
+<p><tt>{SLASH}{STAR}(.)*{STAR}{SLASH}</tt></p>
+<ul>
+<li>Allows <tt>*/</tt> in the comment body: <tt>/* a */ */</tt></li>
+<li>Doesn't allow a newline in the comment body:<br>
+<tt>/* this is a<br>
+multi-line comment */</tt>
+</li>
+</ul>
+
+<p><tt>{SLASH}{STAR}([^*]*{STAR}+[^*/])*{STAR}+{SLASH}</tt></p>
+<ul>
+<li>Doesn't allow a non-empty comment body without a star: <tt>/* a */</tt></li>
+</ul>
+
+<p><tt>{SLASH}{STAR}([^*]|[^/])+{STAR}{SLASH}</tt></p>
+<ul>
+<li>Allows <tt>*/</tt> in the comment body: <tt>/* */ */</tt></li>
+<li>Doesn't allow a comment with an empty body: <tt>/**/</tt></li>
+</ul>
+
+<p><tt>{SLASH}{STAR}[^*]*{STAR}+{SLASH}+</tt></p>
+<ul>
+<li>Allows multiple <tt>/</tt> after the end of the comment: <tt>/* *////</tt></li>
+<li>Doesn't allow non-star to appear after a star in the comment body: <tt>/* *a */</tt></li>
+</ul>
+
+<hr>
+
+<h2 id="Question2">Question 2:</h2>
+<pre>{SLASH}{STAR}([^*]|({STAR}+[^*/]))*{STAR}+{SLASH}    
+</pre>
+
+
+
+</body><div></div><div></div></html>
