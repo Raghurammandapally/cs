@@ -78,6 +78,7 @@ non terminal DeclNode         decl;
 non terminal VarDeclNode      varDecl;
 non terminal TypeNode         type;
 non terminal IdNode           id;
+non terminal StructDeclNode   structDecl;
  
  
 /* NOTE: Add precedence and associativity declarations here */
@@ -104,6 +105,16 @@ declList        ::= declList:dl decl:d
                 :}
                 ;
 
+decl            ::= structDecl:s
+                {: RESULT = s;
+                :}
+                ;
+
+structDecl      ::= STRUCT id:i LCURLY structBody:s RCURLY SEMICOLON
+                {: RESULT = new StructDeclNode(i,s);
+                :}
+                ;
+
 decl            ::= varDecl:v
                 {: RESULT = v;
                 :}
@@ -111,6 +122,16 @@ decl            ::= varDecl:v
 
 varDecl         ::= type:t id:i SEMICOLON
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NOT_STRUCT);
+                :}
+                ;
+
+type            ::= VOID
+                {: RESULT = new VoidNode();
+                :}
+                ;
+
+type            ::= BOOL
+                {: RESULT = new BoolNode();
                 :}
                 ;
 
