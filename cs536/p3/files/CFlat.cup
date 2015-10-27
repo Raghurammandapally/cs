@@ -78,6 +78,13 @@ non terminal DeclNode         decl;
 non terminal VarDeclNode      varDecl;
 non terminal TypeNode         type;
 non terminal IdNode           id;
+non terminal StructDeclNode   structDecl;
+non terminal FnDeclNode       fnDecl;
+non terminal LinkedList       formals;
+non terminal FnBodyNode       fnBody;
+non terminal LinkedList       stmtList;
+non terminal LinkedList       formalsList;
+non terminal FormalDeclNode   formalDecl;
  
  
 /* NOTE: Add precedence and associativity declarations here */
@@ -107,10 +114,21 @@ declList        ::= declList:dl decl:d
 decl            ::= varDecl:v
                 {: RESULT = v;
                 :}
+                | structDecl:s
+                {: RESULT = s;
+                :}
+                | fnDecl:f
+                {: RESULT = f;
+                :}
                 ;
 
 varDecl         ::= type:t id:i SEMICOLON
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NOT_STRUCT);
+                :}
+                ;
+
+structDecl      ::= STRUCT id:i LCURLY declList:d RCURLY SEMICOLON
+                {: RESULT = new StructDeclNode(i, new DeclListNode(d));
                 :}
                 ;
 
@@ -129,4 +147,41 @@ id              ::= ID:i
                 {: RESULT = new IdNode(i.linenum, i.charnum, i.idVal);
                 :}
                 ;
-				
+
+fnDecl          ::= type:t id:i formals:f fnBody:fb
+                {: RESULT = new FnDeclNode(t, i, new FormalsListNode(f), fb);
+                :}
+                ;
+
+formals         ::= LPAREN RPAREN
+                {: RESULT = new LinkedList<FormalDeclNode>();
+                :}
+                | LPAREN formalsList:f RPAREN
+                {: RESULT = f;
+                :}
+                ;
+
+formalsList     ::= formalDecl:f
+                {: RESULT = new LinkedList<FormalDeclNode>();
+                   RESULT.addLast(f);
+                :}
+                | formalDecl:f COMMA formalsList:fl
+                {: fl.addLast(f);
+                   RESULT = fl;
+                :}
+                ;
+
+formalDecl      ::= type:t id:i
+                {: RESULT = new FormalDeclNode(t, i);
+                :}
+                ;
+
+fnBody          ::= LCURLY declList:d stmtList:s RCURLY
+                {: RESULT = new FnBodyNode(new DeclListNode(d), new StmtListNode(s));
+                :}
+                ;
+
+stmtList        ::= /* epsilon */
+                {: RESULT = new LinkedList<StmtNode>();
+                :}
+                ;

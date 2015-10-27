@@ -1,4 +1,15 @@
-int x;
-int y;
-bool z;
-void xyz;
+//int x;
+//int y;
+//bool z;
+//void xyz;
+//struct test {
+//int x;
+//int y;
+//bool z;
+//} ;
+//int max(int num1, int num2) 
+int max(int x, bool y, void z) 
+{
+  // local variable declaration
+  int result;
+}

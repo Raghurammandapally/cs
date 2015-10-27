@@ -160,6 +160,18 @@ class FormalsListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        Iterator it = myFormals.iterator();
+        try {
+            while (it.hasNext()) {
+                ((FormalDeclNode)it.next()).unparse(p, 0);
+                if (it.hasNext()) {
+                  p.print(", ");
+                }
+            }
+        } catch (NoSuchElementException ex) {
+            System.err.println("unexpected NoSuchElementException in DeclListNode.print");
+            System.exit(-1);
+        }
     }
 
     // list of kids (FormalDeclNodes)
@@ -246,6 +258,18 @@ class FnDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      myType.unparse(p, 0);
+      p.print(" ");
+      myId.unparse(p, 0);
+      p.print("(");
+      myFormalsList.unparse(p, 0);
+      p.println(")");
+      doIndent(p, indent);
+      p.println("{");
+      myBody.unparse(p, indent + 2);
+      doIndent(p, indent);
+      p.println("}");
     }
 
     // 4 kids
@@ -262,6 +286,9 @@ class FormalDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      myType.unparse(p, 0);
+      p.print(" ");
+      myId.unparse(p, 0);
     }
 
     // 2 kids
@@ -271,16 +298,24 @@ class FormalDeclNode extends DeclNode {
 
 class StructDeclNode extends DeclNode {
     public StructDeclNode(IdNode id, DeclListNode declList) {
-        myId = id;
-		myDeclList = declList;
+      myId = id;
+      myDeclList = declList;
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print("struct ");
+      myId.unparse(p, 0);
+      p.print(" ");
+      p.print("{\n");
+      myDeclList.unparse(p, indent + 2);
+      doIndent(p, indent);
+      p.println("};");
     }
 
     // 2 kids
     private IdNode myId;
-	private DeclListNode myDeclList;
+    private DeclListNode myDeclList;
 }
 
 // **********************************************************************
