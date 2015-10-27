@@ -87,7 +87,7 @@ non terminal LinkedList       stmtList;
 non terminal LinkedList       formalsList;
 non terminal FormalDeclNode   formalDecl;
 non terminal StmtNode         stmt;
-non terminal AssignStmtNode   assignExp;
+non terminal AssignNode       assignExp;
 non terminal ExpNode          loc;
 non terminal CallExpNode      fncall;
 non terminal LinkedList       actualList;
@@ -98,6 +98,9 @@ non terminal ExpNode          term;
  
  
 /* NOTE: Add precedence and associativity declarations here */
+precedence left DOT, PLUS, MINUS, TIMES, DIVIDE, AND, OR;
+precedence right ASSIGN;
+precedence nonassoc LESS, GREATER, LESSEQ, GREATEREQ, EQUALS, NOTEQUALS;
 
 
 start with program;
@@ -132,8 +135,17 @@ decl            ::= varDecl:v
                 :}
                 ;
 
+//**********************************************
+// varDeclList????
+//**********************************************
+
 varDecl         ::= type:t id:i SEMICOLON
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NOT_STRUCT);
+                :}
+                ;
+
+fnDecl          ::= type:t id:i formals:f fnBody:fb
+                {: RESULT = new FnDeclNode(t, i, new FormalsListNode(f), fb);
                 :}
                 ;
 
@@ -142,10 +154,10 @@ structDecl      ::= STRUCT id:i LCURLY declList:d RCURLY SEMICOLON
                 :}
                 ;
 
-fnDecl          ::= type:t id:i formals:f fnBody:fb
-                {: RESULT = new FnDeclNode(t, i, new FormalsListNode(f), fb);
-                :}
-                ;
+//**********************************************
+// structBody????
+//**********************************************
+
 
 formals         ::= LPAREN RPAREN
                 {: RESULT = new LinkedList<FormalDeclNode>();
@@ -185,7 +197,34 @@ stmtList        ::= stmtList:sl stmt:s
 
                 ;
 
-stmt            ::= RETURN SEMICOLON
+stmt            ::= assignExp:a SEMICOLON
+                {: RESULT = new AssignStmtNode(a);
+                :}
+                | loc:l PLUSPLUS SEMICOLON
+                {: RESULT = new PostIncStmtNode(l);
+                :}
+                | loc:l MINUSMINUS SEMICOLON
+                {: RESULT = new PostDecStmtNode(l);
+                :}
+                | CIN READ loc:l SEMICOLON
+                {: RESULT = new ReadStmtNode(l);
+                :}
+                | COUT WRITE exp:e SEMICOLON
+                {: RESULT = new WriteStmtNode(e);
+                :}
+                | IF LPAREN exp:e RPAREN LCURLY declList:d stmtList:s RCURLY
+                {: RESULT = new IfStmtNode(e, new DeclListNode(d), new StmtListNode(s));
+                :}
+                | IF LPAREN exp:e RPAREN LCURLY declList:d stmtList:s RCURLY ELSE LCURLY declList:d2 stmtList:s2 RCURLY
+                {: RESULT = new IfElseStmtNode(e, new DeclListNode(d), new StmtListNode(s), new DeclListNode(d2), new StmtListNode(s2));
+                :}
+                | WHILE LPAREN exp:e RPAREN LCURLY declList:d stmtList:s RCURLY
+                {: RESULT = new WhileStmtNode(e, new DeclListNode(d), new StmtListNode(s));
+                :}
+                | RETURN exp:e SEMICOLON
+                {: RESULT = new ReturnStmtNode(e);
+                :}
+                | RETURN SEMICOLON
                 {: RESULT = new ReturnStmtNode(null);
                 :}
                 | fncall:f SEMICOLON
@@ -193,11 +232,55 @@ stmt            ::= RETURN SEMICOLON
                 :}
                 ;
 
-exp             ::= term:t
-                {: RESULT = t; 
+assignExp       ::= loc:l ASSIGN exp:e
+                {: RESULT = new AssignNode(l, e);
                 :}
-                | exp:e1 PLUS exp:e2
+                ;
+
+exp             ::= exp:e1 PLUS exp:e2
                 {: RESULT = new PlusNode(e1, e2);
+                :}
+                | exp:e1 MINUS exp:e2
+                {: RESULT = new MinusNode(e1, e2);
+                :}
+                | exp:e1 TIMES exp:e2
+                {: RESULT = new TimesNode(e1, e2);
+                :}
+                | exp:e1 DIVIDE exp:e2
+                {: RESULT = new DivideNode(e1, e2);
+                :}
+                | NOT exp:e 
+                {: RESULT = new NotNode(e);
+                :}
+                | exp:e1 AND exp:e2
+                {: RESULT = new AndNode(e1, e2);
+                :}
+                | exp:e1 OR exp:e2
+                {: RESULT = new OrNode(e1, e2);
+                :}
+                | exp:e1 EQUALS exp:e2
+                {: RESULT = new EqualsNode(e1, e2);
+                :}
+                | exp:e1 NOTEQUALS exp:e2
+                {: RESULT = new NotEqualsNode(e1, e2);
+                :}
+                | exp:e1 LESS exp:e2
+                {: RESULT = new LessNode(e1, e2);
+                :}
+                | exp:e1 GREATER exp:e2
+                {: RESULT = new GreaterNode(e1, e2);
+                :}
+                | exp:e1 LESSEQ exp:e2
+                {: RESULT = new LessEqNode(e1, e2);
+                :}
+                | exp:e1 GREATEREQ exp:e2
+                {: RESULT = new GreaterEqNode(e1, e2);
+                :}
+                | MINUS term:t 
+                {: RESULT = new UnaryMinusNode(t);
+                :}
+                | term:t
+                {: RESULT = t; 
                 :}
                 ;
 
@@ -213,7 +296,7 @@ term            ::= loc:l
                 | TRUE:t
                 {: RESULT = new TrueNode(t.linenum, t.charnum);
                 :}
-                | FALSE: f
+                | FALSE:f
                 {: RESULT = new FalseNode(f.linenum, f.charnum);
                 :}
                 | LPAREN exp:e RPAREN
