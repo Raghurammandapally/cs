@@ -5,6 +5,9 @@ void xyz;
 struct c{int l1;};
 struct test {
 
+  //*********************
+  //THIS IS BAD AND SHOULD GENERATE A SYNTAX ERROR
+  //*********************
   struct c{int l1;};
 int x;
 int y;
