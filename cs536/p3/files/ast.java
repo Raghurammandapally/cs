@@ -185,6 +185,8 @@ class FnBodyNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      myDeclList.unparse(p, indent);
+      myStmtList.unparse(p, indent);
     }
 
     // 2 kids
@@ -198,6 +200,15 @@ class StmtListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      Iterator it = myStmts.iterator();
+      try {
+          while (it.hasNext()) {
+              ((StmtNode)it.next()).unparse(p, indent);
+          }
+      } catch (NoSuchElementException ex) {
+          System.err.println("unexpected NoSuchElementException in DeclListNode.print");
+          System.exit(-1);
+      }
     }
 
     // list of kids (StmtNodes)
@@ -210,6 +221,19 @@ class ExpListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      Iterator it = myExps.iterator();
+      try {
+          while (it.hasNext()) {
+            ((ExpNode)it.next()).unparse(p, 0);
+            if(it.hasNext()) {
+              p.print(", ");
+            }
+          }
+      } catch (NoSuchElementException ex) {
+          System.err.println("unexpected NoSuchElementException in DeclListNode.print");
+          System.exit(-1);
+      }
     }
 
     // list of kids (ExpNodes)
@@ -491,6 +515,9 @@ class CallStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      myCall.unparse(p, 0);
+      p.println(";");
     }
 
     // 1 kid
@@ -503,6 +530,13 @@ class ReturnStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print("return");
+      if(myExp != null) {
+        p.print(" ");
+        myExp.unparse(p, 0);
+      }
+      p.println(";");
     }
 
     // 1 kid
@@ -524,6 +558,8 @@ class IntLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print(myIntVal);
     }
 
     private int myLineNum;
@@ -539,6 +575,8 @@ class StringLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print(myStrVal);
     }
 
     private int myLineNum;
@@ -553,6 +591,8 @@ class TrueNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print("true");
     }
 
     private int myLineNum;
@@ -566,6 +606,8 @@ class FalseNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print("false");
     }
 
     private int myLineNum;
@@ -595,6 +637,12 @@ class DotAccessExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      if(myLoc != null) {
+        myLoc.unparse(p, 0);
+        p.print(".");
+      }
+      myId.unparse(p, 0);
     }
 
     // 2 kids
@@ -629,6 +677,13 @@ class CallExpNode extends ExpNode {
 
     // ** unparse **
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      myId.unparse(p, 0);
+      p.print("(");
+      if(myExpList != null) {
+        myExpList.unparse(p, 0);
+      }
+      p.print(")");
     }
 
     // 2 kids

@@ -1,0 +1,12 @@
+stmt            ::= assignExp SEMICOLON
+                | loc PLUSPLUS SEMICOLON
+                | loc MINUSMINUS SEMICOLON
+                | CIN READ loc SEMICOLON
+                | COUT WRITE exp SEMICOLON
+                | IF LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY
+                | IF LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY ELSE LCURLY varDeclList stmtList RCURLY
+                | WHILE LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY
+                | RETURN exp SEMICOLON
+                | RETURN SEMICOLON
+                | fncall SEMICOLON
+                ;

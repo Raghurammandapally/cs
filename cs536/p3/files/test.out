@@ -1,3 +1,8 @@
 int max(void z, bool y, int x)
 {
+  int result;
+  max();
+  return;
+  max(1, 2, 3);
+  max("hello world", true, false, 3, max(65, "yah"), x.y.zba, a.c, c);
 }
