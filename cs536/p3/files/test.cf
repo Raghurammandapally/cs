@@ -10,12 +10,11 @@
 //int max(int num1, int num2) 
 int max(int x, bool y, void z) 
 {
-  //// local variable declaration
-  int result;
-  ////x.y.zc
-  max();
-  return;
-  max(1,2,3);
-  max("hello world",true,false, (3), max(65, "yah"), x.y.zba, a.c, c );
+  //int result;
+  //max();
+  //return;
+  //max(1,2,3);
+  //max("hello world",true,false, (3), max(65, "yah"), x.y.zba, a.c, c );
+  max(1+ 2);
 }
 

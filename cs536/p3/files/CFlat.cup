@@ -193,27 +193,11 @@ stmt            ::= RETURN SEMICOLON
                 :}
                 ;
 
-actualList      ::= exp:e
-                {: RESULT = new LinkedList<ExpNode>();
-                   RESULT.add(e);
-                :}
-                | actualList:l COMMA exp:e
-                {:
-                   l.addLast(e);
-                   RESULT = l;
-                :}
-                ;
-
-fncall          ::= id:i LPAREN RPAREN
-                {: RESULT = new CallExpNode(i, null);
-                :}
-                | id:i LPAREN actualList:l RPAREN
-                {: RESULT = new CallExpNode(i, new ExpListNode(l));
-                :}
-                ;
-
 exp             ::= term:t
                 {: RESULT = t; 
+                :}
+                | exp:e1 PLUS exp:e2
+                {: RESULT = new PlusNode(e1, e2);
                 :}
                 ;
 
@@ -237,6 +221,25 @@ term            ::= loc:l
                 :}
                 | fncall:f
                 {: RESULT = f;
+                :}
+                ;
+
+fncall          ::= id:i LPAREN RPAREN
+                {: RESULT = new CallExpNode(i, null);
+                :}
+                | id:i LPAREN actualList:l RPAREN
+                {: RESULT = new CallExpNode(i, new ExpListNode(l));
+                :}
+                ;
+
+actualList      ::= exp:e
+                {: RESULT = new LinkedList<ExpNode>();
+                   RESULT.add(e);
+                :}
+                | actualList:l COMMA exp:e
+                {:
+                   l.addLast(e);
+                   RESULT = l;
                 :}
                 ;
 
