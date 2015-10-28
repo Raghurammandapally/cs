@@ -1,0 +1,10 @@
+int f() {
+  int y;
+  struct X x;
+  if (x) {
+  }
+  if (x) {
+  } else {
+    struct x x;
+  }
+}

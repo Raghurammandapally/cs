@@ -93,6 +93,7 @@ non terminal CallExpNode      fncall;
 non terminal LinkedList       actualList;
 non terminal ExpNode          exp;
 non terminal ExpNode          term;
+non terminal LinkedList       varDeclList;
 
 
  
@@ -119,7 +120,7 @@ start with program;
  *
  * NOTE: add more grammar rules below
  */
-program         ::= declList: d
+program         ::= declList:d
                 {: RESULT = new ProgramNode(new DeclListNode(d));
                 :}
                 ;
@@ -144,10 +145,14 @@ decl            ::= varDecl:v
                 :}
                 ;
 
-//**********************************************
-// varDeclList????
-// see https://piazza.com/class/id543c6knik6h7?cid=98
-//**********************************************
+varDeclList     ::= varDeclList:vl varDecl:v
+                {: vl.addLast(v);
+                   RESULT = vl;
+                :}
+                | /* epsilon */
+                {: RESULT = new LinkedList<VarDeclNode>();
+                :}
+                ;
 
 varDecl         ::= type:t id:i SEMICOLON
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NOT_STRUCT);
@@ -162,15 +167,20 @@ fnDecl          ::= type:t id:i formals:f fnBody:fb
                 :}
                 ;
 
-structDecl      ::= STRUCT id:i LCURLY declList:d RCURLY SEMICOLON
-                {: RESULT = new StructDeclNode(i, new DeclListNode(d));
+structDecl      ::= STRUCT id:i LCURLY structBody:s RCURLY SEMICOLON
+                {: RESULT = new StructDeclNode(i, new DeclListNode(s));
                 :}
                 ;
 
-//**********************************************
-// structBody????
-// (same reason as above)
-//**********************************************
+structBody      ::= structBody:s varDecl:v
+                {: s.addLast(v);
+                   RESULT = s;
+                :}
+                | varDecl:v
+                {: RESULT = new LinkedList<VarDeclNode>();
+                   RESULT.addLast(v);
+                :}
+                ;
 
 
 formals         ::= LPAREN RPAREN
@@ -196,8 +206,8 @@ formalDecl      ::= type:t id:i
                 :}
                 ;
 
-fnBody          ::= LCURLY declList:d stmtList:s RCURLY
-                {: RESULT = new FnBodyNode(new DeclListNode(d), new StmtListNode(s));
+fnBody          ::= LCURLY varDeclList:v stmtList:s RCURLY
+                {: RESULT = new FnBodyNode(new DeclListNode(v), new StmtListNode(s));
                 :}
                 ;
 
@@ -226,14 +236,14 @@ stmt            ::= assignExp:a SEMICOLON
                 | COUT WRITE exp:e SEMICOLON
                 {: RESULT = new WriteStmtNode(e);
                 :}
-                | IF LPAREN exp:e RPAREN LCURLY declList:d stmtList:s RCURLY
-                {: RESULT = new IfStmtNode(e, new DeclListNode(d), new StmtListNode(s));
+                | IF LPAREN exp:e RPAREN LCURLY varDeclList:v stmtList:s RCURLY
+                {: RESULT = new IfStmtNode(e, new DeclListNode(v), new StmtListNode(s));
                 :}
-                | IF LPAREN exp:e RPAREN LCURLY declList:d stmtList:s RCURLY ELSE LCURLY declList:d2 stmtList:s2 RCURLY
-                {: RESULT = new IfElseStmtNode(e, new DeclListNode(d), new StmtListNode(s), new DeclListNode(d2), new StmtListNode(s2));
+                | IF LPAREN exp:e RPAREN LCURLY varDeclList:v stmtList:s RCURLY ELSE LCURLY varDeclList:v2 stmtList:s2 RCURLY
+                {: RESULT = new IfElseStmtNode(e, new DeclListNode(v), new StmtListNode(s), new DeclListNode(v2), new StmtListNode(s2));
                 :}
-                | WHILE LPAREN exp:e RPAREN LCURLY declList:d stmtList:s RCURLY
-                {: RESULT = new WhileStmtNode(e, new DeclListNode(d), new StmtListNode(s));
+                | WHILE LPAREN exp:e RPAREN LCURLY varDeclList:v stmtList:s RCURLY
+                {: RESULT = new WhileStmtNode(e, new DeclListNode(v), new StmtListNode(s));
                 :}
                 | RETURN exp:e SEMICOLON
                 {: RESULT = new ReturnStmtNode(e);
