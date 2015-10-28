@@ -94,6 +94,7 @@ non terminal LinkedList       actualList;
 non terminal ExpNode          exp;
 non terminal ExpNode          term;
 non terminal LinkedList       varDeclList;
+non terminal LinkedList       structBody;
 
 
  
