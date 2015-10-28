@@ -98,9 +98,18 @@ non terminal ExpNode          term;
  
  
 /* NOTE: Add precedence and associativity declarations here */
-precedence left DOT, PLUS, MINUS, TIMES, DIVIDE, AND, OR;
+/* The comma separated list indicates that those terminals should have the associativity specified at that precedence level and the precedence of that declaration. The order of precedence, from highest to lowest, is bottom to top. Hence, this declares that multiplication and division have higher precedence than addition and subtraction:
+    precedence left  ADD, SUBTRACT;
+    precedence left  TIMES, DIVIDE;
+*/
+
 precedence right ASSIGN;
+precedence left OR;
+precedence left AND;
 precedence nonassoc LESS, GREATER, LESSEQ, GREATEREQ, EQUALS, NOTEQUALS;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence right NOT;
 
 
 start with program;
@@ -141,6 +150,9 @@ decl            ::= varDecl:v
 
 varDecl         ::= type:t id:i SEMICOLON
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NOT_STRUCT);
+                :}
+                | STRUCT id:i1 id:i2 SEMICOLON
+                {: RESULT = new VarDeclNode(new StructNode(i1), i2, 0);
                 :}
                 ;
 
@@ -237,7 +249,10 @@ assignExp       ::= loc:l ASSIGN exp:e
                 :}
                 ;
 
-exp             ::= exp:e1 PLUS exp:e2
+exp             ::= assignExp:a
+                {: RESULT = a;
+                :}
+                | exp:e1 PLUS exp:e2
                 {: RESULT = new PlusNode(e1, e2);
                 :}
                 | exp:e1 MINUS exp:e2

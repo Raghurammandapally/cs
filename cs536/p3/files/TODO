@@ -1,0 +1,55 @@
+TODO:
+------------------
+- In particular, you should write an input file that causes the action associated with every grammar rule in your Java CUP specification to be executed at least once.
+- ast.java: Contains class definitions for the AST structure that the parser will build (you will need to add unparsing code to this file, but you should not add any new classes, fields, or methods).
+- The unary minus and not (!) operators have the highest precedence, then multiplication and division, then addition and subtraction, then the relational and equality operators, then the logical and operator (&&), then the logical or operator (||), and finally the assignment operator (=).
+  o The comma separated list indicates that those terminals should have the associativity specified at that precedence level and the precedence of that declaration. The order of precedence, from highest to lowest, is bottom to top. Hence, this declares that multiplication and division have higher precedence than addition and subtraction:
+  o Assignment is right associative.
+  o The dot operator is left associative.
+
+
+
+lowest
+  ASSIGN
+  OR
+  AND
+  LESS, GREATER, LESSEQ, GREATEREQ, EQUALS, NOTEQUALS
+  PLUS, MINUS
+  TIMES, DIVIDE
+  NOT
+highest
+
+left
+  DOT, PLUS, MINUS, TIMES, DIVIDE, AND, OR
+right
+  ASSIGN
+nonassoc
+  LESS, GREATER, LESSEQ, GREATEREQ, EQUALS, NOTEQUALS
+
+precedence right ASSIGN
+precedence left OR
+precedence left AND
+precedence nonassoc LESS, GREATER, LESSEQ, GREATEREQ, EQUALS, NOTEQUALS
+precedence left PLUS, MINUS
+precedence left TIMES, DIVIDE
+precedence right NOT
+
+/* Terminals (tokens returned by the scanner) */
+x PLUS;
+x MINUS;
+x TIMES;
+x DIVIDE;
+  
+x NOT;
+x AND;
+x OR;
+  
+x ASSIGN;
+  
+x EQUALS;
+x NOTEQUALS;
+x LESS;
+x GREATER;
+x LESSEQ;
+x GREATEREQ;
+

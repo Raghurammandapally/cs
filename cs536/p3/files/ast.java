@@ -378,10 +378,13 @@ class VoidNode extends TypeNode {
 
 class StructNode extends TypeNode {
     public StructNode(IdNode id) {
-		myId = id;
+      myId = id;
     }
 
     public void unparse(PrintWriter p, int indent) {
+      doIndent(p, indent);
+      p.print("struct ");
+      myId.unparse(p, 0);
     }
 	
 	// 1 kid

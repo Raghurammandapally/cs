@@ -1,12 +1,44 @@
-stmt            ::= assignExp SEMICOLON
-                | loc PLUSPLUS SEMICOLON
-                | loc MINUSMINUS SEMICOLON
-                | CIN READ loc SEMICOLON
-                | COUT WRITE exp SEMICOLON
-                | IF LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY
-                | IF LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY ELSE LCURLY varDeclList stmtList RCURLY
-                | WHILE LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY
-                | RETURN exp SEMICOLON
-                | RETURN SEMICOLON
-                | fncall SEMICOLON
-                ;
+
+/* Terminals (tokens returned by the scanner) */
+terminal                INT;
+terminal                BOOL;
+terminal                VOID;
+//https://piazza.com/class/id543c6knik6h7?cid=95
+terminal TokenVal       TRUE;
+terminal TokenVal       FALSE;
+terminal                STRUCT;
+terminal                CIN;
+terminal                COUT;
+terminal                IF;
+terminal                ELSE;
+terminal                WHILE;
+terminal                RETURN;
+terminal IdTokenVal     ID;
+terminal IntLitTokenVal INTLITERAL;
+terminal StrLitTokenVal STRINGLITERAL;
+terminal                LCURLY;
+terminal                RCURLY;
+terminal                LPAREN;
+terminal                RPAREN;
+terminal                SEMICOLON;
+terminal                COMMA;
+terminal                DOT;
+terminal                WRITE;
+terminal                READ;
+terminal                PLUSPLUS;
+terminal                MINUSMINUS;
+terminal                PLUS;
+terminal                MINUS;
+terminal                TIMES;
+terminal                DIVIDE;
+terminal                NOT;
+terminal                AND;
+terminal                OR;
+terminal                EQUALS;
+terminal                NOTEQUALS;
+terminal                LESS;
+terminal                GREATER;
+terminal                LESSEQ;
+terminal                GREATEREQ;
+terminal                ASSIGN;
+
