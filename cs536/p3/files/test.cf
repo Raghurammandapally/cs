@@ -62,4 +62,3 @@ int max() {
   cin >> x.yz;
   cin >> x;
 }
-
