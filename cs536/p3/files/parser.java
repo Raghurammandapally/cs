@@ -61,12 +61,12 @@ public class parser extends java_cup.runtime.lr_parser {
     "\ufffe\001\002\000\014\002\000\004\010\005\011\006\013" +
     "\011\012\001\002\000\004\002\006\001\002\000\004\002" +
     "\001\001\002\000\014\002\ufffd\004\ufffd\005\ufffd\006\ufffd" +
-    "\011\ufffd\001\002\000\004\020\uffc1\001\002\000\004\020" +
-    "\uffc2\001\002\000\004\020\020\001\002\000\004\020\uffc3" +
+    "\011\ufffd\001\002\000\004\020\uffc3\001\002\000\004\020" +
+    "\uffc2\001\002\000\004\020\020\001\002\000\004\020\uffc1" +
     "\001\002\000\004\020\020\001\002\000\014\002\uffff\004" +
-    "\uffff\005\uffff\006\uffff\011\uffff\001\002\000\014\002\ufffb" +
-    "\004\ufffb\005\ufffb\006\ufffb\011\ufffb\001\002\000\014\002" +
-    "\ufffc\004\ufffc\005\ufffc\006\ufffc\011\ufffc\001\002\000\056" +
+    "\uffff\005\uffff\006\uffff\011\uffff\001\002\000\014\002\ufffc" +
+    "\004\ufffc\005\ufffc\006\ufffc\011\ufffc\001\002\000\014\002" +
+    "\ufffb\004\ufffb\005\ufffb\006\ufffb\011\ufffb\001\002\000\056" +
     "\020\uffbe\023\uffbe\025\uffbe\026\uffbe\027\uffbe\030\uffbe\031" +
     "\uffbe\034\uffbe\035\uffbe\036\uffbe\037\uffbe\040\uffbe\041\uffbe" +
     "\043\uffbe\044\uffbe\045\uffbe\046\uffbe\047\uffbe\050\uffbe\051" +
@@ -489,26 +489,26 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // decl ::= structDecl 
-            {
-              DeclNode RESULT =null;
-		int sleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
-		int sright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
-		StructDeclNode s = (StructDeclNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-		 RESULT = s;
-                
-              CUP$parser$result = parser.getSymbolFactory().newSymbol("decl",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
-            }
-          return CUP$parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // decl ::= fnDecl 
+          case 5: // decl ::= fnDecl 
             {
               DeclNode RESULT =null;
 		int fleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int fright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		FnDeclNode f = (FnDeclNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		 RESULT = f;
+                
+              CUP$parser$result = parser.getSymbolFactory().newSymbol("decl",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
+            }
+          return CUP$parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 6: // decl ::= structDecl 
+            {
+              DeclNode RESULT =null;
+		int sleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		StructDeclNode s = (StructDeclNode)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		 RESULT = s;
                 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("decl",2, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1332,10 +1332,10 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 62: // type ::= VOID 
+          case 62: // type ::= INT 
             {
               TypeNode RESULT =null;
-		 RESULT = new VoidNode();
+		 RESULT = new IntNode();
                 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("type",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1352,10 +1352,10 @@ class CUP$parser$actions {
           return CUP$parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 64: // type ::= INT 
+          case 64: // type ::= VOID 
             {
               TypeNode RESULT =null;
-		 RESULT = new IntNode();
+		 RESULT = new VoidNode();
                 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("type",4, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }

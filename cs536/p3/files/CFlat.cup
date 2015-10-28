@@ -138,11 +138,11 @@ declList        ::= declList:dl decl:d
 decl            ::= varDecl:v
                 {: RESULT = v;
                 :}
-                | structDecl:s
-                {: RESULT = s;
-                :}
                 | fnDecl:f
                 {: RESULT = f;
+                :}
+                | structDecl:s
+                {: RESULT = s;
                 :}
                 ;
 
@@ -354,14 +354,14 @@ actualList      ::= exp:e
                 :}
                 ;
 
-type            ::= VOID
-                {: RESULT = new VoidNode();
+type            ::= INT
+                {: RESULT = new IntNode();
                 :}
                 | BOOL
                 {: RESULT = new BoolNode();
                 :}
-                | INT
-                {: RESULT = new IntNode();
+                | VOID
+                {: RESULT = new VoidNode();
                 :}
                 ;
 
