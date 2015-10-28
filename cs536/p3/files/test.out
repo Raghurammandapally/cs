@@ -1,0 +1,73 @@
+int x;
+struct x {
+  bool y;
+  struct z {
+    void a;
+    struct X x;
+  };
+  int f() {
+  }
+};
+int max(int a) {
+}
+int max(bool b, int a) {
+  int x;
+  int y;
+  x = y;
+  x = y = z = a = b;
+  a++;
+  (a.b)++;
+  (b.a)--;
+  cin >> (((x.y).z).abc);
+  cin >> x;
+  cout << x = y;
+  if ((hello == world)) {
+    println("yah");
+  }
+  if ((hello == world)) {
+    println("yah");
+  } else {
+    doSomethingDifferent();
+  }
+  while (dog) {
+    cat();
+  }
+  return((a == (b * c)));
+  return;
+  xyz(abc, 123, null);
+  x = (y + z);
+  x = (y - z);
+  x = (y * z);
+  x = (y / z);
+  x = (!z);
+  x = (y && z);
+  x = (y || z);
+  x = (y == z);
+  x = (y != z);
+  x = (y < z);
+  x = (y > z);
+  x = (y <= z);
+  x = (y >= z);
+  x = (-y);
+  x = (y.z);
+  x = 1;
+  x = true;
+  x = false;
+  x = (y + z);
+  x = max(a, b, c);
+  x = min();
+  x = (((((y * z) - (-x)) + (3 / 4)) && (!c)) || ((y - (x.y)) + f(1)));
+}
+int max() {
+  if ((b == (-1))) {
+    x = ((4 + (3 * 5)) - y);
+    while (c) {
+      y = ((y * 2) + x);
+    }
+  } else {
+    x = 0;
+  }
+  cin >> ((x.yz).abc);
+  cin >> (x.yz);
+  cin >> x;
+}

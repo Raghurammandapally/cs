@@ -41,7 +41,6 @@ ErrMsg.class: ErrMsg.java
 ##test
 test:
 	java   P3 test.cf test.out
-	cat test.out
 
 ###
 # clean

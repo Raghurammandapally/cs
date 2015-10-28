@@ -1,42 +1,65 @@
-//int x;
-//int y;
-//bool z;
-//void xyz;
-//struct c{int l1;};
-//struct c me;
-//struct test {
-
-  //*********************
-  //THIS IS BAD AND SHOULD GENERATE A SYNTAX ERROR
-  //*********************
-  //void f(int x){y = f(x);return(y);}
-//struct c{int l1;};
-//int x;
-//int y;
-//bool z;
-//} ;
-//int max(int num1, int num2) {}
-//int max(int x, bool y, void z) 
-//{
-  //int result;
-  //max();
-  //return;
-  //max(1,2,3);
-  //max("hello world",true,false, (3), max(65, "yah"), x.y.zba, a.c, c );
-  //max(1+ 2, 3 - 4, 4 * 5 - 3, 7 + 8 * 2, !4);
-  //max(-2, 1 < 2, 3 >= 4, 5 == 3, 1 < 2);//< 3);
-  //a = b;
-  //a++; b--;
-  //cin >> x.yz;
-  //cout << 5 * 32;
-  //if(hello==world){println("yah");}
-  //if(hello==world){println("yah");}else{doSomethingDifferent();}
-  //while(dog){cat();}
-  //return(a == b*c);
-  //x = y + z;
-  //x = y = z;
-//}
-
-if (b == -1) { x = 4+3*5-y; while (c) { y = y*2+x; } } else { x = 0; }
-
+int x;
+struct x {
+  bool y;
+  struct z {
+    void a;
+    struct X x;
+  };
+  int f() {
+  }
+};
+int max(int a) {
+  //declList
+  //stmtList
+}
+int max(int a, bool b) {
+  //declList
+  int x;
+  int y;
+  //stmtList 
+  //***NOTE: ()'s surround assignments to illustrate right-assiciativity
+  x = y;
+  x = y = z = a = b;
+  a++; a.b++; b.a--;
+  cin >> x.y.z.abc;
+  cin >> x;
+  cout << x = y;
+  if(hello==world){println("yah");}
+  if(hello==world){println("yah");}else{doSomethingDifferent();}
+  while(dog){cat();}
+  return(a == b*c);
+  return;
+  xyz(abc, 123, null);
+  x = y + z;
+  x = y - z;
+  x = y * z;
+  x = y / z;
+  x = !z;
+  x = y && z;
+  x = y || z;
+  x = y == z;
+  x = y != z;
+  x = y < z;
+  x = y > z;
+  x = y <= z;
+  x = y >= z;
+  x = -y;
+  x = y.z;
+  x = 1;
+  x = true;
+  x = false;
+  x = (y + z);
+  x = max(a,b,c);
+  x = min();
+  x = y * z - -x + 3 / 4 && !c || y - x.y + f(1);
+}
+//*******************************
+// GIVEN SAMPLE INPUT
+//*******************************
+int max() {
+  if (b == -1) { x = 4+3*5-y; while (c) { y = y*2+x; } } else { x = 0; }
+  cin >> x.yz.abc;
+  cin >> x.yz;
+  cin >> x;
+}
 

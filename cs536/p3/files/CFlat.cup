@@ -146,6 +146,7 @@ decl            ::= varDecl:v
 
 //**********************************************
 // varDeclList????
+// see https://piazza.com/class/id543c6knik6h7?cid=98
 //**********************************************
 
 varDecl         ::= type:t id:i SEMICOLON
@@ -168,6 +169,7 @@ structDecl      ::= STRUCT id:i LCURLY declList:d RCURLY SEMICOLON
 
 //**********************************************
 // structBody????
+// (same reason as above)
 //**********************************************
 
 
