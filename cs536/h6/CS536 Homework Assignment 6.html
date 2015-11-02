@@ -1,0 +1,100 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h6/h6.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 Homework Assignment 6</title>
+
+
+<style type="text/css"></style></head><body>
+
+
+<h1>CS536 Homework 6<br>
+<b>Due by 11pm pm on Thursday, Nov 5</b> (not accepted late)
+</h1>
+
+<br>
+
+
+
+
+
+<h3 id="Question 1">Question 1:</h3>
+<p class="reg">Suppose that students' grades are kept in a file with the following format:</p>
+<ul class="reg">
+<li>The file contains one or more student records.</li>
+<li>Each student record has one student's name, then their ID number, then zero or more grades, separated by commas.</li>
+<li>Each grade is an integer value followed by zero or more stars (to represent the number of  days late).</li>
+</ul>
+<p class="reg">Here's a CFG for the grade file format:</p>
+
+<dir><pre>file &#8594; record tail
+tail &#8594; file | &#949;
+record	&#8594; NAME IDNUM optGrades
+optGrades &#8594; grades | &#949;
+grades &#8594; oneGrade | oneGrade COMMA grades
+oneGrade &#8594; INTLIT optLate
+optLate &#8594; stars | &#949;
+stars &#8594; STAR | stars STAR</pre></dir>
+
+<ol class="reg" type="a">
+<li><p>Although the grade file CFG given above is not LL(1), some correct inputs can be parsed by a predictive parser. This is because those inputs never cause the parser to look at a table entry that contains two or more CFG rules.</p>
+<ol type="i">
+<li>Give the shortest such input (as a sequence of tokens, ending
+with <tt>EOF</tt>).</li>
+<li>Draw the parse tree that the parser would build for the input you gave for Part (i).
+(Do not include the <tt>EOF</tt> token in the parse tree.)</li>
+</ol>
+</li>
+
+<li><p>
+What is the shortest sequence of tokens that would
+"stump" a predictive parser trying to parse the language of this CFG
+(i.e., a sequence of tokens that is a prefix of a valid input, but
+for which the parser would not know how
+to continue to build the parse tree top-down because it looks at
+a table entry that contains two or more CFG rules)?
+To answer this question, give all of the following:</p>
+<ol type="i">
+  <li>The sequence of tokens (a <b>prefix</b> of a valid input).</li>
+  <li> The (partial) parse tree that the predictive parser would have
+       built before being stumped.</li>
+  <li> The CFG rules that the predictive parser can't choose between
+       to continue to grow the parse tree.</li>
+</ol>
+
+</li>
+
+</ol>
+
+<h3 id="Question 2">Question 2:</h3>
+<p class="reg">
+This question concerns the following  grammar (where non-terminals are  in lower-case and terminals are in upper-case):
+</p><dir><pre>aa &#8594; A ee bb B
+
+bb &#8594; cc bb
+   | &#949;
+
+cc &#8594; D C
+   | F ee bb B dd
+
+dd &#8594; E A ee bb B
+   | &#949;
+
+ee &#8594; ff ee
+   | &#949;
+
+ff &#8594; hh D gg
+
+gg &#8594; C
+   | H C
+
+hh &#8594; G
+   | J
+</pre></dir>
+<p class="reg">
+Provide a table with the FIRST and FOLLOW sets for all
+of this grammar's nonterminals.
+Provide a  second table with the FIRST sets for all of the production
+right-hand sides.
+
+
+</p></body><div></div><div></div></html>
