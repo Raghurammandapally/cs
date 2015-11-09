@@ -1,0 +1,8 @@
+SymTable()
+  void addDecl(String name, SemSym sym) 
+    throws DuplicateSymException, EmptySymTableException
+  void addScope()
+  SemSym lookupLocal(String name)
+  SemSym lookupGlobal(String name)
+  void removeScope() throws EmptySymTableException
+  void print()

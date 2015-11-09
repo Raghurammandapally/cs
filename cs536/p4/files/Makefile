@@ -29,6 +29,9 @@ ASTnode.class: ast.java
 CFlat.jlex.java: CFlat.jlex sym.class
 	java    JLex.Main CFlat.jlex
 
+ast.java: SemSym.java FnSym.java
+	$(JC) SemSym.java FnSym.java
+
 sym.class: sym.java
 	$(JC)    sym.java
 
@@ -40,8 +43,8 @@ ErrMsg.class: ErrMsg.java
 
 ##test
 test:
-	java P4 test.cf test.out
-	cat test.out
+	#java P4 test.cf test.out
+	#cat test.out
 	java P4 nameErrors.cf nameErrors.out
 	cat nameErrors.out
 

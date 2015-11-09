@@ -1,0 +1,64 @@
+//void g;
+int x;
+bool a;
+int f(int x, bool y) { //, void z) {
+  //int x;
+  int a;
+  bool b;
+  b = 5;
+  //c = 5;
+  //d++;
+  //e--;
+  //cin >> f;
+  //cin >> g;
+  //cout << g;
+  //f(a,c);
+  //g(a,b,c);
+  //if(-g) {
+    //int h;
+    //i = 4;
+    //g(a,b,c);
+  //} else {
+    //int h;
+    //i = 4;
+    //g(c);
+  //}
+  //while(-g) {
+    //int h;
+    //i = 4;
+    //return j;
+  //}
+  //void x;
+}
+struct foo {
+  int bar;
+  bool baz;
+};
+struct Point {
+  struct foo l;
+  int x;
+  int y;
+};
+struct Point pt;
+//struct b {
+  //int y;
+  //int f() { }
+  //bool a;
+//};
+//int f() { print("hello"); }
+
+
+//struct Point {
+    //int x;
+    //int y;
+//};
+//int f(int x, bool b) { }
+//void g() {
+    //int a;
+    //bool b;
+    //struct Point p;
+    //p.x = a;
+    //b = a == 3;
+    //f(a + p.y*2, b);
+    //g();
+//}
