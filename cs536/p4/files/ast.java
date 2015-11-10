@@ -1022,12 +1022,6 @@ class DotAccessExpNode extends ExpNode {
 
       // now we have found a Sym recursively for the lhs
       if(!(lhs instanceof StructUsageSym)) {
-        // error 
-        //if(myLoc instanceof IdNode) {
-          //ErrMsg.fatal(((IdNode) myLoc).getLineNum(), ((IdNode) myLoc).getCharNum(), "Dot-access of non-struct type");
-        //} else {
-          //ErrMsg.fatal(((DotAccessExpNode) myLoc).getLineNum(), ((DotAccessExpNode) myLoc).getCharNum(), "Dot-access of non-struct type");
-        //}
         ErrMsg.fatal(getLineNum(), getCharNum(), "Dot-access of non-struct type");
         return null;
       } else {
