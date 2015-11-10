@@ -998,16 +998,21 @@ class DotAccessExpNode extends ExpNode {
     }
 
     public void analyze(SymTable s) {
+      analyzeDot(s);
+    }
+
+    public SemSym analyzeDot(SymTable s) {
       if(myLoc instanceof IdNode) {
         IdNode locId = (IdNode) myLoc;
         SemSym locSym = s.lookupGlobal(locId.getStrVal());
         if(locSym == null) {
           ErrMsg.fatal(locId.getLineNum(), locId.getCharNum(), "Undeclared identifier");
-          return;
+          return null;
         } else {
           if(!(locSym instanceof StructUsageSym)) {
             // error 
             ErrMsg.fatal(locId.getLineNum(), locId.getCharNum(), "Dot-access of non-struct type");
+            return null;
           } else {
             StructUsageSym struct = (StructUsageSym) locSym;
             SemSym sym = s.lookupGlobal(struct.getName());
@@ -1019,6 +1024,9 @@ class DotAccessExpNode extends ExpNode {
               SemSym rhs = sLocal.lookupGlobal(myId.getStrVal());
               if(rhs == null) {
                 ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+                return null;
+              } else {
+                return rhs;
               }
             }
           }
