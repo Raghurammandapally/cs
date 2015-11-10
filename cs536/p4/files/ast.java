@@ -1002,39 +1002,67 @@ class DotAccessExpNode extends ExpNode {
     }
 
     public SemSym analyzeDot(SymTable s) {
+      SemSym lhs;
       if(myLoc instanceof IdNode) {
         IdNode locId = (IdNode) myLoc;
-        SemSym locSym = s.lookupGlobal(locId.getStrVal());
-        if(locSym == null) {
+        lhs = s.lookupGlobal(locId.getStrVal());
+        if(lhs == null) {
           ErrMsg.fatal(locId.getLineNum(), locId.getCharNum(), "Undeclared identifier");
           return null;
-        } else {
-          if(!(locSym instanceof StructUsageSym)) {
-            // error 
-            ErrMsg.fatal(locId.getLineNum(), locId.getCharNum(), "Dot-access of non-struct type");
-            return null;
-          } else {
-            StructUsageSym struct = (StructUsageSym) locSym;
-            SemSym sym = s.lookupGlobal(struct.getName());
-            StructSym structSym = (StructSym) sym;
-            if(structSym == null) {
-              throw new RuntimeException();
-            } else {
-              SymTable sLocal = structSym.getSymTable();
-              SemSym rhs = sLocal.lookupGlobal(myId.getStrVal());
-              if(rhs == null) {
-                ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
-                return null;
-              } else {
-                return rhs;
-              }
-            }
-          }
         }
+      // myLoc instanceof DotAccessExpNode
       } else {
-        myLoc.analyze(s);
+        DotAccessExpNode locDot = (DotAccessExpNode) myLoc;
+        lhs = locDot.analyzeDot(s);
+        if(lhs == null) {
+          // pass failure up chain if error found further left
+          return null;
+        }
       }
 
+      // now we have found a Sym recursively for the lhs
+      if(!(lhs instanceof StructUsageSym)) {
+        // error 
+        //if(myLoc instanceof IdNode) {
+          //ErrMsg.fatal(((IdNode) myLoc).getLineNum(), ((IdNode) myLoc).getCharNum(), "Dot-access of non-struct type");
+        //} else {
+          //ErrMsg.fatal(((DotAccessExpNode) myLoc).getLineNum(), ((DotAccessExpNode) myLoc).getCharNum(), "Dot-access of non-struct type");
+        //}
+        ErrMsg.fatal(getLineNum(), getCharNum(), "Dot-access of non-struct type");
+        return null;
+      } else {
+        StructUsageSym struct = (StructUsageSym) lhs;
+        SemSym sym = s.lookupGlobal(struct.getName());
+        StructSym structSym = (StructSym) sym;
+        if(structSym == null) {
+          throw new RuntimeException();
+        } else {
+          SymTable sLocal = structSym.getSymTable();
+          SemSym rhs = sLocal.lookupGlobal(myId.getStrVal());
+          if(rhs == null) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+            return null;
+          } else {
+            return rhs;
+          }
+        }
+      }
+    }
+
+    public int getCharNum() {
+      if(myLoc instanceof IdNode) {
+        return ((IdNode) myLoc).getCharNum();
+      } else {
+        return ((DotAccessExpNode) myLoc).getCharNum();
+      }
+    }
+
+    public int getLineNum() {
+      if(myLoc instanceof IdNode) {
+        return ((IdNode) myLoc).getLineNum();
+      } else {
+        return ((DotAccessExpNode)myLoc).getLineNum();
+      }
     }
 
 //  public SymTable analyzeDot(SymTable s) {
