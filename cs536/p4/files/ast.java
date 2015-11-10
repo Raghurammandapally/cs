@@ -1059,60 +1059,6 @@ class DotAccessExpNode extends ExpNode {
       }
     }
 
-//  public SymTable analyzeDot(SymTable s) {
-//    SymTable sLocal = myLoc.analyzeDot(s);
-//    if(sLocal == null) {
-//      // to change
-//      ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
-//    } else {
-//      SemSym sym = sLocal.lookupGlobal(myId.getStrVal());
-//      if(SemSym == null) {
-//        // to change
-//        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
-//        return null;
-//      } else if (!(sym instanceof StructUsageSym)) {
-//        // to change
-//        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
-//        return null;
-//      } else {
-//      }
-//    }
-//  }
-          
-
-
-
-
-
-//  public SymTable analyzeDot(SymTable s, SymTable sLocal) {
-//    SymTable sLocal;
-//    // this is the leftmost dot-reference
-//    if(myLoc instanceof IdNode) {
-//      IdNode lhs = (IdNode) myLoc;
-//      // determine whether myId is a valid field of the struct on LHS
-//      SemSym sym = s.lookupGlobal(lhs.getStrVal());
-//      if(sym == null) {
-//        ErrMsg.fatal(lhs.getLineNum(), lhs.getCharNum(), "Undeclared identifier");
-//      } else if (!(sym instanceof StructSym)) {
-//        ErrMsg.fatal(lhs.getLineNum(), lhs.getCharNum(), "Dot-access of non-struct type");
-//      } else {
-//        sLocal = sym.getSymTable();
-//      }
-//    //not the left-most, recur on the lhs
-//    } else {
-//      sLocal = myLoc.analyzeDot(s, sLocal);
-//    }
-//    
-//    if(sLocal == null) {
-//      ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
-//    } else {
-//      SemSym sym = sLocal.lookupGlobal(myId.getStrVal());
-//      if(sym == null) {
-//        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
-//      }
-//    }
-//  }
-
     // 2 kids
     private ExpNode myLoc;	
     private IdNode myId;
