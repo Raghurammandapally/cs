@@ -132,6 +132,7 @@ class ProgramNode extends ASTnode {
     public void analyze() {
       SymTable s = new SymTable();
       myDeclList.analyze(s);
+      s.print();
     }
 
     // 1 kid
@@ -165,6 +166,18 @@ class DeclListNode extends ASTnode {
             System.err.println("unexpected NoSuchElementException in DeclListNode.print");
             System.exit(-1);
         }
+    }
+
+    public void analyzeStruct(SymTable s, SymTable sLocal) {
+      for(DeclNode d : myDecls) {
+        if(!(d instanceof VarDeclNode)) {
+          throw new RuntimeException();
+        } else {
+          ((VarDeclNode) d).analyzeStruct(s, sLocal);
+          //((VarDeclNode) d).analyze(s);
+          
+        }
+      }
     }
 
     // list of kids (DeclNodes)
@@ -325,9 +338,13 @@ class VarDeclNode extends DeclNode {
         sym = s.lookupGlobal(id.getStrVal());
         if(sym == null) {
           ErrMsg.fatal(id.getLineNum(), id.getCharNum(), "Invalid name of struct type");
+          return;
+        } else {
+          sym = new StructUsageSym("struct", id.getStrVal());
         }
+      } else {
+        sym = new SemSym(myType.getType());
       }
-      sym = new SemSym(myType.getType());
       try {
         s.addDecl(myId.getStrVal(), sym);
       } catch (EmptySymTableException e1) {
@@ -335,6 +352,41 @@ class VarDeclNode extends DeclNode {
       } catch (DuplicateSymException e2) {
         ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
       }
+    }
+
+    public void analyzeStruct(SymTable s, SymTable sLocal) {
+      SemSym sym;
+      //void
+      if(myType instanceof VoidNode) {
+        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Non-function declared void");
+      }
+      //struct
+      if(myType instanceof StructNode) {
+        IdNode id = ((StructNode) myType).getId();
+        sym = s.lookupGlobal(id.getStrVal());
+        if(sym == null) {
+          ErrMsg.fatal(id.getLineNum(), id.getCharNum(), "Invalid name of struct type");
+          return;
+        } else {
+          if(!sym.getType().equals("struct")) {
+            ErrMsg.fatal(id.getLineNum(), id.getCharNum(), "Invalid name of struct type");
+            return;
+          }
+        }
+        sym = new StructUsageSym("struct", id.getStrVal());
+      } else {
+        sym = new SemSym(myType.getType());
+      }
+
+      try {
+        sLocal.addDecl(myId.getStrVal(), sym);
+      } catch (EmptySymTableException e1) {
+        throw new RuntimeException();
+      } catch (DuplicateSymException e2) {
+        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Multiply declared identifier");
+      }
+
+      
     }
 
     // 3 kids
@@ -439,8 +491,8 @@ class StructDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         p.print("struct ");
-		myId.unparse(p, 0);
-		p.println("{");
+        myId.unparse(p, 0);
+        p.println("{");
         myDeclList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("};\n");
@@ -451,7 +503,6 @@ class StructDeclNode extends DeclNode {
       StructSym sym = new StructSym("struct");
       try {
         s.addDecl(myId.getStrVal(), sym);
-        s.print();
       } catch (EmptySymTableException e1) {
         throw new RuntimeException();
       } catch (DuplicateSymException e2) {
@@ -459,7 +510,7 @@ class StructDeclNode extends DeclNode {
       }
 
       SymTable sLocal = new SymTable();
-      myDeclList.analyze(sLocal);
+      myDeclList.analyzeStruct(s, sLocal);
       sym.setSymTable(sLocal);
     }
 
@@ -517,7 +568,7 @@ class VoidNode extends TypeNode {
 
 class StructNode extends TypeNode {
     public StructNode(IdNode id) {
-		myId = id;
+      myId = id;
     }
 
     public String getType() {
@@ -941,18 +992,101 @@ class DotAccessExpNode extends ExpNode {
 
     public void unparse(PrintWriter p, int indent) {
 	    p.print("(");
-		myLoc.unparse(p, 0);
-		p.print(").");
-		myId.unparse(p, 0);
+      myLoc.unparse(p, 0);
+      p.print(").");
+      myId.unparse(p, 0);
     }
 
     public void analyze(SymTable s) {
-      
+      if(myLoc instanceof IdNode) {
+        IdNode locId = (IdNode) myLoc;
+        SemSym locSym = s.lookupGlobal(locId.getStrVal());
+        if(locSym == null) {
+          ErrMsg.fatal(locId.getLineNum(), locId.getCharNum(), "Undeclared identifier");
+          return;
+        } else {
+          if(!(locSym instanceof StructUsageSym)) {
+            // error 
+            ErrMsg.fatal(locId.getLineNum(), locId.getCharNum(), "Dot-access of non-struct type");
+          } else {
+            StructUsageSym struct = (StructUsageSym) locSym;
+            SemSym sym = s.lookupGlobal(struct.getName());
+            StructSym structSym = (StructSym) sym;
+            if(structSym == null) {
+              throw new RuntimeException();
+            } else {
+              SymTable sLocal = structSym.getSymTable();
+              SemSym rhs = sLocal.lookupGlobal(myId.getStrVal());
+              if(rhs == null) {
+                ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+              }
+            }
+          }
+        }
+      } else {
+        myLoc.analyze(s);
+      }
+
     }
+
+//  public SymTable analyzeDot(SymTable s) {
+//    SymTable sLocal = myLoc.analyzeDot(s);
+//    if(sLocal == null) {
+//      // to change
+//      ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+//    } else {
+//      SemSym sym = sLocal.lookupGlobal(myId.getStrVal());
+//      if(SemSym == null) {
+//        // to change
+//        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+//        return null;
+//      } else if (!(sym instanceof StructUsageSym)) {
+//        // to change
+//        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+//        return null;
+//      } else {
+//      }
+//    }
+//  }
+          
+
+
+
+
+
+//  public SymTable analyzeDot(SymTable s, SymTable sLocal) {
+//    SymTable sLocal;
+//    // this is the leftmost dot-reference
+//    if(myLoc instanceof IdNode) {
+//      IdNode lhs = (IdNode) myLoc;
+//      // determine whether myId is a valid field of the struct on LHS
+//      SemSym sym = s.lookupGlobal(lhs.getStrVal());
+//      if(sym == null) {
+//        ErrMsg.fatal(lhs.getLineNum(), lhs.getCharNum(), "Undeclared identifier");
+//      } else if (!(sym instanceof StructSym)) {
+//        ErrMsg.fatal(lhs.getLineNum(), lhs.getCharNum(), "Dot-access of non-struct type");
+//      } else {
+//        sLocal = sym.getSymTable();
+//      }
+//    //not the left-most, recur on the lhs
+//    } else {
+//      sLocal = myLoc.analyzeDot(s, sLocal);
+//    }
+//    
+//    if(sLocal == null) {
+//      ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+//    } else {
+//      SemSym sym = sLocal.lookupGlobal(myId.getStrVal());
+//      if(sym == null) {
+//        ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), "Invalid struct field name");
+//      }
+//    }
+//  }
 
     // 2 kids
     private ExpNode myLoc;	
     private IdNode myId;
+    private SemSym mySym;
 }
 
 class AssignNode extends ExpNode {

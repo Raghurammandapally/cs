@@ -1,11 +1,46 @@
+struct C {
+  int q;
+};
+struct B {
+  struct C z;
+};
+struct A {
+  struct B y;
+  //       ^(in VarDecl): myId 
+  //     ^(in VarDecl): ((StructNode) myType).getId()
+};
+struct A x;
+int y;
+
+int f() {
+  //x.y.z.q = 5;
+  x.y = 5;
+  x.z = 7;
+  y.z = 8;
+  z.y = 6;
+  x.y.z.q = 5; // should pass
+  x.z.z.q = 5; //should fail
+  x.y.q = 4; // should fail
+
+  x.y.z = 1; // should pass
+  x.y.q = 1; // should fail (invalid struct field name @ q)
+  x.z.q = 1; // should fail (invalid struct field name @ z)
+  x.z = 1; //should fail
+  x.y = 1; // should pass
+
+
+}
+
+
 //void g;
-int x;
-bool a;
-int f(int x, bool y) { //, void z) {
+//int x;
+//bool a;
+//int f(int x, bool y) { //, void z) {
   //int x;
-  int a;
-  bool b;
-  b = 5;
+  //int a;
+  //bool b;
+  //b = 5;
+  //x.y.z = 5;
   //c = 5;
   //d++;
   //e--;
@@ -29,17 +64,24 @@ int f(int x, bool y) { //, void z) {
     //return j;
   //}
   //void x;
-}
-struct foo {
-  int bar;
-  bool baz;
-};
-struct Point {
-  struct foo l;
-  int x;
-  int y;
-};
-struct Point pt;
+//}
+//struct bar {
+  //int bar;
+  //bool baz;
+//};
+//int bar;
+//struct foo {
+  //int a;
+//};
+//struct Point {
+  //struct foo l;
+  //struct bar k;
+  //struct x y;
+  //int x;
+  //bool x;
+  //struct bar x;
+//};
+//struct Point pt;
 //struct b {
   //int y;
   //int f() { }
