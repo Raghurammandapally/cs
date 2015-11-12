@@ -7,5 +7,8 @@ public class StructUsageSym extends SemSym {
   public String getName() {
     return myStructName;
   }
+  public String toString() {
+    return myStructName;
+  }
 }
 
