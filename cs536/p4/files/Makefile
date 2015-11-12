@@ -44,9 +44,7 @@ ErrMsg.class: ErrMsg.java
 ##test
 test:
 	java P4 test.cf test.out
-	cat test.out
 	java P4 nameErrors.cf nameErrors.out
-	cat nameErrors.out
 
 
 ###
