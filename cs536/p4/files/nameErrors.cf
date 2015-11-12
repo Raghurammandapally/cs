@@ -1,106 +1,52 @@
+int x;
+bool x; //error: multiply declared
+void x; //error: bad and multiply declared
+
+struct x { //error: multiply declared
+  int x;
+};
+
 struct C {
   int q;
 };
+
 struct B {
   struct C z;
 };
+
 struct A {
   struct B y;
-  //       ^(in VarDecl): myId 
-  //     ^(in VarDecl): ((StructNode) myType).getId()
 };
-struct A x;
-int y;
 
-int f() {
-  //x.y.z.q = 5;
-  x.y = 5;
-  x.z = 7;
-  y.z = 8;
-  z.y = 6;
-  x.y.z.q = 5; // should pass
-  x.z.z.q = 5; //should fail
-  x.y.q = 4; // should fail
+struct A x; //error: multiply declared
+void x; //two error messages (bad and multiply declared)
+struct x y; //error: invalid name of struct type
+struct A y; //no error
 
-  x.y.z = 1; // should pass
-  x.y.q = 1; // should fail (invalid struct field name @ q)
-  x.z.q = 1; // should fail (invalid struct field name @ z)
-  x.z = 1; //should fail
-  x.y = 1; // should pass
+struct D {
+  int x; //no error despite colliding with global scope
+  bool x; //error: multiply declared WITHIN struct
+  void x; //error: bad and multiply declared
+};
 
-
+//error: x is multiply declared
+//  (formals and body are still processed)
+void x(int a, bool a, void a) { 
+// errors: a multiply declared (2nd a)
+//         a bad and multiply declared (3rd a)
+  struct x z; //error: invalid name of struct type
+  struct A z; //no error
+  void foo; //error: non-func declared void
+  x = 5; //no error, x in global scope
+  z = 5; //error, undeclared identifier
+  x.y = 5; //error, lhs not struct
+  y.z = 5; //error, z not a field of A
+  y.y.y = 5; //error, (second) y not a field of B
+  y.y.z = 5; //no error
+  y.y.z.r = 5; //error, r not a field of C
+  y.y.z.q = 5; //no error
+  a = b; //error: undeclared b
+  b = c; //error: undeclared b AND c
+  b(); //error: undeclared b
+  b++; //error: undeclared b
 }
-
-
-//void g;
-//int x;
-//bool a;
-//int f(int x, bool y) { //, void z) {
-  //int x;
-  //int a;
-  //bool b;
-  //b = 5;
-  //x.y.z = 5;
-  //c = 5;
-  //d++;
-  //e--;
-  //cin >> f;
-  //cin >> g;
-  //cout << g;
-  //f(a,c);
-  //g(a,b,c);
-  //if(-g) {
-    //int h;
-    //i = 4;
-    //g(a,b,c);
-  //} else {
-    //int h;
-    //i = 4;
-    //g(c);
-  //}
-  //while(-g) {
-    //int h;
-    //i = 4;
-    //return j;
-  //}
-  //void x;
-//}
-//struct bar {
-  //int bar;
-  //bool baz;
-//};
-//int bar;
-//struct foo {
-  //int a;
-//};
-//struct Point {
-  //struct foo l;
-  //struct bar k;
-  //struct x y;
-  //int x;
-  //bool x;
-  //struct bar x;
-//};
-//struct Point pt;
-//struct b {
-  //int y;
-  //int f() { }
-  //bool a;
-//};
-//int f() { print("hello"); }
-
-
-//struct Point {
-    //int x;
-    //int y;
-//};
-//int f(int x, bool b) { }
-//void g() {
-    //int a;
-    //bool b;
-    //struct Point p;
-    //p.x = a;
-    //b = a == 3;
-    //f(a + p.y*2, b);
-    //g();
-//}

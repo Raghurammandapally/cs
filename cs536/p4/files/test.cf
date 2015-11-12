@@ -9,6 +9,9 @@ void g() {
     struct Point p;
     p.x = a;
     b = a == 3;
+    if(b + p.x == a) {
+      f();
+    }
     f(a + p.y*2, b);
     g();
 }

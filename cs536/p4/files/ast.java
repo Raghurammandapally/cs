@@ -132,7 +132,6 @@ class ProgramNode extends ASTnode {
     public void analyze() {
       SymTable s = new SymTable();
       myDeclList.analyze(s);
-      s.print();
     }
 
     // 1 kid
@@ -339,7 +338,7 @@ class VarDeclNode extends DeclNode {
       if(myType instanceof StructNode) {
         IdNode id = ((StructNode) myType).getId();
         sym = s.lookupGlobal(id.getStrVal());
-        if(sym == null) {
+        if(sym == null || !(sym instanceof StructSym)) {
           ErrMsg.fatal(id.getLineNum(), id.getCharNum(), "Invalid name of struct type");
           return;
         } else {
