@@ -1,3 +1,98 @@
+int x;
+bool a;
+
+void print(int x) {
+  // print x!
+}
+
+int q() { 
+  print("hello"); 
+}
+
+struct D {
+  int w;
+  int x; // no collision with global scope
+  bool a; // ^^
+};
+
+struct C {
+  struct D z;
+};
+
+struct B {
+  struct C y;
+};
+
+struct A {
+  struct B x;
+};
+
+struct A w;
+
+int foo(int c, bool y) { //, void z) {
+  int a;
+  bool b;
+  b = 5;
+  c = 5;
+  c++;
+  b--;
+  cin >> b;
+  cin >> b;
+  cout << b;
+  q(a,b,c);
+  if(-q) { //this should get caught in type analysis
+    int h;
+    y = 4;
+    q(a,b,c);
+  }
+  w.x.y.z.w = false;
+
+}
+
+void bar() {
+  // no collision with global scope
+  int x;
+  bool a;
+  struct C c;
+  c.z = 0;
+  c.z++;
+  c.z--;
+  cin >> c.z;
+  cout << c.z;
+  if( x + a < c ) {
+    // no collision with outer scope
+    int x;
+    bool a;
+    struct C c;
+    c.z.x = 2;
+  }
+  if( c.z ) {
+    bar();
+  } else {
+    while(a) {
+      foo();
+    }
+  }
+  return x;
+  return x == "hello world";
+}
+
+bool baz() {
+  while( (x < a) || (x > true) || (w.x <= "baz") && (w.x >= x)){
+    if((x + a - w.x * a / x) == a) {
+    } else {
+      if(x != -a) {
+      }
+    }
+  }
+  bar(baz, bar, foo);
+}
+
+
+
+////////////////////
+// same example as given in P4 description, outputs as expected
+////////////////////
 struct Point {
     int x;
     int y;
@@ -9,49 +104,7 @@ void g() {
     struct Point p;
     p.x = a;
     b = a == 3;
-    if(b + p.x == a) {
-      f();
-    }
     f(a + p.y*2, b);
     g();
 }
 
-//void g;
-//int x;
-//bool a;
-//int f(int x, bool y) { //, void z) {
-  ////int x;
-  //int a;
-  //bool b;
-  //b = 5;
-  //c = 5;
-  //d++;
-  //e--;
-  //cin >> f;
-  //cin >> g;
-  //cout << g;
-  //g(a,b,c);
-  //if(-g) {
-    //int h;
-    //i = 4;
-    //g(a,b,c);
-  //}
-  //void x;
-//}
-//int f() { print("hello"); }
-
-
-//struct Point {
-    //int x;
-    //int y;
-//};
-//int f(int x, bool b) { }
-//void g() {
-    //int a;
-    //bool b;
-    //struct Point p;
-    //p.x = a;
-    //b = a == 3;
-    //f(a + p.y*2, b);
-    //g();
-//}

@@ -34,6 +34,7 @@ struct D {
 void x(int a, bool a, void a) { 
 // errors: a multiply declared (2nd a)
 //         a bad and multiply declared (3rd a)
+  int a; //error: multiply declared (formals are in scope within function)
   struct x z; //error: invalid name of struct type
   struct A z; //no error
   void foo; //error: non-func declared void
