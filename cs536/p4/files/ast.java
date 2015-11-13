@@ -597,7 +597,6 @@ class StructNode extends TypeNode {
 
 abstract class StmtNode extends ASTnode {
   abstract public void analyze(SymTable s);
-  abstract public void unparseWithType(PrintWriter p, int indent);
 }
 
 class AssignStmtNode extends StmtNode {
@@ -609,9 +608,6 @@ class AssignStmtNode extends StmtNode {
         doIndent(p, indent);
         myAssign.unparse(p, -1); // no parentheses
         p.println(";");
-    }
-
-    public void unparseWithType(PrintWriter p, int indent) {
     }
 
     public void analyze(SymTable s) {
@@ -633,9 +629,6 @@ class PostIncStmtNode extends StmtNode {
         p.println("++;");
     }
 
-    public void unparseWithType(PrintWriter p, int indent) {
-    }
-
     public void analyze(SymTable s) {
       myExp.analyze(s);
     }
@@ -653,9 +646,6 @@ class PostDecStmtNode extends StmtNode {
         doIndent(p, indent);
         myExp.unparse(p, 0);
         p.println("--;");
-    }
-
-    public void unparseWithType(PrintWriter p, int indent) {
     }
 
     public void analyze(SymTable s) {
@@ -678,9 +668,6 @@ class ReadStmtNode extends StmtNode {
         p.println(";");
     }
 
-    public void unparseWithType(PrintWriter p, int indent) {
-    }
-
     public void analyze(SymTable s) {
       myExp.analyze(s);
     }
@@ -699,9 +686,6 @@ class WriteStmtNode extends StmtNode {
         p.print("cout << ");
         myExp.unparse(p, 0);
         p.println(";");
-    }
-
-    public void unparseWithType(PrintWriter p, int indent) {
     }
 
     public void analyze(SymTable s) {
@@ -728,9 +712,6 @@ class IfStmtNode extends StmtNode {
         myStmtList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("}");
-    }
-
-    public void unparseWithType(PrintWriter p, int indent) {
     }
 
     public void analyze(SymTable s) {
@@ -779,9 +760,6 @@ class IfElseStmtNode extends StmtNode {
         p.println("}");        
     }
 
-    public void unparseWithType(PrintWriter p, int indent) {
-    }
-
     public void analyze(SymTable s) {
       myExp.analyze(s);
       s.addScope();
@@ -828,9 +806,6 @@ class WhileStmtNode extends StmtNode {
         p.println("}");
     }
 
-    public void unparseWithType(PrintWriter p, int indent) {
-    }
-
 
     public void analyze(SymTable s) {
       myExp.analyze(s);
@@ -861,9 +836,6 @@ class CallStmtNode extends StmtNode {
         p.println(";");
     }
 
-    public void unparseWithType(PrintWriter p, int indent) {
-    }
-
     public void analyze(SymTable s) {
       myCall.analyze(s);
     }
@@ -885,9 +857,6 @@ class ReturnStmtNode extends StmtNode {
             myExp.unparse(p, 0);
         }
         p.println(";");
-    }
-
-    public void unparseWithType(PrintWriter p, int indent) {
     }
 
     public void analyze(SymTable s) {
