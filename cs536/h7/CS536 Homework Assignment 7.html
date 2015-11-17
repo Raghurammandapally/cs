@@ -1,0 +1,129 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h7/h7.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 Homework Assignment 7</title>
+
+<style type="text/css"></style></head><body>
+
+<h1>H7</h1><b>Due by 11:00 pm on Tuesday Nov 17</b><h2 id="Questions">Questions</h2><p class="sectionDesc">Homework assignments must be done individually. Collaboration on homework assignments is
+<em>not</em> allowed.</p><p class="reg">The C language allows you to define new names for existing types using <em>typedefs</em>.
+Here is some example code that uses typedefs:
+</p><dir><pre>typedef int money;
+int x;
+money y;
+typedef money dollars;
+dollars z;
+
+x = 10;
+y = x;    // OK because x and y are of type int
+z = y;    // OK because y and z are of type int
+</pre></dir><p class="reg">
+The first typedef defines <tt>money</tt> to be a synonym for <tt>int</tt>. Any declaration that
+follows this typedef can use <tt>money</tt> instead of <tt>int</tt>. The second typedef defines
+<tt>dollars</tt> to be a synonym for <tt>money</tt>, which makes it a synonym for <tt>int</tt>.
+Any declaration that follows this typedef can use <tt>dollars</tt> instead of <tt>int</tt>.
+</p><p class="reg">Typedefs can also be used with <tt>struct</tt> types:</p><dir><pre>struct Pair {
+    int x;
+    int y;
+};
+typedef struct Pair Point;
+Point p;
+</pre></dir><p class="reg">
+A typedef can occur anywhere that a variable declaration (local or global) can occur.
+The usual C scoping rules apply to the names in typedefs. Note that <tt>typedef int money;</tt>
+is considered to be a <i>declaration</i> of the name <tt>money</tt> and that both <tt>money x;</tt>
+and <tt>typedef money dollars;</tt> are considered to be <i>uses</i> of the name <tt>money</tt>.
+</p><h3 id="Question 1">Question 1:</h3><p class="reg">
+Assume that the following productions have been added to the grammar for the YES language:
+</p><dir><pre>decl &#8594; typedef
+typedef &#8594; TYPEDEF type ID SEMICOLON
+</pre></dir><p class="reg">
+What other productions need to be changed and/or added to the YES grammar
+to allow typedefs?
+</p><h3 id="Question 2">Question 2:</h3><p class="reg">
+Now consider the name-analysis phase of the compiler.
+Note that, in addition to the usual errors for multiply-defined
+names and for uses of undefined names, the name analyzer must
+enforce the following rules:
+</p><ul class="reg">
+  <li>
+    <p>The declaration <tt>typedef T xxx;</tt> is an error if <tt>T</tt> is
+       not a built-in type (e.g., <tt>int, bool</tt>)
+       or a <tt>struct</tt> type (in which case <tt>T</tt> will be of the form: <tt>struct ttt</tt>) or a new type defined by a previous typedef in the current
+       or an enclosing scope.
+  </p></li>
+  <li><p>The declaration <tt>typedef T xxx;</tt> is an error if <tt>xxx</tt>
+       has already been declared in the current scope (as a variable,
+       function, parameter, or new type).
+  </p></li>
+  <li>
+    <p>A variable, function, or parameter can only be declared to be of
+       type <tt>T</tt> if <tt>T</tt> is either a built-in type or a
+       new type defined by a previous typedef in the current
+       or an enclosing scope.
+  (A variable can still be declared to be of type <tt>struct ttt</tt> as before.)</p></li>
+</ul><p class="reg">
+Answer each of the following questions:
+</p><ol type="a" class="reg">
+  <li><p>What information should be stored with each name in the symbol table?
+  </p></li>
+  <li><p>What should be done to process a typedef: <tt>typedef T xxx;</tt>?
+  </p></li>
+  <li><p>What should be done to process a declaration of a
+       variable, function, or parameter named <tt>xxx</tt> and
+       declared to be of type <tt>T</tt>?
+  </p></li>
+  <li><p>What should be done to process the use of a name <tt>xxx</tt> in a statement?
+  </p></li>
+</ol><p class="reg">
+Illustrate your answer by showing the entries that would be in the
+symbol table after processing the following declarations:
+</p><dir><pre>struct MonthDayYear {
+    int month;
+    int day;
+    int year;
+};
+typedef struct MonthDayYear date;
+date today;
+typedef int dollars;
+dollars salary;
+typedef dollars moreDollars;
+moreDollars md;
+int d;
+</pre></dir><table class="page" cellpadding="8" cellspacing="0">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<tbody><tr><td></td></tr> <!-- space between items -->
+
+
+
+
+</tbody></table></body><div></div><div></div></html>

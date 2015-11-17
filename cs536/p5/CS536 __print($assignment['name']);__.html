@@ -1,0 +1,738 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>CS536 &lt;?print($assignment['name']);?&gt;</title>
+<style>
+.reg { border: 1px solid black}
+.regtable { border: "1px"; border-collapse:collapse>
+</style>
+
+<style type="text/css"></style></head>
+
+<body>
+<h1>P5</h1>
+
+<b>Due 11pm, Nov 26</b><br>
+
+
+<h2 id="Overview">Overview</h2>
+<p>For this assignment you will write a type checker
+for YES programs represented as abstract-syntax trees.
+Your main task will be to write <i>type checking</i>
+methods for the nodes of the AST.
+In addition you will need to:</p>
+<ol class="style1">
+  <li>Write a new main program, <tt>P5.java</tt> (an extension of
+    <tt>P4.java</tt>).</li>
+  <li>Update the <tt>Makefile</tt> used for program 4 to include any
+    new rules needed for program 5.</li>
+  <li>Write two test inputs: <tt>typeErrors.cf</tt> and <tt>test.cf</tt>
+       to test your new code.</li>
+</ol>
+
+
+
+<h2>Getting Started</h2>
+	<p>You have a couple of options for completing p5 (click to expand):</p>
+<div id="starteraccordion">
+  <h3>Using Your Own Code</h3>
+  <div>
+		<p>
+		If you'd like to use your own code, you are free to do so. Copy 
+		everything over from your P4, change the name of your driver class to P5.java, 
+		and update your Makefile
+		</p>
+
+<p>
+Correct implementations of <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/files/ast.java"><tt>ast.java</tt></a>
+and <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/files/Sym.java"><tt>Sym.java</tt></a>
+(and a helper class, <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/files/Type.java"><tt>Type.java</tt></a>)
+for program 4 are available at the links above, or you may use your own implementation. 
+		</p>
+  </div>
+  <h3>Using Eclipse</h3>
+  <div>
+		<p>Now that we are done generating source-code from input specifications 
+		like JLex and Java CUP, you have the opportunity to use an IDE. I've packaged
+		everything up as a tarball <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/starters/p5_eclipse.tgz">here</a>. To use:
+		</p><ol class="style1">
+			<li>Download the tarball above</li>
+			<li>Untar the tarball (<tt><b>tar -zxvf p5_eclipse.tgz</b></tt>), which will yield
+			2 directories, <tt>p5/</tt> and <tt>536_deps/</tt></li>
+			<li>Import both projects into your eclipse workspace</li>
+			<li>Alter the code in p5/</li>
+		</ol>
+		If you plan to run the program from the command line, you will have to add the 
+		<tt>bin/</tt> output to your <tt>$CLASSPATH</tt>
+		<p></p>
+  </div>
+  <h3>Starting Fresh</h3>
+  <div>
+		<p>If you don't want to use eclipse, you can use a fresh version of the code by
+		downloading the tarball <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/starters/p5_fresh.tgz">here</a>. This version of the
+		code, like the eclipse version, does not re-build the parser or lexer. 
+		</p>
+  </div>
+</div>
+
+<h2 id="Specifications" style="margin-top:20px">Specifications</h2>
+
+<ul>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#typeChecking">Type Checking</a>
+   <ul>
+   <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#cascade">Preventing Cascading Errors</a></li>
+   </ul>
+  </li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#other">Other Tasks</a>
+    <ul>
+      <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#P5">P5.java</a></li>
+      <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#makefile">Updating the Makefile</a></li>
+      <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#testFiles">Writing test Inputs</a></li>
+  </ul></li>
+  <li><a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/p5.html#advice">Some Advice</a></li>
+</ul>
+
+<h3 id="typeChecking">Type Checking</h3>
+<p>The type checker will determine the type of every expression represented
+in the abstract-syntax tree and will use that information to identify
+type errors.
+In the <!--?print($ourlang)?--> language we have the following types:</p>
+<blockquote>
+<tt>int</tt>, <tt>bool</tt>, <tt>void</tt> (as function return types only), 
+<tt>struct</tt> <i>types</i>, and  <i>function types</i>.
+</blockquote>
+<p>
+A <tt>struct</tt> <i>type</i> includes the name of the struct (i.e., when it was declared/defined). A <i>function type</i> includes the types of the parameters and the return type.</p>
+
+<p>
+The operators in the <!--?print($ourlang)?--> language are divided into the 
+following categories:
+</p>
+<ul>
+  <li><b>logical</b>: not, and, or</li>
+  <li><b>arithmetic</b>: plus, minus, times, divide, unary minus</li>
+  <li><b>equality</b>: equals, not equals</li>
+  <li><b>relational</b>: less than (&lt;), greater than (&gt;), less then or equals (&lt;=), greater than or equals (&gt;=)</li>
+  <li><b>assignment</b>: assign</li>
+</ul>
+<p>
+The type rules of the <!--?print($ourlang)?--> language are as follows:
+</p>
+<ul>
+  <li><p><b>logical operators and conditions</b>:
+    Only boolean expressions can be used as
+    operands of logical operators or in the condition of an <tt>if</tt> or <tt>while</tt>
+    statement.
+    The result of applying a logical operator to <tt>bool</tt> operands is <tt>bool</tt>.
+    </p></li>
+    <li>
+      <p><b>arithmetic and relational operators</b>:
+    Only integer expressions can be used as operands of these operators.
+    The result of applying an arithmetic operator to <tt>int</tt> operand(s) is <tt>int</tt>.
+    The result of applying a relational operator to
+    <tt>int</tt> operands is <tt>bool</tt>.
+    </p></li>
+    
+    <li>
+      <p><b>equality operators</b>:
+    Only integer or boolean expressions can be used as operands of these operators. Furthermore, the types of both operands must be the same. The result of applying an equality operator is <tt>bool</tt>.
+    </p></li>
+  
+  <li id="assignType">
+    <p><b>assignment operator</b>:
+    Only integer or boolean expressions can be used as operands of an assignment
+    operator.
+    Furthermore, the types of the left-hand side and right-hand side must be the same. The type of the result of applying the assignment operator is the type of the right-hand side.</p></li>
+  
+  
+  <li>
+    <p><b><tt>cout</tt> and <tt>cin</tt></b>:<br>
+    Only an <tt>int</tt> or <tt>bool</tt> expression or a string literal can be printed by <tt>cout</tt>. 
+    Only an <tt>int</tt> or <tt>bool</tt> identifer can be read by <tt>cin</tt>. 
+    Note that the identifier can be a field of a <tt>struct</tt> type (accessed using  <tt>.</tt> ) as long as the field is an <tt>int</tt> or a <tt>bool</tt>.</p></li>  
+    
+  <li>
+    <p><b>function calls</b>:
+    A function call can be made only using an identifier with function
+    type (i.e., an identifier that is the name of a function).
+    The number of actuals must match the number of formals.
+    The type of each actual must match the type of the corresponding
+    formal.
+    </p></li>
+    
+  <li><p><b>function returns</b>:<br>
+    A <tt>void</tt> function may not return a value.<br>
+    A non-<tt>void</tt> function may not have a <tt>return</tt> statement without a value.<br>
+    A function whose return type is <tt>int</tt> may only return an <tt>int</tt>; 
+    a function whose return type is <tt>bool</tt> may only return a <tt>bool</tt>.
+    </p>
+    
+    <p>Note: some compilers give error messages for non-<tt>void</tt> functions that
+have paths from function start to function end with no <tt>return</tt>
+statement.
+For example, this code would cause such an error:</p>
+<dir><tt>int f() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; "hello";<br>
+}
+</tt></dir>
+<p>
+However, finding such paths is beyond the capabilities of our <!--?print($ourlang)?--> 
+compiler, so don't worry about this kind of error.
+    </p>
+    </li>
+
+</ul>
+
+<p>You must implement your type checker by writing appropriate member
+  methods for the different subclasses of <tt>ASTnode</tt>.
+  Your type checker should find all of the type errors described in the
+  following table;
+  it must report the specified position of the error,
+  and it must give <em>exactly</em> the specified error message.
+  (Each message should appear on a single line, rather than how it is
+  formatted in the following table.)</p>
+  
+
+<!--
+<div class=row>
+<div class=6u>
+<div style="border:1px solid; border-radius:15px; padding:8px;">
+<ul>
+<li><b>Writing a function</b>
+<ul>
+<li>Example: <tt>cout &lt;&lt; f</tt> </li>
+<li>Error Message: <tt>Attempt to write a function</tt> </li>
+<li>Position: 1<sup>st</sup> character of the function name.
+</ul>
+</li>
+</li>
+
+<li>
+    <b>Writing a <tt>struct</tt> name</b>:
+	<ul>
+		<li>Example: "<tt>cout &lt;&lt; P</tt>", where <tt>P</tt> is the name of a 
+			<tt>struct</tt> type.</li>
+    <li>Error Message: <tt>Attempt to write a struct name</tt></li>
+    <li>Position: 1<sup>st</sup> character of the <tt>struct</tt> name.</li>
+	</ul>
+</li>
+
+<li>
+    <b>Writing a <tt>struct</tt> variable</b>:
+	<ul>
+		<li>Example: "<tt>cout &lt;&lt; P</tt>", where <tt>P</tt> is the name of a 
+			<tt>struct</tt> type.</li>
+    <li>Error Message: <tt>Attempt to write a struct name</tt></li>
+    <li>Position: 1<sup>st</sup> character of the <tt>struct</tt> name.</li>
+	</ul>
+</li>
+
+<li>	
+	<b>Writing a <tt>void</tt> value</b><br>
+ (note: this can only happen if there is an attempt to write the return value 
+ from a <tt>void</tt> function);
+	<ul>
+	<li>Example: "<tt>cout &lt;&lt; f()</tt>", where <tt>f</tt> is a <tt>void</tt> function.
+	</li>
+	<li>Error Message: <tt>Attempt to write void</tt></li>
+	<li>Position: 1<sup>st</sup> character of the function name.</li>
+	</ul>
+</li>
+
+<li>
+	<b>Reading a function</b>
+	<ul>
+	<li>Example: "<tt>cin &gt;&gt; f</tt>", where <tt>f</tt> is a function name.
+  <li>Error Message: Attempt to read a function</li>
+	<li>Position: 1<sup>st</sup> character of the function name.</li>
+	</ul>
+</li>
+
+</ul>
+</div>
+</div>
+
+<div class=6u>
+<div style="border:1px solid; border-radius:15px; padding:8px;">
+<ul>
+<li><b>Writing a function</b>
+<ul>
+<li>Example: <tt>cout &lt;&lt; f</tt> </li>
+<li>Error Message: <tt>Attempt to write a function</tt> </li>
+<li>Position: 1<sup>st</sup> character of the function name.
+</ul>
+</li>
+</li>
+</ul>
+</div>
+</div>
+</div>
+-->
+
+<table class="regtable">
+<tbody><tr>
+  <th class="reg"><b>Type of Error</b></th>
+  <th class="reg"><b>Error Message</b></th>
+  <th class="reg"><b>Position to Report</b></th>
+</tr>
+<tr>
+  <td class="reg">
+    Writing a function;
+    e.g., "<tt>cout &lt;&lt; f</tt>", where <tt>f</tt> is a function name.
+  </td>
+  <td class="reg">
+    <tt>Attempt to write a function</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the function name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Writing a <tt>struct</tt> name;
+    e.g., "<tt>cout &lt;&lt; P</tt>", where <tt>P</tt> is the name of a <tt>struct</tt> type.
+  </td>
+  <td class="reg">
+    <tt>Attempt to write a struct name</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the <tt>struct</tt> name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Writing a <tt>struct</tt> variable;
+    e.g., "<tt>cout &lt;&lt; p</tt>", where <tt>p</tt> is a variable declared to be of a <tt>struct</tt> type.
+  </td>
+  <td class="reg">
+    <tt>Attempt to write a struct variable</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the <tt>struct</tt> variable.
+  </td>
+</tr>
+
+<tr id="writeVoid">
+  <td class="reg">
+    Writing a <tt>void</tt> value (note: this can only happen if there is an attempt to write the return value from a <tt>void</tt> function);
+    e.g., "<tt>cout &lt;&lt; f()</tt>", where <tt>f</tt> is a <tt>void</tt> function.
+  </td>
+  <td class="reg">
+    <tt>Attempt to write void</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the function name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Reading a function:
+    e.g., "<tt>cin &gt;&gt; f</tt>", where <tt>f</tt> is a function name.
+  </td>
+  <td class="reg">
+    <tt>Attempt to read a function</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the function name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Reading a <tt>struct</tt> name;
+    e.g., "<tt>cin &gt;&gt; P</tt>", where <tt>P</tt> is the name of a <tt>struct</tt> type.
+  </td>
+  <td class="reg">
+    <tt>Attempt to read a struct name</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the <tt>struct</tt> name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Reading a <tt>struct</tt> variable;
+    e.g., "<tt>cin &gt;&gt; p</tt>", where <tt>p</tt> is a variable declared to be of a <tt>struct</tt> type.
+  </td>
+  <td class="reg">
+    <tt>Attempt to read a struct variable</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the <tt>struct</tt> variable.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Calling something other than a function;
+    e.g., "<tt>x();</tt>", where <tt>x</tt> is not a function name.
+    Note: In this case, you should <em>not</em> type-check the actual
+    parameters.
+  </td>
+  <td class="reg">
+    <tt>Attempt to call a non-function</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the variable name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Calling a function with the wrong number of arguments.
+    Note: In this case, you should <em>not</em> type-check the actual
+    parameters.
+  </td>
+  <td class="reg">
+    <tt>Function call with wrong number of args</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the function name.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Calling a function with an argument of the wrong type.
+    Note: you should only check for this error if the number of arguments
+    is correct.
+    If there are several arguments with the wrong type, you must give an
+    error message for each such argument.
+  </td>
+  <td class="reg">
+    <tt>Type of actual does not match type of formal</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in the actual
+    parameter.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Returning from a non-void function with a plain <tt>return</tt>
+    statement (i.e., one that does not return a value).
+  </td>
+  <td class="reg">
+    <tt>Missing return value</tt>
+  </td>
+  <td class="reg">
+    0,0
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Returning a value from a <tt>void</tt> function.
+  </td>
+  <td class="reg">
+    <tt>Return with a value in a void function</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the returned expression.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Returning a value of the wrong type from a non-<tt>void</tt> function.
+  </td>
+  <td class="reg">
+    <tt>Bad return value</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the returned expression.
+  </td>
+</tr>
+<tr id="incrDecrOps">
+  <td class="reg">
+    Applying an arithmetic operator (<tt>+</tt>, <tt>-</tt>, <tt>*</tt>, <tt>/</tt>)
+    to an operand with type other than <tt>int</tt>. Note: this includes the <tt>++</tt> and <tt>--</tt> operators.</td>
+  <td class="reg">
+    <tt>Arithmetic operator applied to non-numeric operand</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in an operand
+    that is an expression of the wrong type.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Applying a relational operator (<tt>&lt;</tt>, <tt>&gt;</tt>, <tt>&lt;=</tt>, <tt>&gt;=</tt>) to an operand
+    with type other than <tt>int</tt>.
+  </td>
+  <td class="reg">
+    <tt>Relational operator applied to non-numeric operand</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in an operand
+    that is an expression of the wrong type.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Applying a logical operator (<tt>!</tt>, <tt>&amp;&amp;</tt>, <tt>||</tt>) to an operand
+    with type other than <tt>bool</tt>.
+  </td>
+  <td class="reg">
+    <tt>Logical operator applied to non-bool operand</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in an operand
+    that is an expression of the wrong type.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Using a non-<tt>bool</tt> expression as the condition of an <tt>if</tt>.
+  </td>
+  <td class="reg">
+    <tt>Non-bool expression used as an if condition</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in the condition.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Using a non-<tt>bool</tt> expression as the condition of a <tt>while</tt>.
+  </td>
+  <td class="reg">
+    <tt>Non-bool expression used as a while condition</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in the condition.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Applying an equality operator (<tt>==</tt>, <tt>!=</tt>) to operands of two
+    different types (e.g., "<tt>j == true</tt>", where <tt>j</tt> is of type
+    <tt>int</tt>), or
+    assigning a value of one type to a variable of another type
+    (e.g., "<tt>j = true</tt>", where <tt>j</tt> is of type <tt>int</tt>).
+  </td>
+  <td class="reg">
+    <tt>Type mismatch</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first identifier or literal in the left-hand
+    operand.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Applying an equality operator (<tt>==</tt>, <tt>!=</tt>) to <tt>void</tt> function operands  
+    (e.g., "<tt>f() == g()</tt>", where <tt>f</tt> and <tt>g</tt> are 
+    functions whose return type is <tt>void</tt>).
+  </td>
+  <td class="reg">
+    <tt>Equality operator applied to void functions</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first function name.
+  </td>
+</tr>
+<tr>
+  <td class="reg">
+    Comparing two functions for equality, e.g.,
+    "<tt>f == g</tt>" or "<tt>f != g</tt>",
+    where <tt>f</tt> and <tt>g</tt> are function names.
+  </td>
+  <td class="reg">
+    <tt>Equality operator applied to functions</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first function name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Comparing two <tt>struct</tt> names for equality, e.g.,
+    "<tt>A == B</tt>" or "<tt>A != B</tt>", where <tt>A</tt> and <tt>B</tt> are the names of <tt>struct</tt> types.
+  </td>
+  <td class="reg">
+    <tt>Equality operator applied to struct names</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first <tt>struct</tt> name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Comparing two <tt>struct</tt> variables for equality, e.g.,
+    "<tt>a == b</tt>" or "<tt>a != b</tt>", where <tt>a</tt> and <tt>a</tt> are variables declared to be of <tt>struct</tt> types.
+  </td>
+  <td class="reg">
+    <tt>Equality operator applied to struct variables</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first <tt>struct</tt> variable.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Assigning a function to a function;
+    e.g., "<tt>f = g;</tt>", where <tt>f</tt> and <tt>g</tt> are function names.
+  </td>
+  <td class="reg">
+    <tt>Function assignment</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first function name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Assigning a <tt>struct</tt> name to a <tt>struct</tt> name;
+    e.g., "<tt>A = B;</tt>", where <tt>A</tt> and <tt>B</tt> are the names of <tt>struct</tt> types.
+  </td>
+  <td class="reg">
+    <tt>Struct name assignment</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first <tt>struct</tt> name.
+  </td>
+</tr>
+
+<tr>
+  <td class="reg">
+    Assigning a <tt>struct</tt> variable to a <tt>struct</tt> variable;
+    e.g., "<tt>a = b;</tt>", where <tt>a</tt> and <tt>b</tt> are variables declared to be of <tt>struct</tt> types.
+  </td>
+  <td class="reg">
+    <tt>Struct variable assignment</tt>
+  </td>
+  <td class="reg">
+    1<sup>st</sup> character of the first <tt>struct</tt> variable.
+  </td>
+</tr>
+</tbody></table>
+
+
+<h4 id="cascade">Preventing Cascading Errors</h4>
+<p>A single type error
+in an expression or statement should not trigger multiple error messages.
+For example, assume that <tt>P</tt> is the name of a <tt>struct</tt> type, <tt>p</tt> is a variable declared to be of <tt>struct</tt> type <tt>P</tt>, and <tt>f</tt> is a
+function that has one integer parameter and returns a <tt>bool</tt>.
+Each of the following should cause only one error message:</p>
+<dir>
+<pre>cout &lt;&lt; P + 1          // P + 1 is an error; the write is OK
+(true + 3) * 4         // true + 3 is an error; the * is OK
+true &amp;&amp; (false || 3)   // false || 3 is an error; the &amp;&amp; is OK
+f("a" * 4);            // "a" * 4 is an error; the call is OK
+1 + p();               // p() is an error; the + is OK
+(true + 3) == x        // true + 3 is an error; the == is OK
+                       // regardless of the type of x
+</pre>
+</dir>
+<p>One way to accomplish this is to use a special <tt>ErrorType</tt>
+for expressions that contain type errors.
+In the first example above, the type given to <tt>(true + 3)</tt> should
+be <tt>ErrorType</tt>,
+and the type-check method for the multiplication node should
+<em>not</em> report
+"<tt>Arithmetic operator applied to non-numeric operand</tt>" for the
+first operand.
+But note that the following should each cause <em>two</em> error messages
+(assuming the same declarations of <tt>f</tt> as above):</p>
+<dir>
+<pre>true + "hello"    // one error for each of the non-int operands of the +
+1 + f(true)       // one for the bad arg type and one for the 2nd operand of the +
+1 + f(1, 2)       // one for the wrong number of args and one for the 2nd operand of the +
+return 3+true;    // in a void function: one error for the 2nd operand to +
+                  // and one for returning a value
+</pre>
+</dir>
+<p>
+To provide some help with this issue, 
+<a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/files/example.cf">here is an example input file</a>, along
+with the <a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/p5/files/example.err">corresponding error messages</a>.
+(Note: This is not meant to a complete test of the type checker;
+it is provided merely to help you understand some of the messages you
+need to report, and to help you find small typos in your error messages.
+If you run your program on the example file and put the output into a
+new file, you can use the Linux utility <tt>diff</tt> to compare your
+file of error messages with the one supplied here. This will help both
+to make sure that your code finds the errors it is supposed to find,
+and to uncover small typos you may have made in the error messages.)
+</p>
+
+<h3 id="other">Other Tasks</h3>
+
+<h4 id="P5">P5.java</h4>
+<p>
+The main program, <tt>P5.java</tt>, will be similar to <tt>P4.java</tt>,
+except that if it calls the name analyzer and there are no errors,
+it will then call the type checker.
+</p>
+
+<h4 id="makefile">Updating the Makefile</h4>
+<p>
+You will need to update the <tt>Makefile</tt> you used for program 4
+so that typing "<tt>make</tt>" creates <tt>P5.class</tt>.
+</p>
+
+<h4 id="testFiles">Writing Test Inputs</h4>
+<p>
+You will need to write two input files to test your code:
+</p>
+<ol class="style1">
+  <li><p><tt>typeErrors.cf</tt> should contain code with errors
+    detected by the type checker.
+    For every type error listed in the table above,
+    you should include an instance of that error for each of
+    the relevant operators, and in each part of a program where
+    the error can occur (e.g., in a top-level statement, in a
+    statement inside a while loop, etc).
+  </p></li>
+  <li>
+    <p><tt>test.cf</tt> should
+    contain code with no errors that exercises all of the type-check
+    methods that you wrote for the different AST nodes.
+    This means that it should include (good) examples of
+    every kind of statement and expression.
+  </p></li>
+</ol>
+
+<p>
+Note that your <tt>typeErrors.cf</tt> should cause error
+messages to be output, so to know whether your type checker
+behaves correctly, you will need to know what output to expect.
+</p>
+<p>
+As usual, you will be graded in part
+on how thoroughly your input files test your code.
+</p>
+
+<h3 id="advice">Some Advice</h3>
+<p>
+Here are few words of advice about various issues that come up
+in the assignment:
+</p>
+
+<ul>
+  <li><p> For this assignment you are free to make any changes you want
+       to the code in <tt>ast.java</tt>.  For example, you may find it helpful
+       to make small changes to the class hierarchy, or to add new fields
+       and/or methods to some classes.
+  </p></li>
+  <li><p>As for name analysis, think about which AST nodes need to
+       have type-check methods.
+       For example,
+       for type checking, you do not need to visit nodes that represent
+       declarations, only those that represent statements.
+   </p></li>
+</ul>
+
+
+
+
+
+
+</body><div></div><div></div></html>
