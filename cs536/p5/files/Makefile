@@ -56,3 +56,7 @@ EmptySymTableException.class: EmptySymTableException.java
 ###
 clean:
 	rm -f *~ *.class parser.java CSX.jlex.java sym.java
+##test
+test:
+	#java P5 test.cf test.out
+	java P5 typeErrors.cf typeErrors.out
