@@ -1,0 +1,87 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h8/h8.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style></head><body><h1>H8</h1>
+<b>Nov 24, 11pm</b>
+
+Homework assignments must be done individually. Collaboration on homework 
+assignments is <em>not</em> allowed.
+
+<h2 id="Questions">Questions</h2>
+
+
+<p class="reg">
+Assume we have a language similar to YES that allows arrays and that parameters in this language can be passed
+by value, by reference, by value-result, or by name.
+Consider the following  program:
+</p>
+<dir>
+<pre>int A[4];
+int k;
+
+void f( int x, int y ) {
+    x = x + 1;
+    k = k + 1;
+    A[k] = A[k] * 2;
+    y = y + 1;
+    cout &lt;&lt; x;
+    cout &lt;&lt; y;
+    cout &lt;&lt; k;
+    cout &lt;&lt; A[k];
+}
+
+void main() {
+    k = 0;
+    while (k &lt; 4) {
+        A[k] = k;
+        k = k + 1;
+    }
+    k = 0;
+    f(k, A[k]);
+    cout &lt;&lt; k;
+    cout &lt;&lt; A[0];
+    cout &lt;&lt; A[1];
+    cout &lt;&lt; A[2];
+    cout &lt;&lt; A[3];
+}
+</pre>
+</dir>
+
+<p class="reg">
+Below is a link to a file that contain six pictures.
+The first four pictures contain outlines
+of <tt>f</tt>'s activation record, as well as the
+space in the static data area for globals <tt>k</tt> and
+<tt>A</tt>.
+The last two pictures contain space for recording the
+output of the program.
+</p>
+
+<p class="reg">
+You are to print the file and complete the pictures:
+</p>
+
+<ul class="reg">
+  <li><p>For the first four pictures, you should fill in the values for
+all of the variables as they would be just before function <tt>f</tt>
+returns.
+For each picture, assume the parameter-passing modes
+for <tt>f</tt>'s parameters indicated in that picture.</p>
+  </li>  
+  
+  <li>
+    <p>For the last two pictures, you should fill in the values that would
+be printed by functions <tt>f</tt> and <tt>main</tt>, assuming
+that <tt>f</tt>'s parameters are both passed by value-result
+or both passed by name (as indicated in the pictures).
+  </p></li>
+  </ul>
+<p class="reg">
+<a href="http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h8//h8diagram.pdf">Link to pdf file</a>
+</p>
+
+<h2 id="Handin">Handing in</h2>
+Send back completed pdf -- clear scan is fine.
+
+
+
+</body><div></div><div></div></html>
