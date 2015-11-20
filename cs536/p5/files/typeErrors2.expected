@@ -1,0 +1,16 @@
+14:11 ***ERROR*** Arithmetic operator applied to non-numeric operand
+15:8 ***ERROR*** Arithmetic operator applied to non-numeric operand
+16:25 ***ERROR*** Logical operator applied to non-bool operand
+17:5 ***ERROR*** Arithmetic operator applied to non-numeric operand
+18:11 ***ERROR*** Attempt to call a non-function
+19:8 ***ERROR*** Arithmetic operator applied to non-numeric operand
+22:7 ***ERROR*** Arithmetic operator applied to non-numeric operand
+22:14 ***ERROR*** Arithmetic operator applied to non-numeric operand
+23:13 ***ERROR*** Type of actual does not match type of formal
+23:11 ***ERROR*** Arithmetic operator applied to non-numeric operand
+24:11 ***ERROR*** Function call with wrong number of args
+24:11 ***ERROR*** Arithmetic operator applied to non-numeric operand
+25:12 ***ERROR*** Arithmetic operator applied to non-numeric operand
+25:10 ***ERROR*** Return with a value in a void function
+31:8 ***ERROR*** Relational operator applied to non-numeric operand
+31:18 ***ERROR*** Relational operator applied to non-numeric operand

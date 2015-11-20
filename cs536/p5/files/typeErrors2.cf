@@ -1,0 +1,32 @@
+struct P {
+  int a;
+};
+
+struct P p; int c; bool d;
+
+bool f(int x) {}
+
+void main() {
+  int a;
+  int x;
+  bool b;
+
+  cout << P + 1;              // [14.11] P + 1 is an error; the write is OK
+  a = (true + 3) * 4;         // [15.8] true + 3 is an error; the * is OK
+  b = true && (false || 3);   // [16.25] false || 3 is an error; the && is OK
+  f("a" * 4);                 // [17.5] "a" * 4 is an error; the call is OK 
+  a = 1 + p();                // [18.11] p() is an error; the + is OK
+  b = (true + 3) == x;        // [19.8] true + 3 is an error; the == is OK
+                              // regardless of the type of x
+
+  a = true + "hello";         // [22.7/14] one error for each of the non-int operands of the +
+  a = 1 + f(true);            // [23.11/13] one for the bad arg type and one for the 2nd operand of the +
+  a = 1 + f(1, 2);            // [24.11 x 2?] one for the wrong number of args and one for the 2nd operand of the +
+  return 3+true;              // [25.10/12] in a void function: one error for the 2nd operand to +
+                              // and one for returning a value
+}
+
+
+int foo() {
+  c = (d<c) + (c>d);          // [31.8/18] relational operator applied, but NO arithmetic error
+}

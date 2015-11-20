@@ -1019,7 +1019,7 @@ class IfStmtNode extends StmtNode {
       Type t1 = myExp.typeCheck();
       Type t2 = myStmtList.typeCheck();
       if(!t1.isBoolType()) {
-        //ERROR!
+        ErrMsg.fatal(myExp.lineNum(), myExp.charNum(), "Non-bool expression used as an if condition");
         return new ErrorType();
       }
       if(t2.isErrorType()) {
@@ -1166,11 +1166,11 @@ class WhileStmtNode extends StmtNode {
       Type t1 = myExp.typeCheck();
       Type t2 = myStmtList.typeCheck();
       if(!t1.isBoolType()) {
-        //ERROR!
+        ErrMsg.fatal(myExp.lineNum(), myExp.charNum(), "Non-bool expression used as a while condition");
         return new ErrorType();
       }
       if(t2.isErrorType()) {
-        return new ErrorType();
+        return t2;
       } else {
         return t1;
       }
@@ -1484,7 +1484,8 @@ class DotAccessExpNode extends ExpNode {
     }
 
     public Type typeCheck() {
-      return new StructType(myId);
+      //return new StructType(myId);
+      return myId.typeCheck();
     }
 
     /**
@@ -1690,13 +1691,12 @@ class CallExpNode extends ExpNode {
 
     public Type typeCheck() {
       ErrorType err = new ErrorType();
-      boolean error = false;
       if(myId.sym() instanceof FnSym) {
         FnSym fn = (FnSym) myId.sym();
         List<ExpNode> args = myExpList.getList();
         if(args.size() != fn.getNumParams()) {
           ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Function call with wrong number of args");
-          return err;
+          //return err;
         } else {
           List<Type> params = fn.getParamTypes();
           Type p;
@@ -1706,9 +1706,7 @@ class CallExpNode extends ExpNode {
             p = params.get(i);
             a = args.get(i);
             aType = a.typeCheck();
-            if(aType.isErrorType()) {
-              error = true;
-            } else {
+            if(!aType.isErrorType()) {
               if(!p.equals(aType)) {
                 ErrMsg.fatal(a.lineNum(),a.charNum(),"Type of actual does not match type of formal");
               }
