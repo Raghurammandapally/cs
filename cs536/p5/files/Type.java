@@ -50,6 +50,10 @@ abstract public class Type {
     public boolean isStructDefType() {
         return false;
     }
+
+    //public boolean isFnReturnType() {
+      //return false;
+    //}
 }
 
 // **********************************************************************
@@ -200,3 +204,42 @@ class StructDefType extends Type {
         return "struct";
     }
 }
+
+/*
+class FnReturnType extends Type {
+  private Type retType;
+  private int myLine;
+  private int myChar;
+
+  public FnReturnType(Type ret, int lineNum, int charNum) {
+    super();
+    myLine = lineNum;
+    myChar = charNum;
+    retType = ret;
+  }
+
+  public int lineNum() {
+    return myLine;
+  }
+
+  public int charNum() {
+    return myChar;
+  }
+
+  public Type getType() {
+    return retType;
+  }
+
+  public boolean isFnReturnType() {
+    return true;
+  }
+
+  public boolean equals(Type t) {
+    return t.isFnReturnType();
+  }
+
+  public String toString() {
+    return "fnReturn";
+  }
+}
+  */

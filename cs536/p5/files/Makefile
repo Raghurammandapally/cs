@@ -59,4 +59,7 @@ clean:
 ##test
 test:
 	#java P5 test.cf test.out
-	java P5 typeErrors.cf typeErrors.out
+	#java P5 typeErrors.cf typeErrors.out
+	rm -f testErrors.err
+	java P5 typeErrors.cf typeErrors.out 2> typeErrors.err
+	diff example.err testErrors.err
