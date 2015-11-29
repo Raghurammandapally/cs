@@ -1,0 +1,68 @@
+
+<!-- saved from url=(0062)http://pages.cs.wisc.edu/~aws/courses/cs536-f15/asn/h9/h9.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css"></style></head><body><h2 id="Questions">H9</h2>
+<b>Due Dec 1, 2015</b><br>
+
+<p class="reg">
+</p><h4>Question 1</h4>
+Generate the MIPS code for the following function:
+
+<pre>int addArgs(int a, int b){
+	return a + b;
+}
+</pre>
+Make sure that your function saves the return address and control link
+on the stack. You may choose to compute intermediate values on the 
+stack (as discussed in class) or you may choose to use registers. 
+List any conventions that you are assuming in your function (i.e. what
+is the offset or register where parameters are passed? What register 
+or slot do you place return values?)
+
+<h4>Question 2</h4>
+In class, we talked about how a control-flow graph represents control
+transfer in terms of edges on a graph. In this question, you will draw out
+the control flow graph corresponding to the following block of code:
+<pre>a = 0;
+b = 1;
+if (a &lt; c){
+	if (b &lt; c){
+  }
+}
+for (c &lt; 10){
+	c++;
+}
+</pre>
+assume that all of the variables are declared globally. 
+
+
+<h4>Question 3</h4>
+Consider the following block of MIPS code:
+<pre>.text
+main:
+	li $t0 1
+	li $t1 2
+	addu $t0 $t1 $t0
+	sw $t0 ($sp)
+	sw $t1 4($sp)
+	li $t2 8
+	subu $sp $sp $t2
+	lw $t3 4($sp)
+	lw $t0 8($sp)
+	li $ra 0x0
+	jr $ra
+</pre>
+List the values in each of the following registers immediately after the
+<tt>jr</tt> instruction:
+<ul>
+<li><tt>$t0</tt>
+</li><li><tt>$t1</tt>
+</li><li><tt>$t2</tt>
+</li><li><tt>$t3</tt>
+</li><li><tt>$ra</tt>
+</li><li><tt>PC</tt> (the instruction pointer)
+</li></ul>
+If any value is undefined by the function put <b>undefined</b> as the 
+value.
+
+
+</body><div></div><div></div></html>
