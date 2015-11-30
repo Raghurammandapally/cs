@@ -58,10 +58,10 @@ clean:
 	rm -f *~ *.class parser.java CSX.jlex.java sym.java
 ##test
 test:
-	java P5 test.cf test.out
-	more test.out
-	#java P5 typeErrors.cf typeErrors.out
-	#rm -f typeErrors.err
+	#java P5 test.cf test.out
+	#more test.out
+	java P5 typeErrors.cf typeErrors.out
+	rm -f typeErrors.err
 	#java P5 typeErrors.cf typeErrors.out 2> typeErrors.err
 	#rm -f typeErrors2.err
 	#java P5 typeErrors2.cf typeErrors2.out 2> typeErrors2.err

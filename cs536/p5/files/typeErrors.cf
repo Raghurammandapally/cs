@@ -5,6 +5,12 @@ struct S t;
 void f(int p1, bool p2) {
 }
 
+int g(){
+  int x;
+  bool b;
+  return x < b ;
+}
+
 void main() {
     int aaa;
 
@@ -13,6 +19,8 @@ void main() {
     bbb = f == 3;
     bbb = f > main;
     bbb = f == f;
+
+    bbb = (aaa < true) && 5;
 
     // some errors involving bad function calls 
     aaa();

@@ -6,8 +6,14 @@ bool x;
 bool y;
 bool z;
 
+struct N {
+  int j;
+  bool c;
+};
+
 struct O {
   int i;
+  bool b;
 };
 
 struct P {
@@ -24,9 +30,13 @@ void foo() {
 int bar(int x) {
 }
 
+bool baz(bool a, int b) {
+}
+
 int main() {
   int a_l;
   bool x_l;
+  struct N n;
   struct O o;
   struct P p;
   struct Q q;
@@ -35,71 +45,266 @@ int main() {
   p.o.i = 5;
   q.p.o.i = 5;
 
+  o.i = 1+(bar(1)+3);
+  o.i = 1-(bar(1)+3);
+  o.i = 1*(bar(1)+3);
+  o.i = 1/(-bar(1)+3);
+
+  x_l = true;
+  x_l = true && baz((true || false), 2);
+  x_l = baz(false, 1) || true;
+  x_l = 1 == 3 + bar(0);
+  x_l = 3 + bar(0) != 1;
+  x_l = true == false;
+  x_l = baz(false,0) != baz(true,0);
+  x_l = !true;
+  x_l = 1<(bar(1)+3);
+  x_l = 1>(bar(1)+3);
+  x_l = 1<=(bar(1)+3);
+  x_l = 1>=(bar(1)+3);
+
+  a_l = o.i + n.j + 5 - bar(1) * (7/o.i);
+  x_l = o.b || (n.c && true) != false;
+  x_l = bar(1) >= 2 || bar(1) <= -10;
+  o.b = n.c == true;
+
+  o.i++;
+  p.o.i++;
+  q.p.o.i++;
+
+  o.i--;
+  p.o.i--;
+  q.p.o.i--;
+
+  cin >> p.o.i;
+  cin >> p.o.b;
+  cin >> a_l;
+  cin >> x_l;
+
+  cout << p.o.i;
+  cout << p.o.i + 5 * 2 / bar(1);
+  cout << p.o.b;
+  cout << (p.o.b || true ) != (!true && baz(true,0));
+  cout << a_l;
+  cout << x_l;
+  cout << baz(true,0);
+  cout << bar(0);
+  cout << "hello world";
+
+  if(true) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+  if(baz(baz(true,0), bar(bar(3)))) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+  if(baz(false,1) || (true || (false && false))) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+
+  if(true) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  } else {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+
+  if(baz(false,1) || (true || (false && false))) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  } else {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+
+  if(baz(baz(true,0), bar(bar(3)))) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  } else {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+
+  while(true) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
   
-// stmt            ::= assignExp SEMICOLON
-//                 | loc PLUSPLUS SEMICOLON
-//                 | loc MINUSMINUS SEMICOLON
-//                 | CIN READ loc SEMICOLON
-//                 | COUT WRITE exp SEMICOLON
-//                 | IF LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY
-//                 | IF LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY ELSE LCURLY varDeclList stmtList RCURLY
-//                 | WHILE LPAREN exp RPAREN LCURLY varDeclList stmtList RCURLY
-//                 | RETURN exp SEMICOLON
-//                 | RETURN SEMICOLON
-//                 | fncall SEMICOLON
-//                 ;
-// 
-// assignExp       ::= loc ASSIGN exp
-//                 ;
-//                 
-// exp             ::= assignExp
-//                 | exp PLUS exp
-//                 | exp MINUS exp
-//                 | exp TIMES exp
-//                 | exp DIVIDE exp
-//                 | NOT exp
-//                 | exp AND exp
-//                 | exp OR exp
-//                 | exp EQUALS exp
-//                 | exp NOTEQUALS exp
-//                 | exp LESS exp
-//                 | exp GREATER exp
-//                 | exp LESSEQ exp
-//                 | exp GREATEREQ exp
-//                 | MINUS term
-//                 | term
-//                 ;
-// 
-// term            ::= loc
-//                 | INTLITERAL
-//                 | STRINGLITERAL
-//                 | TRUE
-//                 | FALSE
-//                 | LPAREN exp RPAREN
-//                 | fncall
-//                 ;
-// 
-// fncall          ::=  id LPAREN RPAREN   // fn call with no args
-//                 | id LPAREN actualList RPAREN  // with args
-//                 ;
-// 
-// actualList      ::= exp
-//                 | actualList COMMA exp
-//                 ;
-// 
-// type            ::= INT
-//                 | BOOL
-//                 | VOID
-//                 ;
-// 
-// loc             ::= id
-//                 | loc DOT id
-// 
-// id              ::= ID
-//                 ;
+  while(baz(baz(true,0), bar(bar(3)))) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
 
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
 
-  return 0;
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+
+  while(baz(false,1) || (true || (false && false))) {
+    int a_l;
+    bool x_l;
+    struct N n;
+    struct O o;
+    struct P p;
+    struct Q q;
+
+    o.i = 5;
+    p.o.i = 5;
+    q.p.o.i = 5;
+
+    o.i = 1+(bar(1)+3);
+    o.i = 1-(bar(1)+3);
+    o.i = 1*(bar(1)+3);
+    o.i = 1/(-bar(1)+3);
+  }
+
+  return 5;
+  return 5 + bar(1)*3;
+
+  bar(bar(0));
+  baz(true || false, 5 * bar(1));
+  foo();
 }
 
 

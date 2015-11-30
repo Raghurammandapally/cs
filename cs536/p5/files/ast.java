@@ -1845,6 +1845,28 @@ abstract class BinaryExpNode extends ExpNode {
       boolean err = false;
       Type t1 = myExp1.typeCheck();
       Type t2 = myExp2.typeCheck();
+      if(t1.isErrorType() && t2.isErrorType()) {
+        return new ErrorType();
+      } else {
+        if(t1.isErrorType()) {
+          if(!t2.isBoolType()) {
+            ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Logical operator applied to non-bool operand");
+            err = true;
+          }
+        }
+        if(t2.isErrorType()) {
+          if(!t1.isBoolType()) {
+            ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Logical operator applied to non-bool operand");
+            err = true;
+          } 
+        }
+        if(err) {
+          return new ErrorType();
+        } else {
+          return new BoolType();
+        }
+      }
+      /*
       if(t1.isErrorType() || t2.isErrorType()) {
         return new ErrorType();
       } else {
@@ -1862,6 +1884,7 @@ abstract class BinaryExpNode extends ExpNode {
           return new BoolType();
         }
       }
+      */
     }
 
     public Type typeCheckEquality() {
@@ -2176,7 +2199,7 @@ class NotEqualsNode extends BinaryExpNode {
     }
 
     public Type typeCheck() {
-      return typeCheckRelational();
+      return typeCheckEquality();
     }
 
     public int charNum() {
