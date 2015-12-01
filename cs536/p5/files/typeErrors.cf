@@ -1,6 +1,18 @@
 bool bbb;
-struct S { int a; };
+int aaa;
+
+struct S { 
+  int a; 
+};
 struct S t;
+
+struct Ps {
+  int a;
+};
+
+struct Ps ps; 
+int c; 
+bool d;
 
 void f(int p1, bool p2) {
 }
@@ -11,8 +23,14 @@ int g(){
   return x < b ;
 }
 
+bool h(int x) {
+}
+
+//example input file given in P5 description
 void main() {
     int aaa;
+
+    aaa = 1 + h(true);
 
     // some errors involving illegal operations on functions
     aaa = f + f;
@@ -21,6 +39,8 @@ void main() {
     bbb = f == f;
 
     bbb = (aaa < true) && 5;
+    bbb = (1 + true) && 42;
+    aaa = (42 + true) + false;
 
     // some errors involving bad function calls 
     aaa();
@@ -48,4 +68,413 @@ void main() {
     // don't give too many or too few error messages here 
     bbb = (aaa + true) && (bbb < true);
 }
+
+
+// cascading errors given in P5 description
+void main2() {
+  int a;
+  int x;
+  bool b;
+
+  a = 1 + h(true);            // [.13/11] type of actual does not match type of formal,
+                                  //arithmetic op applied to non-arithmetic operand
+  cout << Ps + 1;              // [.11] P + 1 is an error; the write is OK
+  a = (true + 3) * 4;         // [.8] true + 3 is an error; the * is OK
+  b = true && (false || 3);   // [.25] false || 3 is an error; the && is OK
+  h("a" * 4);                 // [.5] "a" * 4 is an error; the call is OK 
+  a = 1 + ps();                // [.11] p() is an error; the + is OK
+  b = (true + 3) == x;        // [.8] true + 3 is an error; the == is OK
+                              // regardless of the type of x
+
+  a = true + "hello";         // [.7/14] one error for each of the non-int operands of the +
+  a = 1 + h(true);            // [.11/13] one for the bad arg type and one for the 2nd operand of the +
+  a = 1 + h(1, 2);            // [.11 x 2?] one for the wrong number of args and one for the 2nd operand of the +
+  return 3+true;              // [.10/12] in a void function: one error for the 2nd operand to +
+                              // and one for returning a value
+}
+
+
+int fooz() {
+  c = (d<c) + (c>d);          // [.8/18] relational operator applied, but NO arithmetic error
+}
+
+//examples of each error given in p5 description
+int examples() {
+  cout << fooz; //Attempt to write a function
+  cout << S; //Attempt to write a struct name
+  cout << t; // Attempt to write a struct variable
+  cout << main2(); // Attempt to write void
+  cin >> fooz; // Attempt to read a function
+  cin >> S; // Attempt to read a struct name
+  cin >> t;// Attempt to read a struct variable
+  aaa();// Attempt to call a non-function
+  main2(1+true); // Function call with wrong number of args
+  //NOTE: should not type-check arg!
+  h(true); // Type of actual does not match type of formal
+  return; // Missing return value
+} 
+
+void examples2() {
+  return 2; // Return with a value in a void function
+}
+
+int examples3() {
+  return true; // Bad return value
+  cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+  cout << 3 > true; // Relational operator applied to non-numeric operand
+  cout << 3 && true; // Logical operator applied to non-bool operand
+  if(3) { // Non-bool expression used as an if condition
+  }
+  while(3) { // Non-bool expression used as a while condition
+  }
+  bbb = aaa == true; // Type mismatch
+  bbb = main2() == examples2(); // Equality operator applied to void functions
+  bbb = main2 == examples2; // Equality operator applied to functions
+  bbb = S == Ps; // Equality operator applied to struct names
+  bbb = t == ps; // Equality operator applied to struct variables
+  main2 = examples2; // Function assignment
+  S = Ps; // Struct name assignment
+  t = ps; // Struct variable assignment
+}
+
+
+int bad() {
+  if(3) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+
+  }
+  if(main2()) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+  if(h(true)) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+
+  if(3) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  } else {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+  if(main2()) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  } else {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+  if(h(true)) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  } else {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+
+  while(3) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+  while(main2()) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+  while(h(true)) {
+    cout << fooz; //Attempt to write a function
+    cout << S; //Attempt to write a struct name
+    cout << t; // Attempt to write a struct variable
+    cout << main2(); // Attempt to write void
+    cin >> fooz; // Attempt to read a function
+    cin >> S; // Attempt to read a struct name
+    cin >> t;// Attempt to read a struct variable
+    aaa();// Attempt to call a non-function
+    main2(1+true); // Function call with wrong number of args
+    //NOTE: should not type-check arg!
+    h(true); // Type of actual does not match type of formal
+    cout << 3 + true; // Arithmetic operator applied to non-numeric operand
+    cout << 3 > true; // Relational operator applied to non-numeric operand
+    cout << 3 && true; // Logical operator applied to non-bool operand
+    if(3) { // Non-bool expression used as an if condition
+    }
+    while(3) { // Non-bool expression used as a while condition
+    }
+    bbb = aaa == true; // Type mismatch
+    bbb = main2() == examples2(); // Equality operator applied to void functions
+    bbb = main2 == examples2; // Equality operator applied to functions
+    bbb = S == Ps; // Equality operator applied to struct names
+    bbb = t == ps; // Equality operator applied to struct variables
+    main2 = examples2; // Function assignment
+    S = Ps; // Struct name assignment
+    t = ps; // Struct variable assignment
+  }
+}
+
 

@@ -1799,22 +1799,18 @@ abstract class BinaryExpNode extends ExpNode {
       boolean err = false;
       Type t1 = myExp1.typeCheck();
       Type t2 = myExp2.typeCheck();
-      if(t1.isErrorType() || t2.isErrorType()) {
+      if(!t1.isErrorType() && !t1.isIntType()) {
+        ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Arithmetic operator applied to non-numeric operand");
+        err = true;
+      } 
+      if(!t2.isErrorType() && !t2.isIntType()) {
+        ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Arithmetic operator applied to non-numeric operand");
+        err = true;
+      } 
+      if(err) {
         return new ErrorType();
       } else {
-        if(!t1.isIntType()) {
-          ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Arithmetic operator applied to non-numeric operand");
-          err = true;
-        } 
-        if(!t2.isIntType()) {
-          ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Arithmetic operator applied to non-numeric operand");
-          err = true;
-        }
-        if(err) {
-          return new ErrorType();
-        } else {
-          return new IntType();
-        }
+        return new IntType();
       }
     }
 
@@ -1822,22 +1818,18 @@ abstract class BinaryExpNode extends ExpNode {
       boolean err = false;
       Type t1 = myExp1.typeCheck();
       Type t2 = myExp2.typeCheck();
-      if(t1.isErrorType() || t2.isErrorType()) {
+      if(!t1.isErrorType() && !t1.isIntType()) {
+        ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Relational operator applied to non-numeric operand");
+        err = true;
+      } 
+      if(!t2.isErrorType() && !t2.isIntType()) {
+        ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Relational operator applied to non-numeric operand");
+        err = true;
+      }
+      if(err) {
         return new ErrorType();
       } else {
-        if(!t1.isIntType()) {
-          ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Relational operator applied to non-numeric operand");
-          err = true;
-        } 
-        if(!t2.isIntType()) {
-          ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Relational operator applied to non-numeric operand");
-          err = true;
-        }
-        if(err) {
-          return new ErrorType();
-        } else {
-          return new BoolType();
-        }
+        return new BoolType();
       }
     }
 
@@ -1845,46 +1837,19 @@ abstract class BinaryExpNode extends ExpNode {
       boolean err = false;
       Type t1 = myExp1.typeCheck();
       Type t2 = myExp2.typeCheck();
-      if(t1.isErrorType() && t2.isErrorType()) {
+      if(!t1.isErrorType() && !t1.isBoolType()) {
+        ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Logical operator applied to non-bool operand");
+        err = true;
+      } 
+      if(!t2.isErrorType() && !t2.isBoolType()) {
+        ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Logical operator applied to non-bool operand");
+        err = true;
+      }
+      if(err) {
         return new ErrorType();
       } else {
-        if(t1.isErrorType()) {
-          if(!t2.isBoolType()) {
-            ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Logical operator applied to non-bool operand");
-            err = true;
-          }
-        }
-        if(t2.isErrorType()) {
-          if(!t1.isBoolType()) {
-            ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Logical operator applied to non-bool operand");
-            err = true;
-          } 
-        }
-        if(err) {
-          return new ErrorType();
-        } else {
-          return new BoolType();
-        }
+        return new BoolType();
       }
-      /*
-      if(t1.isErrorType() || t2.isErrorType()) {
-        return new ErrorType();
-      } else {
-        if(!t1.isBoolType()) {
-          ErrMsg.fatal(myExp1.lineNum(), myExp1.charNum(), "Logical operator applied to non-bool operand");
-          err = true;
-        } 
-        if(!t2.isBoolType()) {
-          ErrMsg.fatal(myExp2.lineNum(), myExp2.charNum(), "Logical operator applied to non-bool operand");
-          err = true;
-        }
-        if(err) {
-          return new ErrorType();
-        } else {
-          return new BoolType();
-        }
-      }
-      */
     }
 
     public Type typeCheckEquality() {
@@ -1919,7 +1884,7 @@ abstract class BinaryExpNode extends ExpNode {
     }
 
     public int lineNum() {
-      return myExp2.lineNum();
+      return myExp1.lineNum();
     }
     
     // two kids
