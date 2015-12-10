@@ -1,0 +1,16 @@
+int x;
+int a;
+void main() {
+  int b;
+  int c;
+  if(x == 3) {
+    cout << "Hello";
+  } else {
+    cout << "world";
+  }
+  b = c*x;
+}
+//void main() {
+//    cout << "Hello world!";
+//    cout << "\n";
+//}
