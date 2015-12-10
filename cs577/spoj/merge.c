@@ -28,7 +28,6 @@ Output: B, a sorted copy of A
 8:    return Merge(L, R)
 */
 void merge_sort_recurse(uint A[], uint lo, uint hi) {
-  printf("%u to %u\n", lo, hi);
   uint len = hi - lo;
   if(len <= 1) {
     return;
@@ -94,23 +93,19 @@ void merge(uint A[], uint lo, uint m, uint hi) {
 }
 
 int main() {
-  uint len;
-  scanf("%u", &len);
-  
-  uint A[len];
+  uint A[100000];
 
-  int i;
-  for(i = 0; i < len; i++) {
-    scanf("%u", &A[i]);
+  int len = 0;
+  int ret;
+  while(scanf("%u", &A[len]) >= 0) {
+    len++;
   }
 
+  int i;
   merge_sort(A, len);
-  printf("A: ");
   for(i = 0; i < len; i++) {
     printf("%u ", A[i]);
   }
-  printf("\n");
-  //printf("size_t max:\t%lu\n", (size_t)-1 );
   
   return 0;
 }

@@ -1,13 +1,13 @@
 CFLAGS=-Wall -g
 
-PROBLEM = merge#insert#life
-NUM = 02#1
+PROBLEM = knights#insert#merge#life
+INPUT = 03#02#merge#01
 
 make:
 	gcc $(PROBLEM).c -o $(PROBLEM)
 
 run:
-	./$(PROBLEM) < $(NUM).txt
+	./$(PROBLEM) < $(INPUT).txt
 
 clean:
 	rm -f $(PROBLEM)
