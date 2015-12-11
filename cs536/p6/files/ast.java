@@ -129,6 +129,10 @@ class ProgramNode extends ASTnode {
         myDeclList = L;
     }
 
+    public void codeGen() {
+      myDeclList.codeGen(true);
+    }
+
     /**
      * nameAnalysis
      * Creates an empty symbol table for the outermost scope, then processes
@@ -194,6 +198,23 @@ class DeclListNode extends ASTnode {
             }
         }
     }    
+
+    public void codeGen() {
+      codeGen(false);
+    }
+
+    public void codeGen(boolean isGlobal) {
+        for (DeclNode node : myDecls) {
+            if (node instanceof VarDeclNode && isGlobal) {
+                //if(isGlobal) {
+                  ((VarDeclNode) node).codeGen(true);
+                //}
+            } 
+            if(node instanceof FnDeclNode) {
+              ((FnDeclNode) node).codeGen();
+            }
+        }
+    }
     
     /**
      * typeCheck
@@ -415,6 +436,10 @@ class VarDeclNode extends DeclNode {
         mySize = size;
     }
 
+    public void codeGen(boolean isGlobal) {
+      Codegen.generateGlobalDecl(myId.name());
+    }
+
     /**
      * nameAnalysis (overloaded)
      * Given a symbol table symTab, do:
@@ -521,6 +546,14 @@ class FnDeclNode extends DeclNode {
         myBody = body;
     }
 
+    public void codeGen() {
+      if(myId.name().equals("main")) {
+        Codegen.generateMainDecl();
+      } else {
+        Codegen.generateFnDecl(myId.name());
+      }
+    }
+
     /**
      * nameAnalysis
      * Given a symbol table symTab, do:
@@ -566,11 +599,15 @@ class FnDeclNode extends DeclNode {
         List<Type> typeList = myFormalsList.nameAnalysis(symTab);
         if (sym != null) {
             sym.addFormals(typeList);
+            sym.setParamTotal(-(currOffset));
         }
 
         currOffset -= 8;
         
         myBody.nameAnalysis(symTab); // process the function body
+        if(sym != null) {
+          sym.setLocalsTotal(-(currOffset + 8 + sym.getParamTotal()));
+        }
         
         try {
             symTab.removeScope();  // exit scope
@@ -595,6 +632,8 @@ class FnDeclNode extends DeclNode {
         myType.unparse(p, 0);
         p.print(" ");
         p.print(myId.name());
+        FnSym sym = (FnSym) myId.sym();
+        p.print("[" + sym.getParamTotal() + "," + sym.getLocalsTotal() + "]");
         p.print("(");
         myFormalsList.unparse(p, 0);
         p.println(") {");

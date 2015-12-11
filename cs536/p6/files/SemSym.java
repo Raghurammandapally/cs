@@ -44,11 +44,29 @@ class FnSym extends SemSym {
     private Type returnType;
     private int numParams;
     private List<Type> paramTypes;
+    private int paramTotal;
+    private int localsTotal;
     
     public FnSym(Type type, int numparams) {
         super(new FnType());
         returnType = type;
         numParams = numparams;
+    }
+
+    public void setLocalsTotal(int newLocalsTotal) {
+      localsTotal = newLocalsTotal;
+    }
+
+    public void setParamTotal(int newParamTotal) {
+      paramTotal = newParamTotal;
+    }
+
+    public int getParamTotal() {
+      return paramTotal;
+    }
+
+    public int getLocalsTotal() {
+      return localsTotal;
     }
 
     public void addFormals(List<Type> L) {

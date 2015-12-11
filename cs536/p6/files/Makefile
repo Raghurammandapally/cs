@@ -58,7 +58,7 @@ clean:
 	rm -f *~ *.class parser.java CSX.jlex.java sym.java
 ##test
 test:
-	java P6 hello.cf hello.out
-	cat hello.out
+	java P6 hello.cf hello.s
+	cat hello.s
 
 	

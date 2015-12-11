@@ -1,34 +1,7 @@
 int x;
-int a;
-int c;
+int y;
+bool b;
 void main() {
-  int b;
-  int c;
-  if(x == 3) {
-    cout << "Hello";
-  } else {
-    cout << "world";
-  }
-  b = c*x;
-}
-
-int f(int b, bool c) {
-  int d;
-  d = 12;
-  cout << c;
-  cout << b;
-}
-void P(int x) {
-  int a;
-  int b;
-  cout << x;
-  cout << a;
-  cout << b;
-  cout << c;
-  if(a) {
-    int d;
-    cout << d;
-  }
 }
 //void main() {
 //    cout << "Hello world!";

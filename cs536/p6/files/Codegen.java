@@ -54,6 +54,23 @@ public class Codegen {
     // **********************************************************************
     // **********************************************************************
     
+    public static void generateMainDecl() {
+      p.println("\ttext:");
+      p.println("\t.globl main");
+      p.println("main:");
+    }
+
+    public static void generateFnDecl(String var) {
+      p.println("\t.text");
+      p.println("\t_" + var + ":");
+    }
+
+    public static void generateGlobalDecl(String var) {
+      p.println("\t" + ".data");
+      p.println("\t" + ".align 2");
+      p.println("_" + var + ":\t.space 4");
+    }
+    
     // **********************************************************************
     // generateWithComment
     //    given:  op code, comment, and 0 to 3 string args
