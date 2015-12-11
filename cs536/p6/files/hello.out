@@ -1,5 +1,6 @@
 int x;
 int a;
+int c;
 void main() {
     int b;
     int c;
@@ -9,6 +10,22 @@ void main() {
     else {
         cout << "world";
     }
-    b(int[0]) = (c(int[0]) * x(int[1]));
+    b(int[-8]) = (c(int[-12]) * x(int[1]));
+}
+
+int f(int b, bool c) {
+    int d;
+    d(int[-16]) = 12;
+    cout << c(bool[-4]);
+    cout << b(int[0]);
+}
+
+void P(int x) {
+    int a;
+    int b;
+    cout << x(int[0]);
+    cout << a(int[-12]);
+    cout << b(int[-16]);
+    cout << c(int[1]);
 }
 

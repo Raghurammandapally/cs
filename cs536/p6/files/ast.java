@@ -168,7 +168,7 @@ class DeclListNode extends ASTnode {
     }
 
     public void nameAnalysis(SymTable symTab, boolean isGlobal) {
-        nameAnalysis(symTab, symTab, true);
+        nameAnalysis(symTab, symTab, isGlobal);
     }
     
     /**
@@ -185,10 +185,9 @@ class DeclListNode extends ASTnode {
         for (DeclNode node : myDecls) {
             if (node instanceof VarDeclNode) {
                 SemSym ret = ((VarDeclNode)node).nameAnalysis(symTab, globalTab);
-                if(isGlobal) {
-                  ret.setOffset(1);
-                } else {
+                if(!isGlobal) {
                   ret.setOffset(currOffset);
+                  currOffset -= 4;
                 }
             } else {
                 node.nameAnalysis(symTab);
@@ -239,6 +238,8 @@ class FormalsListNode extends ASTnode {
             SemSym sym = node.nameAnalysis(symTab);
             if (sym != null) {
                 typeList.add(sym.getType());
+                sym.setOffset(currOffset);
+                currOffset -= 4;
             }
         }
         return typeList;
@@ -279,7 +280,6 @@ class FnBodyNode extends ASTnode {
      * - process the statement list
      */
     public void nameAnalysis(SymTable symTab) {
-      currOffset = 0;
         myDeclList.nameAnalysis(symTab);
         myStmtList.nameAnalysis(symTab);
     }    
@@ -561,11 +561,14 @@ class FnDeclNode extends DeclNode {
         
         symTab.addScope();  // add a new scope for locals and params
         
+        currOffset = 0;
         // process the formals
         List<Type> typeList = myFormalsList.nameAnalysis(symTab);
         if (sym != null) {
             sym.addFormals(typeList);
         }
+
+        currOffset -= 8;
         
         myBody.nameAnalysis(symTab); // process the function body
         
