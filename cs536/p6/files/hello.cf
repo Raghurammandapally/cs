@@ -1,8 +1,10 @@
 int x;
-int y;
-bool b;
 void main() {
 }
+//int f(int a, int b) {
+//  int c;
+//  cout << x;
+//}
 //void main() {
 //    cout << "Hello world!";
 //    cout << "\n";

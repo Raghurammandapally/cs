@@ -57,7 +57,9 @@ public class Codegen {
     public static void generateMainDecl() {
       p.println("\ttext:");
       p.println("\t.globl main");
-      p.println("main:");
+      p.println("main:    # METHOD ENTRY");
+      p.println("__start:    # add __start label for main only");
+
     }
 
     public static void generateFnDecl(String var) {

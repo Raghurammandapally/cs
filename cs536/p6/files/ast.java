@@ -552,6 +552,46 @@ class FnDeclNode extends DeclNode {
       } else {
         Codegen.generateFnDecl(myId.name());
       }
+//# (1) push return addr
+//  sw   $ra, 0($sp)
+//  subu $sp, $sp, 4
+      Codegen.genPush(Codegen.RA);
+//# (2) push control link
+//  sw   $fp, 0($sp)
+//  subu $sp, $sp, 4
+      Codegen.genPush(Codegen.FP);
+//# (3) set the FP
+//# note: the following sets the FP to point to the "bottom"
+//#       of the new AR; the reason for "+ 8" is:
+//#       4 bytes each for the control link and the return addr
+//  addu $fp, $sp, <size of params in bytes + 8>
+      FnSym fn = (FnSym) myId.sym();
+      Codegen.generate("addu", Codegen.FP, Codegen.SP, 8 + fn.getParamTotal());
+//# (4) push space for locals
+//  subu $sp, $sp, <size of locals in bytes>
+      if(fn.getLocalsTotal() > 0 ) {
+        Codegen.generate("subu", Codegen.SP, Codegen.SP, fn.getLocalsTotal());
+      }
+
+      //lw   $ra, -<param size>($fp)    # load return address
+      Codegen.generateIndexed("lw", Codegen.RA, Codegen.FP, (fn.getParamTotal() == 0 ? 0 : -(fn.getParamTotal())));
+      //move $t0, $fp                   # save control link
+      Codegen.generate("move", Codegen.T0, Codegen.FP);
+      //lw   $fp, -<paramsize+4>($fp)   # restore FP
+      Codegen.generateIndexed("lw", Codegen.FP, Codegen.FP, -(fn.getParamTotal() + 4));
+      //move $sp, $t0                   # restore SP
+      Codegen.generate("move", Codegen.SP, Codegen.T0);
+
+      if(myId.name().equals("main")) {
+        //li $v0, 10
+        Codegen.generate("li", Codegen.V0, 10);
+        //syscall
+        Codegen.generate("syscall");
+      } else {
+        //jr   $ra                        # return
+        Codegen.generate("jr", Codegen.RA);
+      }
+
     }
 
     /**
