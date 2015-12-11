@@ -25,6 +25,10 @@ void P(int x) {
   cout << a;
   cout << b;
   cout << c;
+  if(a) {
+    int d;
+    cout << d;
+  }
 }
 //void main() {
 //    cout << "Hello world!";
