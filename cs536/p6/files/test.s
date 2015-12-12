@@ -1,7 +1,7 @@
 	.text
 	.globl main
 main:		# METHOD ENTRY
-#__start:    # add __start label for main only
+__start:    # add __start label for main only
 	sw    $ra, 0($sp)	#PUSH
 	subu  $sp, $sp, 4
 	sw    $fp, 0($sp)	#PUSH

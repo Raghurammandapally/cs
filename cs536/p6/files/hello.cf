@@ -1,5 +1,44 @@
-int x;
 void main() {
+  int x;
+  int y;
+  x = 10;
+  y = 20;
+  cout << "x = 10;";
+  cout << "\n";
+  cout << "y = 20;";
+  cout << "\n";
+  cout << "-->x: ";
+  cout << x;
+  cout << "\n";
+  cout << "-->y: ";
+  cout << y;
+  cout << "\n";
+  cout << "x = y*200;";
+  x = y*200;
+  cout << "\n";
+  cout << "-->x: ";
+  cout << x;
+  cout << "\n";
+  cout << "-->y: ";
+  cout << y;
+  cout << "\n";
+  cout << "y = x;";
+  y = x;
+  cout << "\n";
+  cout << "-->x: ";
+  cout << x;
+  cout << "\n";
+  cout << "-->y: ";
+  cout << y;
+  cout << "\n";
+
+  //bool b;
+  //b = true;
+  //cout << b;
+  //cout << "\n";
+  //b = false;
+  //cout << b;
+  //cout << "\n";
 }
 //int f(int a, int b) {
 //  int c;

@@ -53,12 +53,24 @@ public class Codegen {
     // GENERATE OPERATIONS
     // **********************************************************************
     // **********************************************************************
+    public static String generateStringStore(String str) {
+      String lab = nextLabel();
+      p.println("\t.data");
+      p.println(lab + ": .asciiz " + str);
+      return lab;
+    }
+
+    public static void generateStringLoad(String label) {
+      p.println("\t.text");
+      generate("la", Codegen.T0, label);
+      genPush(Codegen.T0);
+    }
     
     public static void generateMainDecl() {
-      p.println("\ttext:");
+      p.println("\t.text");
       p.println("\t.globl main");
       p.println("main:    # METHOD ENTRY");
-      p.println("__start:    # add __start label for main only");
+      //p.println("__start:    # add __start label for main only");
 
     }
 

@@ -117,6 +117,7 @@ abstract class ASTnode {
     }
 
     static public int currOffset;
+    static public HashMap<String,String> strings = new HashMap<String,String>(); 
 }
 
 // **********************************************************************
@@ -294,6 +295,11 @@ class FnBodyNode extends ASTnode {
         myStmtList = stmtList;
     }
 
+    public void codeGen() {
+      myDeclList.codeGen();
+      myStmtList.codeGen();
+    }
+
     /**
      * nameAnalysis
      * Given a symbol table symTab, do:
@@ -336,6 +342,12 @@ class StmtListNode extends ASTnode {
             node.nameAnalysis(symTab);
         }
     }    
+
+    public void codeGen() {
+      for (StmtNode node : myStmts) {
+        node.codeGen();
+      }
+    }
     
     /**
      * typeCheck
@@ -547,6 +559,9 @@ class FnDeclNode extends DeclNode {
     }
 
     public void codeGen() {
+      ////////////////////////////////////////
+      //FN ENTRY
+      ////////////////////////////////////////
       if(myId.name().equals("main")) {
         Codegen.generateMainDecl();
       } else {
@@ -572,6 +587,18 @@ class FnDeclNode extends DeclNode {
       if(fn.getLocalsTotal() > 0 ) {
         Codegen.generate("subu", Codegen.SP, Codegen.SP, fn.getLocalsTotal());
       }
+      
+      /////////////////////////
+      //FN BODY
+      /////////////////////////
+      myBody.codeGen();
+
+      /////////////////////////
+      //FN EXIT
+      /////////////////////////
+      String exitLabel = Codegen.nextLabel();
+      //myBody.codeGen(exitLabel);
+      Codegen.genLabel(exitLabel, "exit for " + myId.name());
 
       //lw   $ra, -<param size>($fp)    # load return address
       Codegen.generateIndexed("lw", Codegen.RA, Codegen.FP, (fn.getParamTotal() == 0 ? 0 : -(fn.getParamTotal())));
@@ -904,11 +931,17 @@ class StructNode extends TypeNode {
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
     abstract public void typeCheck(Type retType);
+    public void codeGen() {
+    }
 }
 
 class AssignStmtNode extends StmtNode {
     public AssignStmtNode(AssignNode assign) {
         myAssign = assign;
+    }
+
+    public void codeGen() {
+      myAssign.codeGen();
     }
 
     /**
@@ -1057,6 +1090,20 @@ class WriteStmtNode extends StmtNode {
         myExp = exp;
     }
 
+    public void codeGen() {
+      myExp.codeGen();
+      Codegen.genPop(Codegen.A0);
+      if(type.isIntType() || type.isBoolType()) {
+        Codegen.generate("li", Codegen.V0, 1);
+      } else if (type.isStringType()) {
+        Codegen.generate("li", Codegen.V0, 4);
+      } else {
+      }
+      Codegen.generate("syscall");
+    }
+
+
+
     /**
      * nameAnalysis
      * Given a symbol table symTab, perform name analysis on this node's child
@@ -1069,7 +1116,8 @@ class WriteStmtNode extends StmtNode {
      * typeCheck
      */
     public void typeCheck(Type retType) {
-        Type type = myExp.typeCheck();
+        //Type 
+          type = myExp.typeCheck();
         
         if (type.isFnType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
@@ -1101,6 +1149,7 @@ class WriteStmtNode extends StmtNode {
 
     // 1 kid
     private ExpNode myExp;
+    private Type type;
 }
 
 class IfStmtNode extends StmtNode {
@@ -1408,6 +1457,9 @@ abstract class ExpNode extends ASTnode {
     abstract public Type typeCheck();
     abstract public int lineNum();
     abstract public int charNum();
+
+    public void codeGen() {
+    }
 }
 
 class IntLitNode extends ExpNode {
@@ -1415,6 +1467,11 @@ class IntLitNode extends ExpNode {
         myLineNum = lineNum;
         myCharNum = charNum;
         myIntVal = intVal;
+    }
+
+    public void codeGen() {
+      Codegen.generate("li", Codegen.T0, myIntVal);
+      Codegen.genPush(Codegen.T0);
     }
     
     /**
@@ -1453,6 +1510,14 @@ class StringLitNode extends ExpNode {
         myCharNum = charNum;
         myStrVal = strVal;
     }
+
+    public void codeGen() {
+      if(!strings.containsKey(myStrVal)) {
+        strings.put(myStrVal, Codegen.generateStringStore(myStrVal));
+      }
+
+      Codegen.generateStringLoad(strings.get(myStrVal));
+    }
     
     /**
      * Return the line number for this literal.
@@ -1490,6 +1555,11 @@ class TrueNode extends ExpNode {
         myCharNum = charNum;
     }
 
+    public void codeGen() {
+      Codegen.generate("li", Codegen.T0, 1);
+      Codegen.genPush(Codegen.T0);
+    }
+
     /**
      * Return the line number for this literal.
      */
@@ -1523,6 +1593,11 @@ class FalseNode extends ExpNode {
     public FalseNode(int lineNum, int charNum) {
         myLineNum = lineNum;
         myCharNum = charNum;
+    }
+
+    public void codeGen() {
+      Codegen.generate("li", Codegen.T0, 0);
+      Codegen.genPush(Codegen.T0);
     }
 
     /**
@@ -1560,6 +1635,26 @@ class IdNode extends ExpNode {
         myCharNum = charNum;
         myStrVal = strVal;
     }
+
+    public void genAddr() {
+      String reg = Codegen.T0;
+      if(sym().isLocal()) {
+        Codegen.generate("la", reg, sym().getOffset() + "($fp)");
+      } else {
+        Codegen.generate("la", reg, "_" + myStrVal);
+      }
+      Codegen.genPush(reg);
+    }
+
+    public void codeGen() {
+      if(sym().isLocal()) {
+        Codegen.generate("lw", Codegen.T0, sym().getOffset() + "($fp)");
+      } else {
+        Codegen.generate("lw", Codegen.T0, "_" + myStrVal);
+      }
+      Codegen.genPush(Codegen.T0);
+    }
+
 
     /**
      * Link the given symbol to this ID.
@@ -1800,6 +1895,24 @@ class AssignNode extends ExpNode {
     public AssignNode(ExpNode lhs, ExpNode exp) {
         myLhs = lhs;
         myExp = exp;
+    }
+
+    public void codeGen() {
+      //Evaluate the right-hand-side expression, leaving the value on the stack.
+      myExp.codeGen();
+      //Push the address of the left-hand-side Id onto the stack.
+      //  we can cast myLhs because we are not dealing with structs
+      IdNode id = (IdNode) myLhs;
+      // loads address and pushes it onto stack
+      id.genAddr();
+      //pop id addr into $t0
+      Codegen.genPop(Codegen.T0);
+      //pop rhs value into $t1
+      Codegen.genPop(Codegen.T1);
+      //Store the value into the address.
+      Codegen.generateIndexed("sw", Codegen.T1, Codegen.T0, 0);
+      //Leave a copy of the value on the stack.
+      Codegen.genPush(Codegen.T1);
     }
     
     /**
@@ -2101,6 +2214,21 @@ abstract class ArithmeticExpNode extends BinaryExpNode {
     public ArithmeticExpNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
+
+    abstract public void opCode();
+
+    public void codeGen() {
+      // Call each child's codeGen method to generate code that will evaluate the operand(s), leaving the value(s) on the stack.
+      myExp1.codeGen();
+      myExp2.codeGen();
+      // Generate code to pop the operand value(s) off the stack into register(s) (e.g., T0 and T1 for ints; F0 and F2 for doubles). Remember that if there are two operands, the right one will be on the top of the stack.
+      Codegen.genPop(Codegen.T1);
+      Codegen.genPop(Codegen.T0);
+      // Generate code to perform the operation (see Spim documentation for a list of opcodes).
+      opCode();
+      // Generate code to push the result onto the stack.
+      Codegen.genPush(Codegen.T0);
+    }
     
     /**
      * typeCheck
@@ -2160,6 +2288,10 @@ abstract class LogicalExpNode extends BinaryExpNode {
         }
         
         return retType;
+    }
+
+    public void codeGen() {
+      //todo
     }
 }
 
@@ -2251,6 +2383,10 @@ class PlusNode extends ArithmeticExpNode {
     public PlusNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
+
+    public void opCode() {
+      Codegen.generate("add", Codegen.T0, Codegen.T0, Codegen.T0);
+    }
     
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
@@ -2264,6 +2400,10 @@ class PlusNode extends ArithmeticExpNode {
 class MinusNode extends ArithmeticExpNode {
     public MinusNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    public void opCode() {
+      Codegen.generate("sub", Codegen.T0, Codegen.T0, Codegen.T0);
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -2280,6 +2420,10 @@ class TimesNode extends ArithmeticExpNode {
         super(exp1, exp2);
     }
 
+    public void opCode() {
+      Codegen.generate("mult", Codegen.T0, Codegen.T1);
+      Codegen.generate("mflo", Codegen.T0);
+    }
     
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
@@ -2293,6 +2437,11 @@ class TimesNode extends ArithmeticExpNode {
 class DivideNode extends ArithmeticExpNode {
     public DivideNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    public void opCode() {
+      Codegen.generate("mult", Codegen.T0, Codegen.T1);
+      Codegen.generate("mflo", Codegen.T0);
     }
     
     public void unparse(PrintWriter p, int indent) {
