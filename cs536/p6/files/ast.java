@@ -2289,10 +2289,6 @@ abstract class LogicalExpNode extends BinaryExpNode {
         
         return retType;
     }
-
-    public void codeGen() {
-      //todo
-    }
 }
 
 abstract class EqualityExpNode extends BinaryExpNode {
@@ -2456,6 +2452,25 @@ class DivideNode extends ArithmeticExpNode {
 class AndNode extends LogicalExpNode {
     public AndNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    public void codeGen() {
+      //evaluate the left operand
+      //if the value is true then
+      //   evaluate the right operand;
+      //   that value is the value of the whole expression
+      myExp1.codeGen();
+      Codegen.genPop(Codegen.T0);
+      String lab = Codegen.nextLabel();
+      Codegen.generate("li", Codegen.T1, 0);
+      Codegen.generate("beq", Codegen.T0, Codegen.T1, lab);
+      //else
+      //   don't bother to evaluate the right operand
+      //   the value of the whole expression is false
+      myExp2.codeGen();
+      Codegen.genPop(Codegen.T0);
+      Codegen.genLabel(lab);
+      Codegen.genPush(Codegen.T0);
     }
     
     public void unparse(PrintWriter p, int indent) {
