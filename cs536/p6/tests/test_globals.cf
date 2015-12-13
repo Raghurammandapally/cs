@@ -1,0 +1,55 @@
+int x;
+int y;
+
+void print(int x, int y, int z) {
+  cout << "x: ";
+  cout << x;
+  cout << "\n";
+
+  cout << "y: ";
+  cout << y;
+  cout << "\n";
+
+  cout << "z: ";
+  cout << z;
+  cout << "\n";
+
+  cout << "\n";
+}
+
+void f(int a) {
+  a = 5;
+}
+
+int g(int a) {
+  return 2*a;
+}
+
+void h() {
+  //expected: 20, 0, 0
+  print(x, y, 0);
+}
+
+void main() {
+  int y;
+  int z;
+
+  y = 10;
+  z = 20;
+
+  //expected: 0, 10, 20
+  print(x, y, z);
+
+  f(x);
+  //expect no side effects: 
+  //expected: 0, 10, 20
+  print(x, y, z);
+
+  x = g(y);
+  z = g(z);
+  //expected: 20, 10, 20
+  print(x, y, 40);
+
+  //expected: 20, 0, 0
+  h();
+}

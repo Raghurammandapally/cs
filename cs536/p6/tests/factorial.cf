@@ -1,0 +1,19 @@
+int factorial(int x) {
+  if(x <= 0) {
+    return 1;
+  } else {
+    return factorial(x - 1) * x;
+  }
+}
+void main() {
+  int x;
+  x = 0;
+  while(x <= 10) {
+    cout << "(x=";
+    cout << x;
+    cout << ") ";
+    cout << factorial(x);
+    cout << "\n";
+    x++;
+  }
+}

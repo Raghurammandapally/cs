@@ -1,4 +1,0 @@
-void main2() {
-    cout << "Hello world!";
-    cout << "\n";
-}

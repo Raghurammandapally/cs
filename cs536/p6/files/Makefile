@@ -55,10 +55,8 @@ EmptySymTableException.class: EmptySymTableException.java
 # clean
 ###
 clean:
-	rm -f *~ *.class parser.java CSX.jlex.java sym.java
+	rm -f *~ *.class parser.java CSX.jlex.java sym.java *.s
 ##test
 test:
 	java P6 hello.cf hello.s
-	cat hello.s
-
 	

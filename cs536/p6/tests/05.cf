@@ -1,0 +1,40 @@
+//2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+//What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+
+bool is_div( int x, int div) {
+  return ((x/div)*div == x);
+}
+
+int find_smallest_div(int lo, int hi) {
+  int x;
+  int myLo;
+  bool continue;
+  int baz;
+
+  x = hi;
+  myLo = lo + ((hi - lo)/2);
+  continue = true;
+
+  while(continue) {
+    if(is_div(x, myLo)) {
+      if(myLo == hi) {
+        continue = false;
+      } else {
+        myLo++;
+      }
+    } else {
+      myLo = lo + ((hi - lo)/2);
+      x = x + hi;
+    }
+  }
+  return x;
+}
+
+void main() {
+  int x;
+  x = find_smallest_div(1, 10);
+  cout << "Answer: ";
+  cout << x;
+  cout << "\n";
+}
+

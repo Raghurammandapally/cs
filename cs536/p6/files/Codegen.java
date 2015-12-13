@@ -76,7 +76,8 @@ public class Codegen {
 
     public static void generateFnDecl(String var) {
       p.println("\t.text");
-      p.println("\t_" + var + ":");
+      //p.println("\t_" + var + ":");
+      p.println(var + ":");
     }
 
     public static void generateGlobalDecl(String var) {

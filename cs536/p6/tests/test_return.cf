@@ -1,0 +1,11 @@
+int f() {
+  return 2;
+}
+
+void main() {
+  int x;
+  x = f();
+  cout << "x: ";
+  cout << x;
+  cout << "\n";
+}

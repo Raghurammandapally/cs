@@ -1,0 +1,45 @@
+void print(bool x, bool y) {
+  cout << "x: ";
+  cout << x;
+  cout << "\n";
+
+  cout << "y: ";
+  cout << y;
+  cout << "\n";
+
+  cout << "x == y: ";
+  cout << x == y;
+  cout << "\n";
+
+  cout << "x != y: ";
+  cout << x != y;
+  cout << "\n";
+
+  cout << "x && y: ";
+  cout << x && y;
+  cout << "\n";
+
+  cout << "x || y: ";
+  cout << x || y;
+  cout << "\n";
+
+  cout << "!x: ";
+  cout << !x;
+  cout << "\n";
+
+  cout << "!y: ";
+  cout << !y;
+  cout << "\n";
+
+}
+  
+void main() {
+  bool x;
+  bool y;
+  while(true) {
+    cout << "\n";
+    cin >> x;
+    cin >> y;
+    print(x, y);
+  }
+}
