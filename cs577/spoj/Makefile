@@ -1,7 +1,7 @@
 CFLAGS=-Wall -g
 
-PROBLEM = knights#insert#merge#life
-INPUT = 03#02#merge#01
+PROBLEM = brackets#coins#knights#insert#merge#life
+INPUT = 07#06#03#02#merge#01
 
 make:
 	gcc $(PROBLEM).c -o $(PROBLEM)
