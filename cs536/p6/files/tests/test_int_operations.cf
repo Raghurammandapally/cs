@@ -61,8 +61,11 @@ void main() {
   int x;
   int y;
   while(true) {
+    cout << "Give me one int:";
     cout << "\n";
     cin >> x;
+    cout << "Give me another:";
+    cout << "\n";
     cin >> y;
     print(x, y);
   }

@@ -55,8 +55,29 @@ EmptySymTableException.class: EmptySymTableException.java
 # clean
 ###
 clean:
-	rm -f *~ *.class parser.java CSX.jlex.java sym.java *.s
+	rm -f *~ *.class parser.java CSX.jlex.java sym.java tests/*.s
 ##test
 test:
-	java P6 hello.cf hello.s
-	
+	# let's test simple output!
+	java P6 tests/hello.cf tests/hello.s
+	spim -file tests/hello.s
+	# let's test recursion!
+	java P6 tests/factorial.cf tests/factorial.s
+	spim -file tests/factorial.s
+	# let's test a whole bunch of our other language features!
+	# here we will compile them but not run them, but they can
+	#   be run with 'spim -file tests/xxx.s'
+	java P6 tests/test_bool_assignment.cf tests/test_bool_assignment.s
+	java P6 tests/test_bool_operations.cf tests/test_bool_operations.s
+	java P6 tests/test_int_assignment.cf tests/test_int_assignment.s
+	java P6 tests/test_int_operations.cf tests/test_int_operations.s
+	java P6 tests/test_globals.cf tests/test_globals.s
+	java P6 tests/test_return.cf tests/test_int_return.s
+	java P6 tests/test_side_effects.cf tests/test_side_effects.s
+	# this is expected to run until spim times the process out
+	java P6 tests/test_stack.cf tests/test_stack.s
+
+	################################################################
+	# uncomment below to test exiting when there is no main method #
+	################################################################
+	#java P6 test_main_exit.cf test_main_exit.out
