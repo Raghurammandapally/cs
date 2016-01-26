@@ -19,11 +19,11 @@ int main() {
   }
   */
 
-  ret = fgets(s, 129, fp);
+  while(ret != NULL) {
+    ret = fgets(s, 129, fp);
+    printf("%s", s);
+  }
 
-  printf("pre-allocated:\t %p\n", s);
-  printf("returned val:\t %p\n", ret);
-  
   return 0;
 
 }
