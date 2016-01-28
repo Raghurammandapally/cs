@@ -1,9 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX_LEN 128
+#include <string.h>
+#include <malloc.h>
+// 128 chars + 1 for \n
+#define MAX_LEN 129
 
 
 void sort(char *input, int key);
+
+struct line {
+  char string[MAX_LEN + 1];
+};
+
+typedef struct line *Line;
 
 int main(int argc, char *argv[]) {
   int key;
@@ -26,10 +35,6 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Error: Bad command line parameters\n");
     return 1;
   }
-  //printf("there were %d args.\n\
-        argv[0] was %s\n\
-        argv[1] was %s\n\
-        argv[2] was %s\n", argc, argv[0], argv[1], argv[2]);
   sort(input_file, key);
   return 0;
 }
@@ -38,17 +43,45 @@ void sort(char *input_file, int key) {
   FILE *fp = fopen(input_file, "r");
   char *line;
   char str_buf[MAX_LEN + 1];
+  int linecount = 0;
+  int i;
+  Line *lines;
 
   if(fp == NULL) {
     fprintf(stderr, "Error: Cannot open file %s\n", input_file);
     exit(1);
   }
 
-  printf("sizeof str_buf: %d\n", sizeof str_buf);
-
   while(fgets(str_buf, sizeof str_buf, fp) != NULL) {
-    puts(str_buf);
+    if(strlen(str_buf) == MAX_LEN && str_buf[strlen(str_buf)-1] != '\n') {
+      fprintf(stderr, "Line too long\n");
+      exit(1);
+    } else {
+      //valid line
+      linecount++;
+    }
   }
+
+  // go back to beginning of file
+  rewind(fp);
+
+  lines = malloc(sizeof(Line) * linecount);
+  printf("sizeof struct line *: %d\n", sizeof(Line));
+  printf("sizeof lines: %d\n", sizeof(lines));
+  printf("usable space: %d\n", malloc_usable_size(lines));
+
+  for(i = 0; i < linecount; i++) {
+    //allocate a new line struct
+    lines[i] = (Line) malloc(sizeof(struct line));
+    fgets(lines[i]->string, sizeof(lines[i]->string), fp);
+  }
+
+  for(i = 0; i < linecount; i++) {
+    printf("%s\n", lines[i]->string);
+    //free(lines[i]);
+  }
+
+  free(lines);
 
   fclose(fp);
 }

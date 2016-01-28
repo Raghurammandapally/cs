@@ -1,5 +1,5 @@
 CFLAGS=-Wall -g -O0
-PROG=tester#fastsort
+PROG=fastsort
 
 make:
 	gcc $(PROG).c -o $(PROG)
