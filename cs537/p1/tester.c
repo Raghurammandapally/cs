@@ -1,29 +1,33 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
-int main() {
-  printf("hello, world\n");
-  char c;
-  char s[130];
-  char *ret;
+//http://stackoverflow.com/questions/4955198/what-does-dereferencing-a-pointer-mean
 
-  FILE *fp = fopen("test", "r");
-  if(fp == NULL) {
-    fprintf(stderr, "failed to open file.\n");
-  }
+struct X {
+  char str[128];
+  char word[128];
+};
 
-  /*
-  while(c != EOF) {
-    c = fgetc(fp);
-    printf("%c", c);
-  }
-  */
+int compar(const void *p1) {
+  struct X *y;
 
-  while(ret != NULL) {
-    ret = fgets(s, 129, fp);
-    printf("%s", s);
-  }
+  y = (struct X *) p1;
 
+  printf("%s\n%s\n", y->str, y->word);
+  printf("sizeof x: %d\n", sizeof y);
+
+  
   return 0;
-
 }
+
+int main(int argc, char *argv[]) {
+  struct X x;
+  strcpy(x.str, "hello");
+  strcpy(x.word, "world");
+
+  printf("%s\n%s\n", x.str, x.word);
+  printf("sizeof x: %d\n", sizeof x);
+
+  compar(&x);
+}
+

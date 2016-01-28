@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX_LEN 128
+
 
 void sort(char *input, int key);
 
@@ -34,15 +36,19 @@ int main(int argc, char *argv[]) {
 
 void sort(char *input_file, int key) {
   FILE *fp = fopen(input_file, "r");
+  char *line;
+  char str_buf[MAX_LEN + 1];
+
   if(fp == NULL) {
     fprintf(stderr, "Error: Cannot open file %s\n", input_file);
     exit(1);
   }
 
-  char *line;
-  line = fgets(line, 128, fp);
-  printf("line: %s\n", line);
-  
+  printf("sizeof str_buf: %d\n", sizeof str_buf);
+
+  while(fgets(str_buf, sizeof str_buf, fp) != NULL) {
+    puts(str_buf);
+  }
 
   fclose(fp);
 }
