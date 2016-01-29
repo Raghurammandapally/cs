@@ -4,8 +4,5 @@ PROG=fastsort
 make:
 	gcc $(PROG).c -o $(PROG)
 
-run:
-	./$(PROG) #< $(INPUT).txt
-
 clean:
 	rm -f $(PROG)

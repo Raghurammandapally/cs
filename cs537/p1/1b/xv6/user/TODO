@@ -1,0 +1,21 @@
+syscall.h
+  add #DEFINE sys_getprocs 22
+
+usys.S
+  add SYSCALL(getprocs)
+
+syscall.c
+  add [SYS_getprocs]  sys_getprocs,
+
+kernel/sysproc.c
+  add defn for sys-getprocs
+
+proc.c
+  read about ptable
+  see allocproc for loop
+
+proc.h
+  struct proc 
+
+--------------------
+int getprocs(void)
