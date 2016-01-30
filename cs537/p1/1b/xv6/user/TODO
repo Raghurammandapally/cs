@@ -1,16 +1,16 @@
-[ ] syscall.h
+[x] include/syscall.h
   add #DEFINE sys_getprocs 22
 
-[ ] usys.S
+[x] user/usys.S
   add SYSCALL(getprocs)
 
-[ ] syscall.c
+[x] kernel/syscall.c
   add [SYS_getprocs]  sys_getprocs,
 
-[ ] kernel/sysproc.c
+[x] kernel/sysproc.c
   add defn for sys-getprocs
 
-[ ] proc.c
+[ ] kernel/proc.c
   read about ptable
   see allocproc for loop
 
