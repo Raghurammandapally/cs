@@ -114,7 +114,7 @@ Test arg
 Bad arguments
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort
+/tmp/tmpLVbjtQ/p/fastsort
 
 
 test arg PASSED (10 of 10)
@@ -128,7 +128,7 @@ Test arg2
 Bad arguments
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort a b c d
+/tmp/tmpLVbjtQ/p/fastsort a b c d
 
 
 test arg2 PASSED (10 of 10)
@@ -142,7 +142,7 @@ Test arg3
 Invalid key value
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort -i input/empty
+/tmp/tmpLVbjtQ/p/fastsort -i input/empty
 
 
 test arg3 PASSED (10 of 10)
@@ -156,7 +156,7 @@ Test badin
 Bad input file
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort /invalid/path/F3QiyG
+/tmp/tmpLVbjtQ/p/fastsort /invalid/path/DTzSQ6
 
 
 test badin PASSED (10 of 10)
@@ -170,7 +170,7 @@ Test toolong
 some line has more than 128 characters
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort input/toolong
+/tmp/tmpLVbjtQ/p/fastsort input/toolong
 
 
 test toolong PASSED (10 of 10)

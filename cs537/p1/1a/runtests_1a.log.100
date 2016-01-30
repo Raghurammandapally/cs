@@ -44,19 +44,10 @@ a single record
 Copying files
 Running fastsort
 Checking output
-expected output is: 
 
 
-but got:
-
-this line is first
-
-Failure: Output mismatched
-
-
-test one FAILED (0 of 10)
+test one PASSED (10 of 10)
  (a single record)
- Output mismatched
 
 starting five1
 
@@ -114,7 +105,7 @@ Test arg
 Bad arguments
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort
+/tmp/tmp8ittRA/p/fastsort
 
 
 test arg PASSED (10 of 10)
@@ -128,7 +119,7 @@ Test arg2
 Bad arguments
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort a b c d
+/tmp/tmp8ittRA/p/fastsort a b c d
 
 
 test arg2 PASSED (10 of 10)
@@ -142,7 +133,7 @@ Test arg3
 Invalid key value
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort -i input/empty
+/tmp/tmp8ittRA/p/fastsort -i input/empty
 
 
 test arg3 PASSED (10 of 10)
@@ -156,7 +147,7 @@ Test badin
 Bad input file
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort /invalid/path/F3QiyG
+/tmp/tmp8ittRA/p/fastsort /invalid/path/BFL5By
 
 
 test badin PASSED (10 of 10)
@@ -170,7 +161,7 @@ Test toolong
 some line has more than 128 characters
 
 **********************************************************************
-/tmp/tmp_7reKt/p/fastsort input/toolong
+/tmp/tmp8ittRA/p/fastsort input/toolong
 
 
 test toolong PASSED (10 of 10)
@@ -184,9 +175,8 @@ test build PASSED
 test empty PASSED (10 of 10)
  (empty input file)
 
-test one FAILED (0 of 10)
+test one PASSED (10 of 10)
  (a single record)
- Output mismatched
 
 test five1 PASSED (10 of 10)
  (five records)
@@ -212,6 +202,6 @@ test badin PASSED (10 of 10)
 test toolong PASSED (10 of 10)
  (some line has more than 128 characters)
 
-Passed 10 of 11 tests.
-Overall 10 of 11
-Points 90 of 100
+Passed 11 of 11 tests.
+Overall 11 of 11
+Points 100 of 100
