@@ -42,22 +42,6 @@ sys_getpid(void)
 }
 
 int
-sys_getprocs(void)
-{
-  int ctr = 0;
-  acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-  {
-    if(p->state != UNUSED)
-    {
-      ctr++;
-    }
-  }
-  release(&ptable.lock);
-  return ctr;
-}
-
-int
 sys_sbrk(void)
 {
   int addr;

@@ -6,6 +6,8 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#include "sysfunc.h"
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -69,6 +71,23 @@ found:
   p->context->eip = (uint)forkret;
 
   return p;
+}
+
+int
+sys_getprocs(void)
+{
+  struct proc *p;
+  int ctr = 0;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p->state != UNUSED)
+    {
+      ctr++;
+    }
+  }
+  release(&ptable.lock);
+  return ctr;
 }
 
 // Set up first user process.
