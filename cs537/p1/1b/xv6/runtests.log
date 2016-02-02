@@ -1,0 +1,6 @@
+build - build xv6 using make
+procs1 - call getprocs() from a user program
+procs2 - call fork() before getprocs()
+procs3 - call getprocs() with a full process table
+procs4 - call getprocs() with a process table filled with zombies
+procs5 - call getprocs() after some entries turn back to UNUSED
