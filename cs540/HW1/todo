@@ -1,0 +1,9 @@
+https://ay15-16.moodle.wisc.edu/prod/mod/assign/view.php?id=106841
+
+Hand in your HW #1 zip file here.  Make sure that the name of your file is <your wisc username>-HW1.zip    So, for example, if your wisc username is jdoe, then your file should be named jdoe-HW1.zip   Make sure it includes pdf files for your answers to Problems 1 and 2, and all code needed to compile your program for Problem 3.  You can check that your file has in fact been submitted by checking the "Submission Status" box. 
+
+wfunkhouser-HW1.zip
+  - P1.pdf
+  - P2.pdf
+  - code to compile P3 IN THIS DIRECTORY LEVEL
+    - test with "javac FindPath.java"
