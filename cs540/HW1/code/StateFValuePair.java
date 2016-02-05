@@ -40,4 +40,8 @@ public class StateFValuePair implements Comparable<StateFValuePair> {
     State s2 = (State) s;
     return s2.getX() == state.getX() && s2.getY() == state.getY();
   }
+
+  public String toString() {
+    return "" + state.toString() + " with F = " + fValue;
+  }
 }

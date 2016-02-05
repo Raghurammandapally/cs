@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.lang.Math;
+import java.util.Iterator;
+import java.util.Comparator;
 
 /**
  * A* algorithm search
@@ -49,7 +51,9 @@ public class AStarSearcher extends Searcher {
     State start = new State(maze.getPlayerSquare(), null, 0, 0);
 // *   frontier <- a priority queue ordered by PATH-COST, with node as the only element
 		PriorityQueue<StateFValuePair> frontier = new PriorityQueue<StateFValuePair>(); // poll() to remove; offer() to add
-    frontier.add(new StateFValuePair(start,0));
+    frontier.add(new StateFValuePair(start,f(start)));
+
+
 // *   explored <- an empty set
 		// explored list is a Boolean array that indicates if a state associated with a given position in the maze has already been explored. 
 		boolean[][] explored = new boolean[maze.getNoOfRows()][maze.getNoOfCols()];
@@ -58,7 +62,12 @@ public class AStarSearcher extends Searcher {
 // *      if EMPTY?(frontier) then return failure
 // *      node <- POP(frontier) // chooses the lowest-cost node in frontier
       StateFValuePair s = frontier.poll();
+      noOfNodesExpanded++;
+      if(s.getState().getDepth() > maxDepthSearched) {
+        maxDepthSearched = s.getState().getDepth();
+      }
 // *      if problem.GOAL-TEST(node.STATE) then return SOLUTION(node)
+      
       if(s.getState().isGoal(maze)) {
         cost = s.getState().getGValue();
         State st = s.getState();
@@ -67,6 +76,7 @@ public class AStarSearcher extends Searcher {
           maze.setOneSquare(st.getSquare(), '.');
           st = st.getParent();
         }
+        return true;
       }
 // *      add node.STATE to explored
       explored[s.getState().getX()][s.getState().getY()] = true;
@@ -76,12 +86,36 @@ public class AStarSearcher extends Searcher {
       for (State st : succ) {
 // *          if child.STATE is not in explored or frontier then
 // *             frontier <- INSERT(child, frontier)
-        if(!frontier.contains(st) && !explored[st.getX()][st.getY()]) {
+        Iterator<StateFValuePair> itr = frontier.iterator();
+        StateFValuePair next = null;
+        boolean found = false;
+        while(itr.hasNext()) {
+          next = itr.next();
+          if(st.equals(next)) {
+            found = true;
+            break;
+          }
+        }
+
+        if(!found && !explored[st.getX()][st.getY()]) {
           frontier.offer(new StateFValuePair(st, f(st)));
         }
 // *          else if child.STATE is in frontier with higher PATH-COST then
 // *             replace that frontier node with child
-        //else if(frontier.contains(st) 
+        // found == true --> next != null
+        else if(found && next.getState().getGValue() > st.getGValue()) {
+          boolean removed = frontier.remove(st);
+          if(!removed) {
+            throw new RuntimeException();
+          } else {
+            frontier.offer(new StateFValuePair(st, f(st)));
+          }
+        }
+
+      }
+
+      if(frontier.size() > maxSizeOfFrontier) {
+        maxSizeOfFrontier = frontier.size();
       }
 
 
