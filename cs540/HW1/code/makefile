@@ -32,8 +32,14 @@ testAStarBig:
 	diff tests/bigMazeAStarOut.txt tests/bigMazeSolutionAStar.txt || exit 0
 	rm -f tests/bigMazeAStarOut.txt
 
-test: testAStarSmall testDFSSmall testAStarMedium
+test: testAStarSmall testDFSSmall testAStarMedium testAStarBig
 
 clean:
 	$(RM) *.class
 
+package:
+	rm -f wfunkhouser-HW1.zip || exit 0
+	zip -j ../wfunkhouser-HW1.zip ../P1.pdf ../P2.pdf *.java
+
+show:
+	unzip -l ../wfunkhouser-HW1.zip
