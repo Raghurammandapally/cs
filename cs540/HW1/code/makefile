@@ -31,8 +31,13 @@ testAStarBig:
 	java FindPath tests/bigMaze.txt astar > tests/bigMazeAStarOut.txt
 	diff tests/bigMazeAStarOut.txt tests/bigMazeSolutionAStar.txt || exit 0
 	rm -f tests/bigMazeAStarOut.txt
+testDFSBig:
+	echo 'testing DFS with big maze...'
+	java FindPath tests/bigMaze.txt dfs > tests/bigMazeDFSOut.txt
+	diff tests/bigMazeDFSOut.txt tests/bigMazeSolutionDFS.txt || exit 0
+	rm -f tests/bigMazeDFSOut.txt
 
-test: testAStarSmall testDFSSmall testAStarMedium testAStarBig
+test: testAStarSmall testDFSSmall testAStarMedium testAStarBig testDFSBig
 
 clean:
 	$(RM) *.class
