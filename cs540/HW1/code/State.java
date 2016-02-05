@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.lang.RuntimeException;
 
 /**
  * A state in the search represented by the (x,y) coordinates of the square and
@@ -50,10 +51,14 @@ public class State {
 		// TODO check all four neighbors (up, right, down, left)
     int X = getX();
     int Y = getY();
-    addToSuccList(maze, succ, X-1, Y);
-    addToSuccList(maze, succ, X, Y+1);
-    addToSuccList(maze, succ, X+1, Y);
+    //left
     addToSuccList(maze, succ, X, Y-1);
+    //down
+    addToSuccList(maze, succ, X+1, Y);
+    //right
+    addToSuccList(maze, succ, X, Y+1);
+    //up
+    addToSuccList(maze, succ, X-1, Y);
 
 		// TODO return all unvisited neighbors
     return succ;
@@ -67,7 +72,7 @@ public class State {
 	//public State(Square square, State parent, int gValue, int depth) {
     if( //explored[newX][newY] != '%' ) {
       maze.getSquareValue(newX, newY) != '%') {
-      succ.add(new State(new Square(newY, newY), this, gValue + 4, depth + 1));
+      succ.add(new State(new Square(newX, newY), this, gValue + 1 , depth + 1));
     }
   }
 
@@ -128,4 +133,20 @@ public class State {
 	public int getDepth() {
 		return depth;
 	}
+
+  public String toString() {
+    return square.toString();
+  }
+
+  public boolean equals(Object s) {
+    State s2;
+    if(s instanceof StateFValuePair) {
+      s2 = ((StateFValuePair) s).getState();
+    } else if(! (s instanceof State)){
+      throw new RuntimeException();
+    } else {
+      s2 = (State) s;
+    }
+    return s2.getX() == getX() && s2.getY() == getY();
+  }
 }

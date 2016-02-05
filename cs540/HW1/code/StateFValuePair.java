@@ -31,4 +31,13 @@ public class StateFValuePair implements Comparable<StateFValuePair> {
 
 		return 0;
 	}
+
+  public boolean equals(Object s) {
+    if(! (s instanceof State)){
+      System.out.println(s);
+      throw new RuntimeException();
+    } 
+    State s2 = (State) s;
+    return s2.getX() == state.getX() && s2.getY() == state.getY();
+  }
 }

@@ -7,3 +7,11 @@ wfunkhouser-HW1.zip
   - P2.pdf
   - code to compile P3 IN THIS DIRECTORY LEVEL
     - test with "javac FindPath.java"
+
+TODO
+*************************
+  -test code for checking g value and replacing if necessary
+    -"If a newly generated node, n, has the same state as another node, m, that is already in Frontier, you must compare the g values of n and m. If g(n) ≥ g(m), then throw node n away (i.e., do not put it on Frontier). If g(n) < g(m), then remove m from Frontier and insert n in Frontier"
+  -check against web app
+    -http://qiao.github.io/PathFinding.js/visual/
+
