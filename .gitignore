@@ -1,4 +1,4 @@
-*.swp
+.*.swp
 *.class
 *.pyc
 *.jar
