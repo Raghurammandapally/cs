@@ -3,3 +3,5 @@ default:
 	./whoosh < input.txt
 check-syntax:
 	gcc -o nul -S ${CHK_SOURCES}
+clean:
+	rm -f whoosh
