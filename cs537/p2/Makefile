@@ -1,5 +1,5 @@
 default:
 	gcc -o whoosh -g whoosh.c
-	./whoosh
+	./whoosh < input.txt
 check-syntax:
 	gcc -o nul -S ${CHK_SOURCES}
