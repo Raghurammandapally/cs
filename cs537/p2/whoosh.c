@@ -7,8 +7,65 @@
 
 const char error_message[30] = "An error has occurred\n";
 
+struct path {
+  char **paths;
+  int count;
+};
+
 void err() {  
   write(STDERR_FILENO, error_message, strlen(error_message)); 
+}
+
+void clear_paths(struct path *p) {
+  int i;
+  //argc/argv are passed directly from the cli, so they include:
+  // argc[0]: path
+  // argc[1]: (first dir)
+  // ...
+  // argc[argv-1]: (last dir)
+
+  // free all old pointers
+  for(i = 0; i < p->count; i++) {
+    free(p->paths[i]);
+  }
+  if(p->paths != NULL) {
+    free(p->paths);
+    p->paths = NULL;
+  }
+}
+
+int update_path(struct path *p, char **argc, int argv) {
+  clear_paths(p);
+
+  int i;
+  // set count var before potentially returning
+  p->count = argv-1;
+
+  if(argv == 1) {
+    //no need to allocate space
+    return 0;
+  }
+
+  // add all new *chars
+  p->paths = malloc((argv-1)*sizeof(char*));
+  if(p->paths == NULL) {
+    return 1;
+  }
+  for(i = 1; i < argv; i++) {
+    p->paths[i-1] = strdup(argc[i]);
+    if(p->paths[i-1] == NULL) {
+      return 1;
+    }
+  }
+  // successfully allocated memory for all args
+  return 0;
+}
+
+void print_paths(struct path *p) {
+  int i;
+  for(i = 0; i < p->count; i++) {
+    printf("path[%d]: %s\n", i, p->paths[i]);
+  }
 }
 
 int main() {
@@ -16,7 +73,12 @@ int main() {
 
   //write(STDERR_FILENO, error_message, strlen(error_message));
 
+  struct path p = {.count = 0, .paths = NULL};
+
   const char *greeting = "whoosh> ";
+  char *init_paths[1];
+  init_paths[0] = "/bin";
+  update_path(&p, init_paths, 1);
 
   int argv;
   char input[MAX_LEN];
@@ -85,7 +147,6 @@ int main() {
 
     //[optionalSpace]exit[optionalSpace]
     if(argv == 1 && strcmp(args[0], "exit\n") == 0) {
-      printf("ack!\n");
       exit(0);
     } else if(strcmp(args[0], "exit") == 0) {
       err();
@@ -105,38 +166,56 @@ int main() {
     }
 
 
-    else if ((argv == 1 && strcmp(args[0], "cd\n") == 0) ||
-	     (argv > 1 && strcmp(args[0], "cd") == 0) {
-	       if(argv > 2) {
-		 err();
-		 exit(1);
-	       } else {
-		 char *dir;
-		 int res;
+    else if ((argv == 1 && strcmp(args[0], "cd\n") == 0) || 
+	     (argv > 1 && strcmp(args[0], "cd") == 0)) {
+      if(argv > 2) {
+	err();
+	exit(1);
+      } else {
+	char *dir;
+	int res;
 
-		 //[optionalSpace]cd[optionalSpace]
-		 if(argv == 1) {
-		   dir = getenv("HOME");
-		   if(dir == NULL) //error...
+	//[optionalSpace]cd[optionalSpace]
+	if(argv == 1) {
+	  dir = getenv("HOME");
+	  if(dir == NULL) {
+	    err();
+	    exit(1);
+	  }
+	} else {
+	  //[optionalSpace]cd[oneOrMoreSpace]dir[optionalSpace]
+	  dir = args[1];
+	}
 
-		     //[optionalSpace]cd[oneOrMoreSpace]dir[optionalSpace]
-		     } else {
-		   dir = args[1];
-		 }
+	res = chdir(dir);
+	if(res != 0) {
+	  err();
+	  exit(1);
+	} else {
+	  continue;
+	}
+      }
+    }
+    //[optionalSpace]path[oneOrMoreSpace]dir[optionalSpace] (and possibly
+    else if ((argv == 1 && strcmp(args[0], "path\n") == 0) || 
+	     (argv > 1 && strcmp(args[0], "path") == 0)) {
+      update_path(&p, args, argv);
+      //print_paths(&p);
+    }
 
-		 res = chdir(home);
-		 if(res != 0) //error...
-		 else {
-		   continue
-		     }
-	       }
-	     }
-	     break;
-	     /*
-	     //[optionalSpace]path[oneOrMoreSpace]dir[optionalSpace] (and possibly
-	     else if (strcmp(args[0], "path") == 0) {
-	     */  
+    // search path for arg
+    else {
+      //For the following situation, you should print the error message to stderr and continue processing:
+      //  - A command does not exist or cannot be executed.
 
-	     }
-    exit(0);
+
+
+    }
   }
+
+
+  // clean up
+  clear_paths(&p);
+
+  exit(0);
+}

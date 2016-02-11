@@ -1,0 +1,501 @@
+	.file	"whoosh_flymake.c"
+.globl error_message
+	.section	.rodata
+	.align 16
+	.type	error_message, @object
+	.size	error_message, 30
+error_message:
+	.string	"An error has occurred\n"
+	.zero	7
+	.text
+.globl err
+	.type	err, @function
+err:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	$22, %edx
+	movl	$error_message, %esi
+	movl	$2, %edi
+	call	write
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	err, .-err
+.globl clear_paths
+	.type	clear_paths, @function
+clear_paths:
+.LFB1:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$32, %rsp
+	movq	%rdi, -24(%rbp)
+	movl	$0, -4(%rbp)
+	jmp	.L4
+.L5:
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	movl	-4(%rbp), %edx
+	movslq	%edx, %rdx
+	salq	$3, %rdx
+	addq	%rdx, %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	free
+	addl	$1, -4(%rbp)
+.L4:
+	movq	-24(%rbp), %rax
+	movl	8(%rax), %eax
+	cmpl	-4(%rbp), %eax
+	jg	.L5
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	testq	%rax, %rax
+	je	.L7
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	free
+	movq	-24(%rbp), %rax
+	movq	$0, (%rax)
+.L7:
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	clear_paths, .-clear_paths
+.globl update_path
+	.type	update_path, @function
+update_path:
+.LFB2:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	pushq	%rbx
+	subq	$56, %rsp
+	movq	%rdi, -40(%rbp)
+	movq	%rsi, -48(%rbp)
+	movl	%edx, -52(%rbp)
+	movq	-40(%rbp), %rax
+	movq	%rax, %rdi
+	.cfi_offset 3, -24
+	call	clear_paths
+	movl	-52(%rbp), %eax
+	leal	-1(%rax), %edx
+	movq	-40(%rbp), %rax
+	movl	%edx, 8(%rax)
+	cmpl	$1, -52(%rbp)
+	jne	.L9
+	movl	$0, %eax
+	jmp	.L10
+.L9:
+	movl	-52(%rbp), %eax
+	subl	$1, %eax
+	cltq
+	salq	$3, %rax
+	movq	%rax, %rdi
+	call	malloc
+	movq	%rax, %rdx
+	movq	-40(%rbp), %rax
+	movq	%rdx, (%rax)
+	movq	-40(%rbp), %rax
+	movq	(%rax), %rax
+	testq	%rax, %rax
+	jne	.L11
+	movl	$1, %eax
+	jmp	.L10
+.L11:
+	movl	$1, -20(%rbp)
+	jmp	.L12
+.L14:
+	movq	-40(%rbp), %rax
+	movq	(%rax), %rax
+	movl	-20(%rbp), %edx
+	movslq	%edx, %rdx
+	subq	$1, %rdx
+	salq	$3, %rdx
+	leaq	(%rax,%rdx), %rbx
+	movl	-20(%rbp), %eax
+	cltq
+	salq	$3, %rax
+	addq	-48(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	strdup
+	movq	%rax, (%rbx)
+	movq	-40(%rbp), %rax
+	movq	(%rax), %rax
+	movl	-20(%rbp), %edx
+	movslq	%edx, %rdx
+	subq	$1, %rdx
+	salq	$3, %rdx
+	addq	%rdx, %rax
+	movq	(%rax), %rax
+	testq	%rax, %rax
+	jne	.L13
+	movl	$1, %eax
+	jmp	.L10
+.L13:
+	addl	$1, -20(%rbp)
+.L12:
+	movl	-20(%rbp), %eax
+	cmpl	-52(%rbp), %eax
+	jl	.L14
+	movl	$0, %eax
+.L10:
+	addq	$56, %rsp
+	popq	%rbx
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	update_path, .-update_path
+	.section	.rodata
+.LC0:
+	.string	"path[%d]: %s\n"
+	.text
+.globl print_paths
+	.type	print_paths, @function
+print_paths:
+.LFB3:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$32, %rsp
+	movq	%rdi, -24(%rbp)
+	movl	$0, -4(%rbp)
+	jmp	.L17
+.L18:
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	movl	-4(%rbp), %edx
+	movslq	%edx, %rdx
+	salq	$3, %rdx
+	addq	%rdx, %rax
+	movq	(%rax), %rdx
+	movl	$.LC0, %eax
+	movl	-4(%rbp), %ecx
+	movl	%ecx, %esi
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	printf
+	addl	$1, -4(%rbp)
+.L17:
+	movq	-24(%rbp), %rax
+	movl	8(%rax), %eax
+	cmpl	-4(%rbp), %eax
+	jg	.L18
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	print_paths, .-print_paths
+	.section	.rodata
+.LC1:
+	.string	"whoosh> "
+.LC2:
+	.string	"/bin"
+.LC3:
+	.string	"%s"
+.LC4:
+	.string	" "
+.LC5:
+	.string	"exit\n"
+.LC6:
+	.string	"exit"
+.LC7:
+	.string	"pwd\n"
+.LC8:
+	.string	"pwd"
+.LC9:
+	.string	"cd\n"
+.LC10:
+	.string	"cd"
+.LC11:
+	.string	"HOME"
+.LC12:
+	.string	"path\n"
+.LC13:
+	.string	"path"
+	.text
+.globl main
+	.type	main, @function
+main:
+.LFB4:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	pushq	%rbx
+	subq	$1256, %rsp
+	movq	$0, -80(%rbp)
+	movl	$0, -72(%rbp)
+	movq	$.LC1, -56(%rbp)
+	movq	$.LC2, -96(%rbp)
+	leaq	-96(%rbp), %rcx
+	leaq	-80(%rbp), %rax
+	movl	$1, %edx
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	.cfi_offset 3, -24
+	call	update_path
+	jmp	.L45
+.L48:
+	nop
+	jmp	.L45
+.L49:
+	nop
+.L45:
+	movl	$.LC3, %eax
+	movq	-56(%rbp), %rdx
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	movl	$0, %eax
+	call	printf
+	movq	stdin(%rip), %rax
+	movq	%rax, %rdx
+	leaq	-240(%rbp), %rax
+	movl	$130, %esi
+	movq	%rax, %rdi
+	call	fgets
+	leaq	-240(%rbp), %rax
+	movq	%rax, %rdi
+	call	strlen
+	cmpq	$129, %rax
+	jne	.L21
+	leaq	-240(%rbp), %rax
+	movq	%rax, %rdi
+	call	strlen
+	subq	$2, %rax
+	movzbl	-240(%rbp,%rax), %eax
+	cmpb	$10, %al
+	je	.L21
+	movl	$0, %eax
+	call	err
+.L21:
+	leaq	-240(%rbp), %rax
+	movq	%rax, %rdi
+	call	strlen
+	cmpq	$1, %rax
+	jne	.L22
+	jmp	.L23
+.L22:
+	movl	$0, -44(%rbp)
+	jmp	.L24
+.L27:
+	movl	-44(%rbp), %eax
+	cltq
+	movzbl	-240(%rbp,%rax), %eax
+	cmpb	$32, %al
+	jne	.L47
+.L25:
+	addl	$1, -44(%rbp)
+.L24:
+	movl	-44(%rbp), %eax
+	movslq	%eax, %rbx
+	leaq	-240(%rbp), %rax
+	movq	%rax, %rdi
+	call	strlen
+	subq	$1, %rax
+	cmpq	%rax, %rbx
+	jb	.L27
+	jmp	.L26
+.L47:
+	nop
+.L26:
+	movl	-44(%rbp), %eax
+	movslq	%eax, %rbx
+	leaq	-240(%rbp), %rax
+	movq	%rax, %rdi
+	call	strlen
+	subq	$1, %rax
+	cmpq	%rax, %rbx
+	jne	.L28
+	jmp	.L23
+.L28:
+	movl	$.LC4, %edx
+	leaq	-240(%rbp), %rax
+	movq	%rdx, %rsi
+	movq	%rax, %rdi
+	call	strtok
+	movq	%rax, -1264(%rbp)
+	movq	-1264(%rbp), %rax
+	testq	%rax, %rax
+	jne	.L29
+	jmp	.L23
+.L29:
+	movl	$1, -48(%rbp)
+	jmp	.L30
+.L31:
+	addl	$1, -48(%rbp)
+.L30:
+	movl	-48(%rbp), %ebx
+	movl	$.LC4, %eax
+	movq	%rax, %rsi
+	movl	$0, %edi
+	call	strtok
+	movslq	%ebx, %rdx
+	movq	%rax, -1264(%rbp,%rdx,8)
+	movslq	%ebx, %rax
+	movq	-1264(%rbp,%rax,8), %rax
+	testq	%rax, %rax
+	jne	.L31
+	cmpl	$1, -48(%rbp)
+	jne	.L32
+	movq	-1264(%rbp), %rax
+	movl	$.LC5, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L32
+	movl	$0, %edi
+	call	exit
+.L32:
+	movq	-1264(%rbp), %rax
+	movl	$.LC6, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L33
+	movl	$0, %eax
+	call	err
+	movl	$1, %edi
+	call	exit
+.L33:
+	cmpl	$1, -48(%rbp)
+	jne	.L34
+	movq	-1264(%rbp), %rax
+	movl	$.LC7, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L34
+	movl	$0, %esi
+	movl	$0, %edi
+	call	getcwd
+	movq	%rax, -40(%rbp)
+	movq	-40(%rbp), %rax
+	movq	%rax, %rdi
+	call	puts
+	movq	-40(%rbp), %rax
+	movq	%rax, %rdi
+	call	free
+	jmp	.L23
+.L34:
+	movq	-1264(%rbp), %rax
+	movl	$.LC8, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L35
+	movl	$0, %eax
+	call	err
+	movl	$1, %edi
+	call	exit
+.L35:
+	cmpl	$1, -48(%rbp)
+	jne	.L36
+	movq	-1264(%rbp), %rax
+	movl	$.LC9, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	je	.L37
+.L36:
+	cmpl	$1, -48(%rbp)
+	jle	.L38
+	movq	-1264(%rbp), %rax
+	movl	$.LC10, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L38
+.L37:
+	cmpl	$2, -48(%rbp)
+	jle	.L39
+	movl	$0, %eax
+	call	err
+	movl	$1, %edi
+	call	exit
+.L39:
+	cmpl	$1, -48(%rbp)
+	jne	.L40
+	movl	$.LC11, %edi
+	call	getenv
+	movq	%rax, -32(%rbp)
+	cmpq	$0, -32(%rbp)
+	jne	.L41
+	movl	$0, %eax
+	call	err
+	movl	$1, %edi
+	call	exit
+.L40:
+	movq	-1256(%rbp), %rax
+	movq	%rax, -32(%rbp)
+.L41:
+	movq	-32(%rbp), %rax
+	movq	%rax, %rdi
+	call	chdir
+	movl	%eax, -20(%rbp)
+	cmpl	$0, -20(%rbp)
+	je	.L42
+	movl	$0, %eax
+	call	err
+	movl	$1, %edi
+	call	exit
+.L42:
+	jmp	.L23
+.L38:
+	cmpl	$1, -48(%rbp)
+	jne	.L43
+	movq	-1264(%rbp), %rax
+	movl	$.LC12, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	je	.L44
+.L43:
+	cmpl	$1, -48(%rbp)
+	jle	.L48
+	movq	-1264(%rbp), %rax
+	movl	$.LC13, %esi
+	movq	%rax, %rdi
+	call	strcmp
+	testl	%eax, %eax
+	jne	.L49
+.L44:
+	movl	-48(%rbp), %edx
+	leaq	-1264(%rbp), %rcx
+	leaq	-80(%rbp), %rax
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	update_path
+	jmp	.L45
+.L23:
+	jmp	.L45
+	.cfi_endproc
+.LFE4:
+	.size	main, .-main
+	.ident	"GCC: (GNU) 4.4.7 20120313 (Red Hat 4.4.7-16)"
+	.section	.note.GNU-stack,"",@progbits
