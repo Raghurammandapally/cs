@@ -229,6 +229,7 @@ int main() {
 	    // we have found our (potential) executable
 	    printf("found an executable!\n");
 	    printf("length: %d\n", de->d_reclen);
+
 	  }
 	}
       }

@@ -212,11 +212,9 @@ int main() {
       //For the following situation, you should print the error message to stderr and continue processing:
       //  - A command does not exist or cannot be executed.
 
-      //strip newline
       if(args[0][strlen(args[0])-1] == '\n') {
 	args[0][strlen(args[0])-1] = '\0';
       }
-
       int i;
       struct dirent *de;
       for(i = 0; i < p.count; i++) {
@@ -229,6 +227,9 @@ int main() {
 	while( (de = readdir(dir)) != NULL) {
 	  if( strcmp(args[0], de->d_name) == 0) {
 	    // we have found our (potential) executable
+	    printf("found an executable!\n");
+	    printf("length: %d\n", de->d_reclen);
+	    
 	  }
 	}
       }
