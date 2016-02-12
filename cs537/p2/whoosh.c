@@ -142,6 +142,7 @@ int main() {
     }
 
     // now argv == the # of args
+    printf("argv is now %d\n", argv);
 
 
 
@@ -215,11 +216,10 @@ int main() {
       if(args[0][strlen(args[0])-1] == '\n') {
 	args[0][strlen(args[0])-1] = '\0';
       }
-      int i;
+      int j;
       struct dirent *de;
-      for(i = 0; i < p.count; i++) {
-	DIR *dir = opendir(p.paths[i]);
-	printf("looking in: %s\n", p.paths[i]);
+      for(j = 0; j < p.count; j++) {
+	DIR *dir = opendir(p.paths[j]);
 	if(dir == NULL) {
 	  continue;
 	} 
@@ -227,9 +227,36 @@ int main() {
 	while( (de = readdir(dir)) != NULL) {
 	  if( strcmp(args[0], de->d_name) == 0) {
 	    // we have found our (potential) executable
-	    printf("found an executable!\n");
-	    printf("length: %d\n", de->d_reclen);
+	    int rc = fork();
+	    if(rc == 0) { // child process
+	      printf("child process!\n");
+	      printf("argv: %d\n", argv);
+	      char *my_args[argv+1];
 
+	      // 1 for '/' between and 1 for \0
+	      my_args[0] = malloc(sizeof(char)*( strlen(p.paths[j]) + strlen(args[0]) + 2));
+	      memcpy((void *) *my_args[0], *p.paths[j], sizeof(char)*strlen(p.paths[j]));
+	      my_args[0][strlen(p.paths[j])] = '/';
+	      memcpy((void *) my_args[0][strlen(p.paths[j]+1)], *args[0], sizeof(char)*strlen(args[0]));
+	      my_args[strlen(p.paths[j]) + strlen(args[0]) + 1] = '\0';	      
+
+	      int i;
+	      for(i = 1; i < argv; i++) {
+		my_args[i] = args[i];
+	      }
+	      my_args[argv] = NULL;
+	      
+	      //execv: must be passed a **char with the last == NULL
+	      execv(my_args[0], my_args);
+	      err();
+	      exit(1);
+	    } else if (rc > 0) { // parent process
+	      printf("parent process!\n");
+	      printf("argv: %d\n", argv);
+	    } else { // error
+
+	    }
+	    continue;
 	  }
 	}
       }
