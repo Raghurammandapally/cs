@@ -1,4 +1,2 @@
-path hello world /bin/ls
-path
-path ok let's try again
+ls
 exit
