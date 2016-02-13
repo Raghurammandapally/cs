@@ -5,3 +5,4 @@ check-syntax:
 	gcc -o nul -S ${CHK_SOURCES}
 clean:
 	rm -f whoosh
+	rm -f nul
