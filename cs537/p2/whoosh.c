@@ -23,7 +23,11 @@ void err() {
   write(STDERR_FILENO, error_message, strlen(error_message)); 
 }
 
-      int main() {
+int main(int carg, char** varg) {
+  if(carg > 1) {
+    err();
+    exit(1);
+  }
   struct path p = {.count = 0, .paths = NULL};
 
   char *greeting = "whoosh> ";
