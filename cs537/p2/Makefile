@@ -6,3 +6,5 @@ check-syntax:
 clean:
 	rm -f whoosh
 	rm -f nul
+	rm -f *.err
+	rm -f *.out
