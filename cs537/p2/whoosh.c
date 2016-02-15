@@ -205,9 +205,9 @@ int main(int carg, char** varg) {
 		   S_IRUSR | S_IWUSR);
 
 	      // - set argv[redir] = NULL
-	      argv[redir] = NULL;
+	      argv[last_redir] = NULL;
 	      // - set argc = redir
-	      argc = redir;
+	      argc = last_redir;
 	    }
 
 	    execv(argv[0], argv);
