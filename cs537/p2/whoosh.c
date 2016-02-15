@@ -127,7 +127,11 @@ void err() {
 	//[optionalSpace]cd[oneOrMoreSpace]dir[optionalSpace]
 	dir = argv[1];
       }
-      chdir(dir);
+      int res = chdir(dir);
+      if(res != 0) {
+	err();
+	continue;
+      }
     } else if( strcmp(argv[0], "pwd") == 0 ) {
       //[optionalSpace]pwd[optionalSpace]
       if(argc > 1) {
