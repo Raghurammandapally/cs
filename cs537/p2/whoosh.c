@@ -197,7 +197,7 @@ int main(int carg, char** varg) {
 	      close(STDOUT_FILENO);
 	      if( open(out,
 		   O_CREAT | O_TRUNC | O_WRONLY,
-		       S_IRUSR | S_IWUSR) != 0) {
+		       S_IRUSR | S_IWUSR) == -1) {
 		err();
 		exit(1);
 	      }
@@ -205,7 +205,7 @@ int main(int carg, char** varg) {
 	      close(STDERR_FILENO);
 	      if( open(errout,
 		   O_CREAT | O_TRUNC | O_WRONLY,
-		       S_IRUSR | S_IWUSR) != 0) {
+		       S_IRUSR | S_IWUSR) == -1 ) {
 		err();
 		exit(1);
 	      }

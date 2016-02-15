@@ -1,2 +1,2 @@
-ls /bad > output
+uname > output
 exit
