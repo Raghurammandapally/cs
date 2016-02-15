@@ -195,14 +195,20 @@ int main(int carg, char** varg) {
 	      strcat(errout, ".err");
 
 	      close(STDOUT_FILENO);
-	      open(out,
+	      if( open(out,
 		   O_CREAT | O_TRUNC | O_WRONLY,
-		   S_IRUSR | S_IWUSR);
+		       S_IRUSR | S_IWUSR) != 0) {
+		err();
+		exit(1);
+	      }
 
 	      close(STDERR_FILENO);
-	      open(errout,
+	      if( open(errout,
 		   O_CREAT | O_TRUNC | O_WRONLY,
-		   S_IRUSR | S_IWUSR);
+		       S_IRUSR | S_IWUSR) != 0) {
+		err();
+		exit(1);
+	      }
 
 	      // - set argv[redir] = NULL
 	      argv[last_redir] = NULL;
