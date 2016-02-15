@@ -48,7 +48,11 @@ void err() {
     fgets(input, MAX_LEN, stdin);
   
     if(input[strlen(input)-1] != '\n') {
+      while(input[strlen(input)-1] != '\n') {
+	fgets(input, MAX_LEN, stdin);
+      }
       err();
+      continue;
     } else {
       input[strlen(input)-1] = '\0';
     }
