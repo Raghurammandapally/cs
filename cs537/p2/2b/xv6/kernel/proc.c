@@ -25,6 +25,17 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 }
 
+
+int setpri(int num) {
+  return -1;
+}
+
+int getpinfo(struct pstat *) {
+  return -1;
+}
+
+
+
 // Look in the process table for an UNUSED proc.
 // If found, change state to EMBRYO and initialize
 // state required to run in the kernel.

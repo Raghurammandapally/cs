@@ -1,0 +1,30 @@
+include/syscall.h:#define SYS_getprocs 22
+kernel/sysfunc.h:int sys_getprocs(void);
+kernel/syscall.c:[SYS_getprocs]  sys_getprocs,
+kernel/proc.c:sys_getprocs(void)
+kernel/tmp:sys_getprocs(void)
+user/usys.S:SYSCALL(getprocs)
+user/user.h:int getprocs(void);
+
+[x] include/syscall.h
+  add #DEFINE sys_getprocs 22
+
+[x] user/usys.S
+  add SYSCALL(getprocs)
+
+[x] kernel/syscall.c
+  add [SYS_getprocs]  sys_getprocs,
+
+[x] kernel/sysproc.c
+  add defn for sys-getprocs
+
+[ ] kernel/proc.c
+  read about ptable
+  see allocproc for loop
+
+[ ] proc.h
+  struct proc 
+
+--------------------
+int setpri(int num)
+getpinfo(struct pstat *)
