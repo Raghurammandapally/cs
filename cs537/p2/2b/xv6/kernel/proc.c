@@ -30,9 +30,9 @@ int setpri(int num) {
   return -1;
 }
 
-int getpinfo(struct pstat *) {
-  return -1;
-}
+//int getpinfo(struct pstat *) {
+//  return -1;
+//}
 
 
 

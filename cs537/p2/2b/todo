@@ -15,16 +15,12 @@ user/user.h:int getprocs(void);
 [x] kernel/syscall.c
   add [SYS_getprocs]  sys_getprocs,
 
-[x] kernel/sysproc.c
-  add defn for sys-getprocs
+[ ] kernel/sysfunc.h
+  add prototypes
 
 [ ] kernel/proc.c
-  read about ptable
-  see allocproc for loop
-
-[ ] proc.h
-  struct proc 
+  add function defns
 
 --------------------
 int setpri(int num)
-getpinfo(struct pstat *)
+int getpinfo(struct pstat *)
