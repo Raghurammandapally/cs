@@ -5,6 +5,8 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "sysfunc.h"
+#include "pstat.h"
 
 struct {
   struct spinlock lock;
@@ -19,21 +21,65 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+int
+sys_setpri(void)
+{
+  // num is the priority to set the calling process to
+  int num;
+  //int pid;
+  if(argint(0,&num) < 0) {
+    return -1;
+  } else {
+    if(num < 0 || num > 2) {
+      return -1;
+    } else {
+      // do the actual work of setting the priority
+      //pid = getpid();
+      return 0;
+    }
+  }
+}
+
+int
+sys_getpinfo(void)
+{
+  struct pstat *ps;
+  struct proc *p;
+  p = ptable.proc;
+
+  if(argptr(0, (void*)&ps, sizeof(*ps)) < 0) {
+    return -1;
+  } else {
+    if(p == NULL) {
+      return -1;
+    } else {
+      // fill pstat struct
+      acquire(&ptable.lock);
+      int i = 0;
+      for( ; p < &ptable.proc[NPROC]; p++) {
+	if(p->state == UNUSED) {
+	  ps->inuse[i] = 0;
+	} else {
+	  ps->inuse[i] = 1;
+	}
+	ps->pid[i] = p->pid;
+	// also need to update hticks[i] and lticks[i]
+	ps->hticks[i] = 0;
+	ps->lticks[i] = 0;
+	i++;
+      }
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+
+}
+
 void
 pinit(void)
 {
   initlock(&ptable.lock, "ptable");
 }
-
-
-int setpri(int num) {
-  return -1;
-}
-
-//int getpinfo(struct pstat *) {
-//  return -1;
-//}
-
 
 
 // Look in the process table for an UNUSED proc.

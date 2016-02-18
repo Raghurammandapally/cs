@@ -80,7 +80,7 @@ QEMUGDB := $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 
 # number of CPUs to emulate in QEMU
 ifndef CPUS
-CPUS := 2
+CPUS := 1
 endif
 
 QEMUOPTS := -hdb fs.img xv6.img -smp $(CPUS)
@@ -106,7 +106,7 @@ run: qemu
 # run xv6 in qemu
 qemu: fs.img xv6.img
 	@echo Ctrl+a h for help
-	$(QEMU) -serial mon:stdio $(QEMUOPTS)
+	$f(QEMU) -serial mon:stdio $(QEMUOPTS)
 
 # run xv6 in qemu without a display (serial only)
 qemu-nox: fs.img xv6.img

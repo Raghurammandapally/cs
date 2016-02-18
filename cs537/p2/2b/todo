@@ -24,3 +24,52 @@ user/user.h:int getprocs(void);
 --------------------
 int setpri(int num)
 int getpinfo(struct pstat *)
+
+
+
+tests:
+----------------------------------------------
+[x] test build PASSED
+ (build xv6 using make)
+
+[x] test getpinfo PASSED (10 of 10)
+ (call getpinfo() from a user program 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/getpinfo.c)
+
+[x] test setpri PASSED (10 of 10)
+ (call setpri() from a user program 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/setpri.c)
+
+[x] test processesinuse FAILED (0 of 20)
+ (check number of processes in use by calling getpinfo() 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/processesinuse.c)
+
+[ ] test default_priority FAILED (0 of 20)
+ (check default priority set for processes by measuring hticks 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/default_priority.c)
+     - can we use sleep() as a template for a call which determines the calling process' pid?
+
+ 
+[ ] test check_hticks FAILED (0 of 20)
+ (check if hticks being incremented for high priority process 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/check_hticks.c)
+
+[ ] test change_priority FAILED (0 of 20)
+ (check if hticks and lticks being incremented as expected when the priority is changed back and forth 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/change_priority.c)
+
+[ ] test run_high_priority FAILED (0 of 20)
+ (check no low priority processes are running when there is high priority 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/run_high_priority.c)
+
+[ ] test sleep_high_priority FAILED (0 of 20)
+ (check if low priority processes run when high priority is put to sleep 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/sleep_high_priority.c)
+
+[ ] test awake_high_priority FAILED (0 of 20)
+ (check if only high priority process run when high priority is awake from sleep 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/awake_high_priority.c)
+
+[ ] test multiple_high_priority FAILED (0 of 20)
+ (check if multiple high priority processes run in round robin 
+ The corresponding test file is at ~cs537-1/ta/tests/2b/ctests/multiple_high_priority.c)
