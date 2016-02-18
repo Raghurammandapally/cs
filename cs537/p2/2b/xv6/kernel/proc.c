@@ -26,7 +26,7 @@ sys_setpri(void)
 {
   // num is the priority to set the calling process to
   int num;
-  //int pid;
+  //iint pid = proc->pid;
   if(argint(0,&num) < 0) {
     return -1;
   } else {
