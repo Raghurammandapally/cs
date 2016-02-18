@@ -35,6 +35,7 @@ sys_setpri(void)
     } else {
       // do the actual work of setting the priority
       //pid = getpid();
+      proc->pri = num;
       return 0;
     }
   }
@@ -44,19 +45,19 @@ int
 sys_getpinfo(void)
 {
   struct pstat *ps;
-  struct proc *p;
-  p = ptable.proc;
 
   if(argptr(0, (void*)&ps, sizeof(*ps)) < 0) {
     return -1;
   } else {
-    if(p == NULL) {
+    if(ps == NULL) {
       return -1;
     } else {
+      struct proc *p;
+
       // fill pstat struct
       acquire(&ptable.lock);
       int i = 0;
-      for( ; p < &ptable.proc[NPROC]; p++) {
+      for(p = ptable.proc ; p < &ptable.proc[NPROC]; p++) {
 	if(p->state == UNUSED) {
 	  ps->inuse[i] = 0;
 	} else {
@@ -64,8 +65,8 @@ sys_getpinfo(void)
 	}
 	ps->pid[i] = p->pid;
 	// also need to update hticks[i] and lticks[i]
-	ps->hticks[i] = 0;
-	ps->lticks[i] = 0;
+	ps->hticks[i] = p->hticks;
+	ps->lticks[i] = p->lticks;
 	i++;
       }
       release(&ptable.lock);
@@ -102,6 +103,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->pri = 1;
   release(&ptable.lock);
 
   // Allocate kernel stack if possible.
@@ -317,12 +319,29 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+    
+    int foundHi = 0;
+    
+
+    acquire(&ptable.lock);
+    // loop over ptable and check to see if any are high
+    // priority
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE) {
+        continue;
+      }
+      if(p->pri == 2) {
+	foundHi = 1;
+      }
+    }
 
     // Loop over process table looking for process to run.
-    acquire(&ptable.lock);
+    // If there are high priority processes, then run those.
+    // Else, run anything that is runnable
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
+      if(p->state != RUNNABLE || (foundHi && p->pri == 1)) {
         continue;
+      }
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
@@ -330,12 +349,20 @@ scheduler(void)
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
+      //update hi/lo ticks
+      if(p->pri == 1) {
+	p->lticks++;
+      } else if(p->pri == 2) {
+	p->hticks++;
+      }
+
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       proc = 0;
+
     }
     release(&ptable.lock);
 
