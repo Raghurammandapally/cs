@@ -7,21 +7,14 @@ JC = javac
 HWNUM = 2
 
 CLASSES = \
-        FindPath.java #\
+        wfunkhouserPlayer.java #\
 
 default: classes
 
 classes: $(CLASSES:.java=.class)
 
-testDFSBig:
-	@echo 'testing DFS with big maze...'
-	@echo '******************************'
-	java FindPath tests/bigMaze.txt dfs > tests/bigMazeDFSOut.txt
-	diff tests/bigMazeDFSOut.txt tests/bigMazeSolutionDFS.txt || exit 0
-	rm -f tests/bigMazeDFSOut.txt
-	@echo ' '
-
-test: testDFSBig
+test:	Mancala.class
+	java Mancala wfunkhouserPlayer
 
 clean:
 	$(RM) *.class
