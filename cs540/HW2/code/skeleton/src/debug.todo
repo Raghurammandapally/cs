@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: -1
+        at GameState.illegalMove(GameState.java:167)
+        at Match.play(Match.java:127)
+        at Mancala.main(Mancala.java:61)

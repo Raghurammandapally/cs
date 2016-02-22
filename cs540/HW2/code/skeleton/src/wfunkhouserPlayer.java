@@ -54,10 +54,17 @@ public class wfunkhouserPlayer extends Player {
     public void move(GameState state)
     {
 	int d = 1;
-	//while(true) {
+	while(true) {
 	    move = maxAction(state, d);
-	    //d += 1;
-        //}
+	    //System.out.println("Round " + d + "...");
+	    //System.out.println("  Found best move to be " + move);
+	    GameState s = new GameState(state);
+	    s.applyMove(move);
+	    //System.out.println("  SBE of " + sbe(s));
+	    //System.out.println("  Board after move: \n" + s);
+	    //System.out.println("\n");
+	    d += 1;
+        }
     }
 
     private List<Integer> getActions(GameState state) {
@@ -87,7 +94,7 @@ public class wfunkhouserPlayer extends Player {
      */
     public int maxAction(GameState state, int maxDepth)
     {
-	return maxAction(state, 0, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	return maxAction(state, 0, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE).move;
     }
 
     //return best move for min player. Note that this is a wrapper function created for ease to use.
@@ -123,34 +130,48 @@ public class wfunkhouserPlayer extends Player {
      *     alpha = MAX(alpha, v)
      *   return v
 
+     p2's turn on:
+     [ 4, 4, 0, 0, 6, 6, 2, 5, 5, 4, 4, 4, 4, 0]
+     -> illegal move
+
      */
-    public int maxAction(GameState state, int currentDepth, int maxDepth, int alpha, int beta)
+    public treeReturn maxAction(GameState state, int currentDepth, int maxDepth, int alpha, int beta)
     {
+	int step = -1;
 	if(currentDepth == maxDepth || state.gameOver()) {
-	    return sbe(state);
+	    return new treeReturn(sbe(state), step);
 	}
 	int v = Integer.MIN_VALUE;
 	List<Integer> l = getActions(state);
 	for(Integer i : l) {
+	    GameState newState = new GameState(state);
 	    //* @returns true if the player gets to move again, false otherwise.
-	    boolean ret = state.applyMove(i);
-	    if(ret) {
-		return maxAction(state, currentDepth+1, maxDepth, alpha, beta);
+	    boolean ret = newState.applyMove(i);
+
+	    treeReturn t = (ret ?
+			    maxAction(newState, currentDepth + 1, maxDepth, alpha, beta) :
+			    minAction(newState, currentDepth + 1, maxDepth, alpha, beta)
+			    );
+			
+	    if(t.sbe > v) {
+		step = i;
+		v = t.sbe;
 	    }
-	    v = Math.max(v, minAction(state, currentDepth + 1, maxDepth, alpha, beta));
+
 	    if(v >= beta) {
-		return v;
+		return new treeReturn(v, step);
 	    }
 	    alpha = Math.max(alpha, v);
 	}
-	return v;
+	return new treeReturn(v, step);
     }
 
     //return best move for min player
-    public int minAction(GameState state, int currentDepth, int maxDepth, int alpha, int beta)
+    public treeReturn minAction(GameState state, int currentDepth, int maxDepth, int alpha, int beta)
     {
 	state.rotate();
-	return maxAction(state, currentDepth, maxDepth, alpha, beta);
+	treeReturn t = maxAction(state, currentDepth, maxDepth, alpha, beta);
+	return new treeReturn(-t.sbe, t.move);
     }
 
     //the sbe function for game state. Note that in the game state, the bins for current player are always in the bottom row.
