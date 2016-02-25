@@ -26,6 +26,64 @@ public class DecisionTreeImpl extends DecisionTree {
   DecisionTreeImpl() {
     // no code necessary this is void purposefully
   }
+    
+    private String getMajority(List<Instance> examples) {
+	return "";
+    }
+
+	private DecTreeNode DTL(List<Instance> examples, List<String> attrs, List<Instance> parentEx, String parentAttr, String attr) {
+
+	// function Decision-Tree-Learning (examples, attributes, parent-examples )
+	// returns a tree
+	//   if examples is empty then
+	//     return Plurality-Value(parent-examples)
+	    if (examples.isEmpty()) {
+		return (parentEx == null ? null : 
+			//DecTreeNode(String _label, String _attribute, String _parentAttributeValue, boolean _terminal) {
+			new DecTreeNode(getMajority(parentEx), attr,  parentAttr, true)
+			);
+	    }
+	//   else if all examples have the same classification then
+	//     return the classification
+	    String class1 = examples.get(0).label;
+	boolean diff = false;
+	for(int i = 1; i < examples.size(); i++) {
+	    if(!examples.get(i).label.equals(class1)) {
+		diff = true;
+		break;
+	    }
+	}
+	if(diff) {
+	    return new DecTreeNode(class1, attr, parentAttr, true);
+	}
+	//   else if attributes is empty then
+	//     return Plurality-Value(examples)
+	else if(attrs.isEmpty()) {
+	    return new DecTreeNode(getMajority(examples), attr, parentAttr, true);
+	}
+	//   else
+	else {
+	//     A ← argmax(a∈attributes, Importance(a, examples))
+	    String A = "";
+	    int imp = 0;
+	    for(int i = 0; i < attributes.size(); i++) {
+		//int newImp = importance(attributes.get(i), examples);
+		//if(newImp > imp) {
+		//imp = newImp;
+		//A = attributes.get(i);
+		//}
+	    }
+	    
+	//     tree ← a new decision tree with root test A
+	//     for each value vk of A do
+	//       exs ← { e : e ∈ examples and e.A = vk }
+	//       subtree ← Decision-Tree-Learning (exs, attributes-A, examples)
+	//       add a branch to tree with label (A = vk ) and subtree subtree
+	//   return tree
+
+	return null;
+	}
+    }
 
   /**
    * Build a decision tree given only a training set.
@@ -38,26 +96,10 @@ public class DecisionTreeImpl extends DecisionTree {
     this.attributes = train.attributes;
     this.attributeValues = train.attributeValues;
     // TODO: add code here
-
-    /*
-function Decision-Tree-Learning (examples, attributes, parent-examples )
-returns a tree
-  if examples is empty then
-    return Plurality-Value(parent-examples)
-  else if all examples have the same classification then
-    return the classification
-  else if attributes is empty then
-    return Plurality-Value(examples)
-  else
-    A ← argmax(a∈attributes, Importance(a, examples))
-    tree ← a new decision tree with root test A
-    for each value vk of A do
-      exs ← { e : e ∈ examples and e.A = vk }
-      subtree ← Decision-Tree-Learning (exs, attributes-A, examples)
-      add a branch to tree with label (A = vk ) and subtree subtree
-  return tree
-
-    */
+    
+    root = DTL(train.instances, attributes, null, null, null);
+    
+    
   }
 
   /**
@@ -76,7 +118,7 @@ returns a tree
 
   @Override
   public String classify(Instance instance) {
-
+      return null;
     // TODO: add code here
   }
 
