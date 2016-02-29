@@ -16,7 +16,8 @@ default: classes
 classes: $(CLASSES:.java=.class)
 
 test:	$(FILE).class
-	#java Mancala wfunkhouserPlayer
+	java HW3 1 balance_train.txt balance_tune.txt balance_test.txt
+	#java HW3 1 test.txt balance_tune.txt balance_test.txt
 
 clean:
 	$(RM) *.class

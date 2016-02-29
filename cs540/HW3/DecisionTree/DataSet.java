@@ -21,7 +21,7 @@ public class DataSet {
   public List<Instance> instances = null; // ordered list of instances
   private final String DELIMITER = ","; // Used to split input strings
 
-  /**
+  /**p
    * Adds the labels used by the instances.
    * 
    * @param line begins with substring "%%"
