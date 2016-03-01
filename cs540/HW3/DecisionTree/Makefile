@@ -11,7 +11,7 @@ FILE = DecisionTreeImpl
 CLASSES = \
         $(FILE).java #\
 
-FLAG = 2
+FLAG = 4
 
 default: classes
 
@@ -23,6 +23,7 @@ test:	$(FILE).class HW3.class
 
 clean:
 	$(RM) *.class
+	$(RM) *.out
 
 package:
 	rm -f ../wfunkhouser-HW$(HWNUM).zip || exit 0

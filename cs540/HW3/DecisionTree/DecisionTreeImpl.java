@@ -13,6 +13,18 @@ import java.util.Random;
  * See DecisionTree for a description of default methods.
  */
 public class DecisionTreeImpl extends DecisionTree {
+
+    private class PruneReturn {
+	DecTreeNode subroot;
+	String label;
+	double acc;
+	PruneReturn(DecTreeNode subroot, String label, double acc) {
+	    this.subroot = subroot;
+	    this.label = label;
+	    this.acc = acc;
+	}
+    }
+    
     private DecTreeNode root;
     //ordered list of class labels
     private List<String> labels; 
@@ -202,7 +214,7 @@ public class DecisionTreeImpl extends DecisionTree {
 	root = DTL(train.instances, attributes, null, null, null);
     }
 
-    private double acc(DecTreeNode root, List<Instance> examples) {
+    private double acc(List<Instance> examples) {
 	double num = 0.0;
 	double denom = (double) examples.size();
 	for(Instance i : examples) {
@@ -219,20 +231,52 @@ public class DecisionTreeImpl extends DecisionTree {
     /*
     Prune(treeT,TUNEset)
 	1.  ComputeT’saccuracyonTUNE;callitAcc(T)
-	    2.  ForeveryinternalnodeNinT:
-    a)  NewtreeTN=copyofT,butprune(delete)thesubtree
-    underN
-    b)  NbecomesaleafnodeinTN.Thelabelisthemajorityvote
-	ofTRAINexamplesreachingN
-	c)  Acc(TN)=TN’saccuracyonTUNE
-	      3.  LetT*bethetree(amongtheTN’sandT)withthelargestAcc()
-	      SetT=T
-	      4.  RepeatfromStep1un@lnomoreimprovement
-	      5.  ReturnT
+	2.  ForeveryinternalnodeNinT:
+	  a)  NewtreeTN=copyofT,butprune(delete)thesubtree
+	  underN
+	  b)  NbecomesaleafnodeinTN.Thelabelisthemajorityvote
+	  ofTRAINexamplesreachingN
+	  c)  Acc(TN)=TN’saccuracyonTUNE
+	3.  LetT*bethetree(amongtheTN’sandT)withthelargestAcc()
+	  SetT=T*
+	4.  RepeatfromStep1un@lnomoreimprovement
+	5.  ReturnT
     */
-    private DecTreenode prune(DecTreeNode root, double acc, List<Instance> examples) {
-	
-	return null;
+    private PruneReturn prune(DecTreeNode root, DecTreeNode subroot, double acc, List<Instance> train, List<Instance> tune) {
+	//System.out.printf("pruning %s...\n", subroot);
+	if(subroot.terminal) {
+	    return null;
+	}
+
+	PruneReturn ret = null;
+
+	List<List<Instance>> sep = sepInstances(subroot.attribute, train);
+	PruneReturn newRet = null;
+	//System.out.printf(" pruning each of its %d children...\n", sep.size());
+	for(int i = 0; i < sep.size(); i++) {
+	    newRet = prune(root, subroot.children.get(i), acc, sep.get(i), tune);
+	    if( ret == null || (newRet != null && newRet.acc >= ret.acc)) {
+		ret = newRet;
+	    }
+	}
+
+
+
+	// do the actual "pruning"
+	subroot.terminal = true;
+	subroot.label = getMajority(train);
+	double newAcc = acc(tune);
+	//if( (ret == null && newAcc > acc) || (ret != null && newAcc > ret.acc)) {
+	if(newAcc >= acc) {
+	    ret = new PruneReturn(subroot, getMajority(train), newAcc);
+	}
+	//cleanup
+	subroot.terminal = false;
+	subroot.label = null;
+
+		
+    
+	return ret;
     }
 
     
@@ -250,8 +294,19 @@ public class DecisionTreeImpl extends DecisionTree {
 	this.attributeValues = train.attributeValues;
 	// TODO: add code here
 	root = DTL(train.instances, attributes, null, null, null);
-	
-	
+	//    private PruneReturn prune(DecTreeNode root, DecTreeNode subroot, double acc, List<Instance> examples) {
+	double acc = acc(tune.instances);
+	PruneReturn p = null;
+	while(true) {
+	    p = prune(root, root, acc, train.instances, tune.instances);
+	    if(p == null) {
+		break;
+	    } else {
+		acc = p.acc;
+		p.subroot.terminal = true;
+		p.subroot.label = p.label;
+	    }
+	}
     }
 
     @Override
