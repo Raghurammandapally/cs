@@ -11,13 +11,15 @@ FILE = DecisionTreeImpl
 CLASSES = \
         $(FILE).java #\
 
+FLAG = 2
+
 default: classes
 
 classes: $(CLASSES:.java=.class)
 
-test:	$(FILE).class
-	java HW3 1 balance_train.txt balance_tune.txt balance_test.txt
-	#java HW3 1 test.txt balance_tune.txt balance_test.txt
+test:	$(FILE).class HW3.class
+	java HW3 $(FLAG) balance_train.txt balance_tune.txt balance_test.txt > balance$(FLAG).out
+	diff balance$(FLAG).out outb$(FLAG).txt
 
 clean:
 	$(RM) *.class

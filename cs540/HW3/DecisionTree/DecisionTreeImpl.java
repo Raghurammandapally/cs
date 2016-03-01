@@ -170,7 +170,7 @@ public class DecisionTreeImpl extends DecisionTree {
 	    List<List<Instance>> l = sepInstances(A, examples);
 	    List<String> vals = attributeValues.get(A);
 	    for(int i = 0; i < l.size(); i++) {
-	    //for(List<Instance> li : l) {
+		//for(List<Instance> li : l) {
 		ArrayList<String> newAttrs = new ArrayList(attrs);
 		//       exs ← { e : e ∈ examples and e.A = vk }
 		//       subtree ← Decision-Tree-Learning (exs, attributes-A, examples)
@@ -202,6 +202,41 @@ public class DecisionTreeImpl extends DecisionTree {
 	root = DTL(train.instances, attributes, null, null, null);
     }
 
+    private double acc(DecTreeNode root, List<Instance> examples) {
+	double num = 0.0;
+	double denom = (double) examples.size();
+	for(Instance i : examples) {
+	    if(classify(i).equals(i.label)) {
+		num++;
+	    }
+	}
+	return denom == 0 ? 0 : num/denom;
+    }
+    
+    
+
+
+    /*
+    Prune(treeT,TUNEset)
+	1.  ComputeT’saccuracyonTUNE;callitAcc(T)
+	    2.  ForeveryinternalnodeNinT:
+    a)  NewtreeTN=copyofT,butprune(delete)thesubtree
+    underN
+    b)  NbecomesaleafnodeinTN.Thelabelisthemajorityvote
+	ofTRAINexamplesreachingN
+	c)  Acc(TN)=TN’saccuracyonTUNE
+	      3.  LetT*bethetree(amongtheTN’sandT)withthelargestAcc()
+	      SetT=T
+	      4.  RepeatfromStep1un@lnomoreimprovement
+	      5.  ReturnT
+    */
+    private DecTreenode prune(DecTreeNode root, double acc, List<Instance> examples) {
+	
+	return null;
+    }
+
+    
+
     /**
      * Build a decision tree given a training set then prune it using a tuning set.
      * 
@@ -214,12 +249,26 @@ public class DecisionTreeImpl extends DecisionTree {
 	this.attributes = train.attributes;
 	this.attributeValues = train.attributeValues;
 	// TODO: add code here
+	root = DTL(train.instances, attributes, null, null, null);
+	
+	
     }
 
     @Override
 	public String classify(Instance instance) {
-	return null;
-	// TODO: add code here
+	DecTreeNode curr = root;
+	while(!curr.terminal) {
+	    curr = curr.children.get(
+				     //private int getAttributeValueIndex(String attr, String value) {				   
+				     getAttributeValueIndex(curr.attribute,
+							    instance.attributes.get(
+										    getAttributeIndex(curr.attribute)
+										    )
+							    )
+				     );
+	}
+	
+	return curr.label;
     }
 
     @Override
@@ -228,6 +277,12 @@ public class DecisionTreeImpl extends DecisionTree {
 	this.attributes = train.attributes;
 	this.attributeValues = train.attributeValues;
 	// TODO: add code here
+	root = DTL(train.instances, attributes, null, null, null);
+	double hClass = H(train.instances);
+	for(String s : attributes) {
+	    System.out.format("%s %.5f\n", s, hClass-getH(s, train.instances));
+	}
+	    
     }
   
     @Override
