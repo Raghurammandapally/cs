@@ -1,0 +1,3 @@
+[x] null_ptr
+  [ ] copied null_ptr.c to user/
+  [ ] add null_ptr to USER_PROGS in user/makefile.mk
