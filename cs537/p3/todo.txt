@@ -1,3 +1,9 @@
 [x] null_ptr
   [ ] copied null_ptr.c to user/
   [ ] add null_ptr to USER_PROGS in user/makefile.mk
+
+[ ] One last hint: you'll have to look at the xv6 makefile as well. In there user programs are compiled so as to set their entry point (where the first instruction is) to 0. If you change xv6 to make the first page invalid, clearly the entry point will have to be somewhere else (e.g., the next page, or 0x1000). Thus, something in the makefile will need to change to reflect this as well.
+
+[ ] You should be able to demonstrate what happens when user code tries to access a null pointer. When this happens, xv6 should trap and kill the process. The good news: this will happen without too much trouble on your part, if you do the project in a sensible way, because xv6 already catches illegal memory accesses.
+  [ ] os issues trap err msg in kernel/trap.c:87
+
