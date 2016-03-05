@@ -24,7 +24,7 @@ clean:
 
 package:
 	rm -f ../wfunkhouser-HW$(HWNUM).zip || exit 0
-	zip -j ../../../wfunkhouser-HW$(HWNUM).zip ../../../P1.pdf ../../../P2.pdf $(FILE).java
+	zip -j ../wfunkhouser-HW$(HWNUM).zip ../P1.pdf ../P2.pdf $(FILE).java
 
 show:
-	unzip -l ../../../wfunkhouser-HW$(HWNUM).zip
+	unzip -l ../wfunkhouser-HW$(HWNUM).zip
