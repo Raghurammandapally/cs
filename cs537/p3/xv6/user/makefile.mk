@@ -9,6 +9,7 @@ USER_PROGS := \
 	kill\
 	ln\
 	ls\
+	null\
 	mkdir\
 	rm\
 	sh\

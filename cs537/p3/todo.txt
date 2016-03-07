@@ -10,3 +10,7 @@
   [ ] instead of modifying trap.c, let's change where the page table gets built from, so that page 1 will automatically not be initialized and thus not be valid
   [x] changed for loop in vmc.:copyuvm to start at 4096
 
+exec.c:	      35: 0 -> 0x1000
+	      43: ph.va + ph.memsz -> + sz
+user/makefile.mk
+		77: 0x0 -> 0x1000

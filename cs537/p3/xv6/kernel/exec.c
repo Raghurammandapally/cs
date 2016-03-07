@@ -34,16 +34,20 @@ exec(char *path, char **argv)
   // Load program into memory.
   sz = 0;
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
+    cprintf("**start of loop\n");
     if(readi(ip, (char*)&ph, off, sizeof(ph)) != sizeof(ph))
       goto bad;
     if(ph.type != ELF_PROG_LOAD)
       continue;
     if(ph.memsz < ph.filesz)
       goto bad;
+    cprintf("calling allocuvm with:\n  pgdir: %d\n  oldsz; %d\n  newsz; %d\n", pgdir, sz, ph.va+ph.memsz);
     if((sz = allocuvm(pgdir, sz, ph.va + ph.memsz)) == 0)
       goto bad;
     if(loaduvm(pgdir, (char*)ph.va, ip, ph.offset, ph.filesz) < 0)
       goto bad;
+    cprintf("post:\n------");
+    cprintf("i: %d\nelf.phnum: %d\noff: %d\nsz: %d\n", i, elf.phnum, off, sz);
   }
   iunlockput(ip);
   ip = 0;
