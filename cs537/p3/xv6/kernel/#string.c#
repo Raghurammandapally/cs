@@ -30,9 +30,6 @@ memmove(void *dst, const void *src, uint n)
 {
   const char *s;
   char *d;
-  if(src == 0) {
-  cprintf("memmove called with src: %p and dst: %p\n", src, dst);
-  }
   s = src;
   d = dst;
   if(s < d && s + n > d){

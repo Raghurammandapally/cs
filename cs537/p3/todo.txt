@@ -14,3 +14,5 @@ exec.c:	      35: 0 -> 0x1000
 	      43: ph.va + ph.memsz -> + sz
 user/makefile.mk
 		77: 0x0 -> 0x1000
+
+vm.c:copyuvm:309    i=0 -> i=4096
