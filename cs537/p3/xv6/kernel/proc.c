@@ -68,6 +68,12 @@ found:
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  p->shmem = 0;
+  int i;
+  for(i = 0; i < 4; i++) {
+    p->shmems[i] = NULL;
+  }
+
   return p;
 }
 
@@ -156,6 +162,12 @@ fork(void)
   pid = np->pid;
   np->state = RUNNABLE;
   safestrcpy(np->name, proc->name, sizeof(proc->name));
+
+  np->shmem = proc->shmem;
+  for(i = 0; i < 4; i++) {
+    np->shmems[i] = proc->shmems[i];
+  }
+
   return pid;
 }
 
@@ -167,7 +179,7 @@ exit(void)
 {
   struct proc *p;
   int fd;
-
+  
   if(proc == initproc)
     panic("init exiting");
 
@@ -219,11 +231,19 @@ wait(void)
         continue;
       havekids = 1;
       if(p->state == ZOMBIE){
+	cprintf("my pid is %d\n", proc->pid);
+	cprintf("killing my child, process %d\n", p->pid);
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+
+	int j;
+	for(j = 0; j < 4; j++) {
+	  proc->child_shmems[j] = p->shmems[j];
+	}
+	
+	freevm(p->pgdir);
         p->state = UNUSED;
         p->pid = 0;
         p->parent = 0;

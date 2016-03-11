@@ -10,6 +10,8 @@ USER_PROGS := \
 	ln\
 	ls\
 	null\
+	null2\
+	shmem_count_zero2\
 	bounds\
 	mkdir\
 	rm\
