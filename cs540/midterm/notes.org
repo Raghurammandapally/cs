@@ -1,0 +1,281 @@
+#+OPTIONS: toc:nil
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [10pt,letter]
+#+LATEX_HEADER: \usepackage{geometry}
+#+LATEX_HEADER: \geometry{legalpaper,margin=0.5in}
+#+LATEX_HEADER: \usepackage{tabulary}
+#+TITLE:
+#+AUTHOR:
+#+DATE:
+
+* Search
+
+** COMMENT Uninformed Search (3.1.-3.4)
+- Formalizing search: state space $S$, initial states $I \subseteq S$,
+  goal states $G \subseteq S$, action function \textit{successors},
+  cost function \textit{cost}
+- General tree-search algorithm:
+     #+BEGIN_EXAMPLE
+       Frontier = {S}
+       Loop:
+         If Frontier is empty then return failure
+	 Pick a node, n, from the frontier
+	 If n is a goal node then return n
+	 Generate all of n's successor nodes, add to Frontier
+	 Remove n from Frontier
+     #+END_EXAMPLE
+- Evaluating search:
+  - Time (# of nodes expanded)
+  - Space (max size of frontier)
+
+#+ATTR_LaTeX: :environment tabulary :width \textwidth :align LLLLLL
+| Name | Method | Complete?                                          | Optimal/asmissible?                                                      | Time     | Space    |
+|------+--------+----------------------------------------------------+--------------------------------------------------------------------------+----------+----------|
+| BFS  | Queue  | Yes                                                | Yes, if arcs are constant cost or positive and non-decreasing with depth | $O(b^d)$ | $O(b^d)$ |
+| DFS  | Stack  | No (w/ or w/o cycle detection and/or depth cutoff) | No                                                                       | $O(b^d)$ | $O(bd)$  |
+| UCS  | PQueue | Yes                                                | Yes, if goal test is done when removed rather than when generated        | $O(b^d)$ | $O(b^d)$ |
+| IDS  | Stack  | Yes                                                | (Same as BFS)                                                            | $O(bd)$  | $O(b^d)$ |
+- If state space is not a tree (repeated states, cycles):
+     #+BEGIN_EXAMPLE
+function GRAPH-SEARCH(problem) returns a solution, or failure
+  initialize the frontier using the initial state of problem
+  initialize the explored set to be empty
+  loop do
+    if the frontier is empty then return failure
+    choose a leaf node and remove it from the frontier
+    if the node contains a goal state then return the corresponding solution
+    add the node to the explored set
+    expand the chosen node, adding the resulting nodes to the frontier
+      only if not in the frontier or explored set
+     #+END_EXAMPLE
+
+
+#+BEGIN_COMMENT
+DFS:
+  SADEG(goal)
+BFS:
+  SABCDEG(goal)
+UCS:
+  SADBECG
+IDS:
+  SABCSADEG
+#+END_COMMENT
+
+** COMMENT Informed Search (3.5-3.6, 4.1)
+- Heuristic $h(n)$
+  - $h(n) \geq 0$
+  - Close to 0 $\to$ $n$ close to goal state
+- Best-first: sort frontier by evaluation function $f(n)$
+  - Greedy best-first: let $f(n) = h(n)$ (not complete or optimal/admissible)
+  - Beam search: let $f(n) = h(n)$, and restrict frontier to a constant size $k$ (same as above)
+  - A search: let $f(n) = h(n) + g(n)$, where $g(n)$ is min cost path from start to $n$ (as in UCS) (not optimal)
+  - A* search: same as A,but $h(n) \leq h^*(n)$ for all $n$, where $h^*(n)$ is actual cost of min-cost path from n to goal
+    - Complete, optimal/admissible
+    - Cost to nearest goal never overestimated
+    - *Admissible heuristic function*: $h(n) \leq h^*(n)$ 
+    - Should terminate when goal removed from p-queue (same as UCS) (A* with $h(n) = 0$ is UCS)
+    - *Consistency*: $h(n) \leq c(n,n') + h(n')$ for all successors $n'$ of all nodes $n$
+    - Can use a lot of memory: $O($# of states$)$
+- Local search
+  - Every node is a solution, operaters/actions go from one to another
+  - Can stop at any time with a valid solution
+  - TSP actions e.g. 2-swap (ABCDE $\to$ DBCAE) or 2-interchange (ABCDE $\to$ DCBAE)
+  - *Neighborhood*: solutions reachable by application of an operator
+  - Evaluation function, $f$, used to map solution to quality/cost (maximize $\to$ hill-climbing/gradient ascent, minimize $\to$ valley-finding/gradient descent)
+  - Hill-climbing (simple, greedy, stops at /local/ maximum)
+    #+BEGIN_EXAMPLE
+current &lt;- MAKE-NODE(problem.INITIAL-STATE)
+loop do
+  neighbor &lt;- a highest-valued successor of current
+  if neighbor.VALUE &lt;= current.VALUE then return current.STATE
+  current &lt;- neighbor
+     #+END_EXAMPLE
+  - Simulated annealing
+    - Let $\Delta E = f(newNode)-f(currentNode)$: $p = e^{\Delta E / T}$
+    - 
+    #+BEGIN_EXAMPLE
+current &lt;- MAKE-NODE(problem.INITIAL-STATE)
+for t = 1 to INFINITY do
+  T &lt;- schedule(t)
+  if T = 0 then return current
+  next &lt;- a randomly selected successor of current
+  /\E &lt;- next.VALUE - current.value
+  if /\E &gt; 0 then current &lt;- next
+  else current &lt;- next only with probability e&circ;(/\E/T)
+     #+END_EXAMPLE
+   
+** COMMENT Genetic Algorithms (4.1.4)
+   - Keep population of individuals, which interact and compete
+   - Book version:
+     #+BEGIN_EXAMPLE
+function GENETIC-ALGORITHM(population, FITNESS-FN) returns an individual
+  inputs: population, a set of individuals
+          FITNESS-FN, a function that measures the fitness of an individual
+          
+  repeat
+    new_population &lt;- empty set
+    for i = 1 to SIZE(population) do
+      x &lt;- RANDOM-SELECTION(population, FITNESS-FN)
+      y &lt;- RANDOM-SELECTION(population, FITNESS-FN)
+      child &lt;- REPRODUCE(x, y)
+      if (small random probability) then child &lt;- MUTATE(child)
+      add child to new_population
+    population &lt;- new_population
+  until some individual is fit enough, or enough time has elapsed
+  return the best individual in population, according to FITNESS-FN
+--------------------------------------------------------------------------------
+function REPRODUCE(x, y) returns an individual
+  inputs: x, y, parent individuals
+  
+  n &lt;- LENGTH(x); c &lt;- random number from 1 to n
+  return APPEND(SUBSTRING(x, 1, c), SUBSTRING(y, c+1, n))
+#+END_EXAMPLE
+   - Lecture version:
+     #+BEGIN_EXAMPLE
+    Gene$c	Algorithm	(1	version*)	
+1.  Let s = {s1, …, sN} be the current population
+2.  Let p[i] = f(si)/SUMjf(sj) be the fitness probabilities
+3.  for k = 1; k < N; k += 2
+    •  Parent1 = randomly pick si with prob. p[i]
+    •  Parent2 = randomly pick another sj with prob. p[j]
+    •  Randomly select 1 crossover point, and swap
+       strings of parents 1 and 2 to generate children t[k]
+       and t[k+1]
+4.  for k = 1; k ≤ N; k++
+    •  Randomly mutate each position in t[k] with a
+       small prob.
+5.  New generation replaces old generation: s = t
+                                               *different than in book
+#+END_EXAMPLE
+   - Selection
+     - Proportional fitness selection
+       - Rank selection (proportional to ranking)
+       - Proportional selection: $P(selection) = fitness(individual)/\Sigma fitness(other individuals)$
+     - Tournament selection: $(2s-2r+1)/s^2$, $s$ is size of population, $r$ is rank of individual
+     - *Crowding*: most fit reproduce and entire population looks similar
+   - Alteration
+     - *1-point crossover*: pick 1 point and splice parent vectors there
+     - *n-point crossover*: as above, but with $n$ points
+     - *Uniform crossover*: pick each element of the vector from one of the parents randomly
+     - *Mutation*: e.g. bit flip
+   - Crossover makes GA significantly faster
+   - GA struggles with local maxima much less than HA
+** COMMENT Game Playing (5.1 - 5.3, 5.5)
+   - *Utility function*: map terminal state to score indicating value
+   - Minimax: space $O(bd)$, time $O(b^d)$
+     #+BEGIN_EXAMPLE
+ function MINIMAX-DECISION(state) returns an action
+   return argmax_[a in ACTIONS(s)] MIN-VALUE(RESULT(state, a))
+ 
+ function MAX-VALUE(state) returns a utility value
+   if TERMINAL-TEST(state) then return UTILITY(state)
+   v = -infinity
+   for each a in ACTIONS(state) do
+     v = MAX(v, MIN-VALUE(RESULT(s, a)))
+   return v
+ 
+ function MIN-VALUE(state) returns a utility value
+   if TERMINAL-TEST(state) then return UTILITY(state)
+     v = infinity
+     for each a in ACTIONS(state) do
+       v  = MIN(v, MAX-VALUE(RESULT(s, a)))
+   return v
+     #+END_EXAMPLE
+     - Impractical to search whole game try, instead limit at ply (/depth/) $m$
+     - *Static board evaluation function*: estimate how good current board is
+     - Alpha-beta: prune to ignore some branches ($O(b^{d/2})$, like having branching factor of $\sqrt{b}$)
+       - At max levels: highest SBE seen so far in subtree below node, *lower* bound on nodes' final value
+       - At min levels: lowest SBE seen so far in subtree below node, *higher* bound on nodes' final value
+	 #+BEGIN_EXAMPLE
+   function ALPHA-BETA-SEARCH(state) returns an action
+     v = MAX-VALUE(state, -infinity, +infinity)
+     return the action in ACTIONS(state) with value v
+   
+   function MAX-VALUE(state, alpha, beta) returns a utility value
+     if TERMINAL-TEST(state) then return UTILITY(state)
+     v = -infinity
+     for each a in ACTIONS(state) do
+       v = MAX(v, MIN-VALUE(RESULT(s, a), alpha, beta))
+       if v >= beta then return v
+       alpha = MAX(alpha, v)
+     return v
+   
+   function MIN-VALUE(state, alpha, beta) returns a utility value
+     if TERMINAL-TEST(state) then return UTILITY(state)
+     v = infinity
+     for each a in ACTIONS(state) do
+       v = MIN(v, MAX-VALUE(RESULT(s,a), alpha, beta))
+       if v <= alpha then return v
+       beta = MIN(beta, v)
+     return v
+	 #+END_EXAMPLE
+     - Iterative deepening (IDS) used: run alpha-beta with DFS and increasing depth limit
+       - *Quiescence search*: when SBE changes frequently, keep looking further down
+       - *Secondary search*: find best move to depth $d$, look $k$ steps beyond to check if still the best
+     - Can build in randomness to tree by having "chance nodes" and computing expected value
+   - Monte Carlo Tree Search
+     - Best-first based on random sampling of search space
+     - Simulate $k$ random games by selecting moves at random for both players; select move which generates most wins
+     - Selection (from root, select best child until leaf node), expansion, simulation, backpropagation
+** COMMENT Contraint Satisfaction Problems (6.1 - 6.4)
+   - State defined by variables $X_i$ with values from domain $D_i$, and set of constraints $C$
+   - *Goal test*: set of constraints specifying allowable combinations of values
+   - Constraints can be unary, binary, or higher-order
+   - Work with incomplete assignments, as opposed to GA, HC, simulated annealing, etc.
+   - Min-conflicts algorithm: assign each variable random value, until
+     state is consistent: pick /var/ with constraints violated, change
+     /var/ to value that minimizes conflicts over all variables (not
+     complete, depends on initial state)
+   - DFS: generate-and-test
+   - Improved DFS: backtracking with consistency checking (don't
+     generate a successor if there is a conflict with any existing
+     assignment, fail if no successors)
+   - Backtracking search: at deadend, back up to last variable which
+     can be changed without violating any constraints, and change it;
+     if backed up to the root, no solution (complete; depth-limited
+     search with depth limit $n$)
+   - Heuristics:
+     - Most-constrained variable: (minimum remaining values, MRV)
+       variable with fewest legal moves
+     - Most-constraining variable: (degree heuristic) cut off search
+       ASAP
+     - Least-constraining value: pick value that rules out fewest values in remaining variables
+   - Forward checking: when assigning a value to a variable, update
+     set of legal values for all variables; if any set is empty,
+     backtrack
+   - Constraint propagation: when a value is deleted from a variable's
+     domain, chack all variables connected to it; if any of them
+     change, check their neighbors, etc.
+   - Arc consistency: $X\to Y$ is consistent iff for each $x$ at $X$
+     there is an allowed $y$ at $Y$; if not, delete $x$ (AC-3 is $O(cd^3)$ in time)
+     #+BEGIN_EXAMPLE
+function AC-3(csp) returns false if an inconsistency is found and true otherwise
+   inputs: csp, a binary CSP with components (X, D, C)
+   local variables: queue, a queue of arcs, initially all the arcs in csp
+   while queue is not empty do
+      (Xi, Xj) = REMOVE-FIRST(queue)
+      if REVISE(csp, Xi, Xj) then
+         if size of Di = 0 then return false
+            for each Xk in Xi.NEIGHBORS - {Xj} do
+               add (Xk, Xi) to queue
+   return true
+
+function REVISE(csp, Xi, Xj) returns true iff we revise the domain of Xi
+   revised = false
+   for each x in Di do
+      if no value y in Dj allows (x ,y) to satisfy the constraint between Xi and Xj then
+         delete x from Di
+         revised = true
+   return revised
+     #+END_EXAMPLE
+   - Combining backtracking search with CSP
+   - In practice: iterative min-conflicts
+   - $k$-consistency: for any set of $k-1$ variables and for any consistent assignment to them, a consistent value can always be assigned to any $k$th variable
+     - 1-consistency = node consistency; 2-consistence = arc
+       consistency; 3-consistency = path consistence for binary
+       constraint networks
+* Machine Learning
+** Introduction and Unsupervised Learning (18.1-18.2, 18.8.1)
+** Supervised Learning Methods (18.3-18.4)
+* (Not covered)
+** Chapters 1, 2
