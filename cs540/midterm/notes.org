@@ -1,8 +1,8 @@
 #+OPTIONS: toc:nil
 #+LaTeX_CLASS: article
-#+LaTeX_CLASS_OPTIONS: [10pt,letter]
+#+LaTeX_CLASS_OPTIONS: [12pt,letter]
 #+LATEX_HEADER: \usepackage{geometry}
-#+LATEX_HEADER: \geometry{legalpaper,margin=0.5in}
+#+LATEX_HEADER: \geometry{a4paper,margin=0.3in}
 #+LATEX_HEADER: \usepackage{tabulary}
 #+TITLE:
 #+AUTHOR:
@@ -34,7 +34,7 @@
 | BFS  | Queue  | Yes                                                | Yes, if arcs are constant cost or positive and non-decreasing with depth | $O(b^d)$ | $O(b^d)$ |
 | DFS  | Stack  | No (w/ or w/o cycle detection and/or depth cutoff) | No                                                                       | $O(b^d)$ | $O(bd)$  |
 | UCS  | PQueue | Yes                                                | Yes, if goal test is done when removed rather than when generated        | $O(b^d)$ | $O(b^d)$ |
-| IDS  | Stack  | Yes                                                | (Same as BFS)                                                            | $O(bd)$  | $O(b^d)$ |
+| IDS  | Stack  | Yes                                                | (Same as BFS)                                                            | $O(b^d)$ | $O(bd)$  |
 - If state space is not a tree (repeated states, cycles):
      #+BEGIN_EXAMPLE
 function GRAPH-SEARCH(problem) returns a solution, or failure
@@ -237,7 +237,7 @@ function REPRODUCE(x, y) returns an individual
      - Most-constrained variable: (minimum remaining values, MRV)
        variable with fewest legal moves
      - Most-constraining variable: (degree heuristic) cut off search
-       ASAP
+       ASAP (node with highest degree in constraint graph)
      - Least-constraining value: pick value that rules out fewest values in remaining variables
    - Forward checking: when assigning a value to a variable, update
      set of legal values for all variables; if any set is empty,
@@ -347,7 +347,7 @@ function D ECISION-TREE-LEARNING(examples , attributes , pa re nt examples ) ret
        - Specific conditional entropy: \[H(Y|X=v) = \sum_{i=1}^{k}
          -\text{Pr}(Y=y_i|X=v)\log_2 \text{Pr}(Y=y_i|X=v) \]
        - Conditional entropy: \[ H(Y|X) = \sum_{v\text{:values of }X}
-         \text{Pr}(X=v)\log_2 \text{Pr}(Y|X=v) \]
+         \text{Pr}(X=v)H(Y|X=v) \]
        - $O\leq H(Y|X) \leq 1$
        - Gain: \[ I(Y; X) = H(Y)-H(Y|X) \]
      - Evaluating performance
@@ -389,12 +389,13 @@ Repeat until no more improvement
        misclassified examples more important in next classifier
      - *Bagging*: create classifiers using different training sets
        sampled with replacement
-   - Decision/classification forests:
+   - Decision/classification/random forests:
      - Utilizes bagging
      - Random node optimization: each time node is split, randomly
        chosen subset of attributes considered
      - No tree pruning, doesn't overfit
      - Accurate and efficient, but difficult to interpret
+     - Majority vote
      
 * (Not covered)
 ** Chapters 1, 2
