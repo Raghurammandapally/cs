@@ -5,6 +5,7 @@
  */
 
 import java.util.*;
+import java.lang.System;
 
 
 public class NNImpl{
@@ -102,6 +103,94 @@ public class NNImpl{
 	
     public void train()
     {
-	// TODO: add code here
+
+	/*
+function BACK-PROP-LEARNING(examples , network ) returns a neural network
+inputs: examples , a set of examples, each with input vector x and output vector y
+network , a multilayer network with L layers, weights wi,j , activation function g
+local variables: Δ, a vector of errors, indexed by network node
+repeat
+
+  for each weight wi,j in network do
+    wi,j ← a small random number
+  for each example (x, y) in examples do
+
+    // Propagate the inputs forward to compute the outputs 
+    for each node i in the input layer do
+      ai←xi
+    for l=2 to L do
+      for each node j in layer do
+        inj← iwi,jai
+	aj ←g(inj)
+
+    // Propagate deltas backward from output layer to input layer
+    for each node j in the output layer do
+      Δ[j]←g (inj) ×(yj − aj)
+    for l=L−1to1do
+      for each node i in layer do
+        Δ[i]←g (ini) j wi,j Δ[j]
+    // Update every weight in network using deltas
+    for each weight wi,j in network do
+      wi,j←wi,j+α×ai×Δ[j]
+until some stopping criterion is satisfied
+return network
+
+Figure 18.24 The back-propagation algorithm for learning in multilayer networks.
+	 */
+        //function BACK-PROP-LEARNING(examples , network ) returns a neural network
+        //inputs: examples , a set of examples, each with input vector x and output vector y
+        //network , a multilayer network with L layers, weights wi,j , activation function g
+        //local variables: Δ, a vector of errors, indexed by network node
+        //repeat
+	for(int epoch = 0; epoch < maxEpoch; epoch++) {
+        //  for each weight wi,j in network do
+        //      wi,j ← a small random number
+
+	    Random r = new Random();
+
+	    for(NodeWeightPair nw : hiddenNodes.get(0).parents) {
+		nw.weight = r.nextDouble()*0.01;
+	    }
+
+	    for(NodeWeightPair nw : outputNodes.get(0).parents) {
+		nw.weight = r.nextDouble()*0.01;
+	    }
+
+        //  for each example (x, y) in examples do
+	    for(Instance i : trainingSet) {
+
+        //      // Propagate the inputs forward to compute the outputs 
+        //      for each node i in the input layer do
+		for(int n = 0; n < inputNodes.size() - 1; n++) {
+        //          ai←xi
+		    inputNodes.get(n).setInput(i.attributes.get(n));
+		}
+		
+        //      for l=2 to L do
+        //          for each node j in layer do
+        //              inj← iwi,jai
+        //	    aj ←g(inj)
+		for(Node n : hiddenNodes) {
+		    n.calculateOutput();
+		}
+
+		for(Node n : outputNodes) {
+		    n.calculateOutput();
+		}
+		
+        //      // Propagate deltas backward from output layer to input layer
+        //      for each node j in the output layer do
+        //          Δ[j]←g (inj) ×(yj − aj)
+        //      for l=L−1to1do
+        //          for each node i in layer do
+        //              Δ[i]←g (ini) j wi,j Δ[j]
+        //      // Update every weight in network using deltas
+        //      for each weight wi,j in network do
+        //          wi,j←wi,j+α×ai×Δ[j]
+	    }
+        //until some stopping criterion is satisfied
+	}
+        //return network
+
     }
 }

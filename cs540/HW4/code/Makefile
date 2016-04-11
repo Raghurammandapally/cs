@@ -6,16 +6,16 @@ JC = javac
 
 HWNUM = 4
 
-FILE = NNImpl
-
 CLASSES = \
-        $(FILE).java #\
+        NNImpl.java\
+	Node.java\
+	HW$(HWNUM).java
 
 default: classes
 
 classes: $(CLASSES:.java=.class)
 
-test:	$(FILE).class HW$(HWNUM).class
+test:	default
 	./test.sh
 
 clean:
