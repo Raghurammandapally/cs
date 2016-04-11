@@ -12,6 +12,9 @@
 node *links = NULL;
 node *pages = NULL;
 
+// hash set for links
+node **table;
+
 // counter for when to stop
 volatile int counter = 0;
 
@@ -30,12 +33,17 @@ pthread_mutex_t l_m = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t p_fill = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t p_m = PTHREAD_MUTEX_INITIALIZER;
 
+// exiting from main()
+pthread_cond_t done_cv = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t done_m = PTHREAD_MUTEX_INITIALIZER;
+int done = 0;
+
 // callbacks
 char * (*fetch_fn)(char *url);
 void (*edge_fn)(char *from, char *to);
 
 void do_tokenizing(char *orig) {
-
+  printf("***tokenizing...\n------------------------\n%s\n----------------------\n", orig);
   char *str = strdup(orig);
 
   char *curr, *new_str, *word;
@@ -45,13 +53,33 @@ void do_tokenizing(char *orig) {
   while( (curr = strstr(str, "link:")) != NULL) {
     new_str = strdup(curr+1);
 
-    curr = strtok_r(curr, " ", &saveptr1);
+    curr = strtok_r(curr, " \n", &saveptr1);
     assert(curr != NULL);
 
     word = strtok_r(curr, ":", &saveptr2);
     word = strtok_r(NULL, ":", &saveptr2);
 
-    printf("addr: %s\n", word);
+    printf("found word: %s\n", word);
+    assert(word != NULL);
+
+    // check hash set and, if not present, add
+    // link producer
+    Mutex_lock(&l_m);
+    while(link_count == max_link) {
+      // wait
+      Cond_wait(&l_empty, &l_m);
+    }
+    
+    if(!contains(table, word)) {
+      // do pushing
+      links = push(strdup(word), links);
+      link_count++;
+      // update table
+      add(table, word);
+    }
+    
+    Cond_signal(&l_fill);
+    Mutex_unlock(&l_m);
 
     free(str);
     str = new_str;
@@ -60,74 +88,24 @@ void do_tokenizing(char *orig) {
   free(str);
 
   return;
-  /*
-  char *str2, *token, *subtoken;
-  int j;
-  subtoken = strtok_r(token, ":", &saveptr1);
-  printf("%s\n", subtoken);
-  subtoken = strtok_r(NULL, ":", &saveptr1);
-  printf("%s\n", subtoken);
-  token = strstr(str1, "link:");
-  printf("%s\n", token);
-  
-  return;
-
-  
-  for (j = 1; ; j++) {//, str1 = NULL) {
-    //token = strtok_r(str1, "link:", &saveptr1);
-    token = strstr(str1, "link:");
-    if (token == NULL)
-      break;
-    printf("%d: %s\n", j, token);
-    
-    subtoken = strtok_r(token, ":", &saveptr1);
-
-    
-    for (str2 = token; ; str2 = NULL) {
-      subtoken = strtok_r(str2, " ", &saveptr1);
-      if (subtoken == NULL)
-	break;
-      printf(" --> %s\n", subtoken);
-    }
-  
-  }
-
-  free(str1);
-  */
 }
 
 void parse(node *n) {
-  printf("  parse called on %s.\n", n->str);
 
   // do some parsing of n->str using strtok_r
+  do_tokenizing(n->str);
 
-  // link producer
-  Mutex_lock(&l_m);
-  while(link_count == max_link) {
-    // wait
-    Cond_wait(&l_empty, &l_m);
-  }
-
-  // do pushing
-  links = push(strdup("ohyah"), links);
-  link_count++;
-  
-  Cond_signal(&l_fill);
-  Mutex_unlock(&l_m);
-
-
-  // will free page later when it comes off of the parse queue
-  // free(page);
+  // will free page after parse returns
 
   return;
 }
 
 void download(node *n) {
-  printf("  download called on %s.\n", n->str);
+  printf("  -->download called on %s.\n", n->str);
 
   char *page = fetch_fn(n->str);
   assert(page != NULL);
-  printf("PAGE: %s\n", page);
+  //printf("PAGE: %s\n", page);
 
   // page producer
   Mutex_lock(&p_m);
@@ -141,39 +119,41 @@ void download(node *n) {
   Mutex_unlock(&p_m);
 
 
-  // will free page later when it comes off of the parse queue
-  // free(page);
+  // will free page later when it comes off of the page queue
 
   return;
 }
 
 void *downloader(void *arg) {
-  printf("downloader started!\n");
+  printf("***downloader started!\n");
 
-  //while(1) {
+  // loop forever
+  while(1) {
 
-  Mutex_lock(&l_m);
-  while(link_count == 0) {
-    printf("downloader waiting!\n");
-    // wait
-    Cond_wait(&l_fill, &l_m);
+    Mutex_lock(&l_m);
+    while(link_count == 0) {
+      printf("***downloader waiting!\n");
+      // wait
+      Cond_wait(&l_fill, &l_m);
+    }
+    // make a new pointer to the top of the stack
+    node *next = links;
+    // pop the top of the stack (will need to free the node and the string later)
+    links = pop(links);
+    link_count--;
+
+    // signal links empty
+    Cond_signal(&l_empty);
+    Mutex_unlock(&l_m);
+
+    // do actual processing
+    download(next);
+
+    // free node
+    free(next->str);
+    free(next);
+  
   }
-  // make a new pointer to the top of the stack
-  node *next = links;
-  // pop the top of the stack (will need to free the node and the string later)
-  links = pop(links);
-  link_count--;
-
-  // signal links empty
-  Cond_signal(&l_empty);
-  Mutex_unlock(&l_m);
-
-  // do actual processing
-  download(next);
-
-  // free node
-  free(next->str);
-  free(next);
 
   return 0;
 }
@@ -187,34 +167,47 @@ void *parser(void *arg) {
  *  - need mutex
  */
 
-  //while(1) {
-  printf("parser started!\n");
+  while(1) {
 
-  Mutex_lock(&p_m);
-  while(page_count == 0) {
-    printf("parser waiting!\n");
-    // wait
-    Cond_wait(&p_fill, &p_m);
+    printf("***parser started!\n");
+
+    Mutex_lock(&p_m);
+    while(page_count == 0) {
+      printf("***parser waiting!\n");
+      // wait
+      Cond_wait(&p_fill, &p_m);
+    }
+    // make a new pointer to the top of the stack
+    node *next = pages;
+    // pop the top of the stack (will need to free the node and the string later)
+    pages = pop(pages);
+    page_count--;
+
+    // signal pages empty: may not need to do this since nobody will be waiting on
+    // pages to be reduced in size (unbounded)
+    // Cond_signal(&p_empty);
+    Mutex_unlock(&p_m);
+
+    // do actual processing
+    parse(next);
+
+    // free node
+    free(next->str);
+    free(next);
+
+    Mutex_lock(&p_m);
+    Mutex_lock(&l_m);
+    Mutex_lock(&done_m);
+    printf("page count: %d\nlink count: %d\n", page_count, link_count);
+    if(page_count == 0 && link_count == 0) {
+      done = 1;
+      Cond_signal(&done_cv);
+    }
+    Mutex_unlock(&done_m);
+    Mutex_unlock(&l_m);
+    Mutex_unlock(&p_m);
+
   }
-  // make a new pointer to the top of the stack
-  node *next = pages;
-  // pop the top of the stack (will need to free the node and the string later)
-  pages = pop(pages);
-  page_count--;
-
-  // signal pages empty: may not need to do this since nobody will be waiting on
-  // pages to be reduced in size (unbounded)
-  // Cond_signal(&p_empty);
-  Mutex_unlock(&p_m);
-
-  // do actual processing
-  parse(next);
-
-  // free node
-  free(next->str);
-  free(next);
-  
-
 
   return 0;
 }
@@ -225,6 +218,9 @@ int crawl(char *start_url,
 	  int queue_size,
 	  char * (*_fetch_fn)(char *url),
 	  void (*_edge_fn)(char *from, char *to)) {
+
+  // initialize our hash set
+  table = table_init();
 
   fetch_fn = _fetch_fn;
   edge_fn = _edge_fn;
@@ -249,14 +245,21 @@ int crawl(char *start_url,
   }
 
   // wait for all threads to finish
-  for (i = 0; i < download_workers; i++) {
-    Pthread_join(did[i], NULL); 
-  }
+  //for (i = 0; i < download_workers; i++) {
+  //Pthread_join(did[i], NULL); 
+  //}
 
-  for (i = 0; i < parse_workers; i++) {
-    Pthread_join(pid[i], NULL); 
-  }
+  //for (i = 0; i < parse_workers; i++) {
+  //Pthread_join(pid[i], NULL); 
+  //}
 
+  // wait for threads to signal completion
+  Mutex_lock(&done_m);
+  while(done != 1) {
+    // wait
+    Cond_wait(&done_cv, &done_m);
+  }
+  
   //return success
   return 0;
 
