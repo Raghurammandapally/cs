@@ -52,6 +52,20 @@ public class Node{
 	    return val;
 	}
     }
+
+    private double gPrime(double val) {
+	// g'(x) = { 0, if x <= 0
+	//         { 1, otherwise
+	if(val <= 0) {
+	    return 0;
+	} else {
+	    return 1;
+	}
+    }
+
+    public double getGPrime() {
+	return gPrime(sum);
+    }
 	
     /**
      * Calculate the output of a ReLU node.

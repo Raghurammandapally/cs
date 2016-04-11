@@ -87,8 +87,33 @@ public class NNImpl{
 	
     public int calculateOutputForInstance(Instance inst)
     {
+
 	// TODO: add code here
-	return 0;
+	for(int n = 0; n < inputNodes.size() - 1; n++) {
+	    inputNodes.get(n).setInput(inst.attributes.get(n));
+	}
+
+	inputNodes.get(inputNodes.size()-1).setInput(1.0);
+
+	for(Node n : hiddenNodes) {
+	    n.calculateOutput();
+	}
+
+	for(Node n : outputNodes) {
+	    n.calculateOutput();
+	}
+
+	int ret = 0;
+	double max = 0.0;
+	for(int i = 0; i < outputNodes.size(); i++) {
+	    if(outputNodes.get(i).getOutput() > max) {
+		max = outputNodes.get(i).getOutput();
+		ret = i;
+	    }
+	}
+
+	return ret;
+
     }
 	
 
@@ -142,6 +167,7 @@ Figure 18.24 The back-propagation algorithm for learning in multilayer networks.
         //network , a multilayer network with L layers, weights wi,j , activation function g
         //local variables: Δ, a vector of errors, indexed by network node
         //repeat
+
 	for(int epoch = 0; epoch < maxEpoch; epoch++) {
         //  for each weight wi,j in network do
         //      wi,j ← a small random number
@@ -177,16 +203,55 @@ Figure 18.24 The back-propagation algorithm for learning in multilayer networks.
 		for(Node n : outputNodes) {
 		    n.calculateOutput();
 		}
-		
+
         //      // Propagate deltas backward from output layer to input layer
         //      for each node j in the output layer do
-        //          Δ[j]←g (inj) ×(yj − aj)
+        //          Δ[j]←g (inj) × (yj − aj)
+		List<Double> delta_out = new ArrayList<Double>();
+		for(int n = 0; n < outputNodes.size(); n++) {
+		    Double err = 0.0;
+		    err += outputNodes.get(n).getGPrime();
+		    err *= i.classValues.get(n) - outputNodes.get(n).getOutput(); // (yj - aj)
+		    delta_out.add(err);
+		}
+
         //      for l=L−1to1do
         //          for each node i in layer do
         //              Δ[i]←g (ini) j wi,j Δ[j]
+		List<Double> delta_hidden = new ArrayList<Double>();
+		// include bias node: https://piazza.com/class/ij0elbmn6x64s5?cid=215
+		for(int hidden = 0; hidden < hiddenNodes.size(); hidden++) {
+		    Double val = 0.0;
+		    for(int output = 0; output < outputNodes.size(); output++) {
+			val += outputNodes.get(output).parents.get(hidden).weight * delta_out.get(output);
+		    }
+		    if(hidden < hiddenNodes.size() - 1) {
+			delta_hidden.add(val * hiddenNodes.get(hidden).getGPrime());
+		    } else {
+			delta_hidden.add(val * 1.0);
+		    }
+		}
+
         //      // Update every weight in network using deltas
         //      for each weight wi,j in network do
-        //          wi,j←wi,j+α×ai×Δ[j]
+        //          wi,j ← wi,j + (α × a_i × Δ[j])
+		for(int output = 0; output < outputNodes.size(); output++) {
+		    Node outputNode = outputNodes.get(output);
+		    for(int hidden = 0; hidden < hiddenNodes.size(); hidden++) {
+			outputNode.parents.get(hidden).weight +=
+			    learningRate * hiddenNodes.get(hidden).getOutput() * delta_out.get(output);
+		    }
+		}
+
+		// ignore bias because it has no parents
+		for(int hidden = 0; hidden < hiddenNodes.size() - 1; hidden++) {
+		    Node hiddenNode = hiddenNodes.get(hidden);
+		    for(int input = 0; input < inputNodes.size(); input++) {
+			hiddenNode.parents.get(input).weight +=
+			    learningRate * inputNodes.get(input).getOutput() * delta_hidden.get(hidden);
+		    }
+		}
+		
 	    }
         //until some stopping criterion is satisfied
 	}
