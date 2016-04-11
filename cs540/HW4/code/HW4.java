@@ -25,13 +25,12 @@ public class HW4{
 		//Reading the training set 	
 		ArrayList<Instance> trainingSet=getData(args[3]);
 		
-		
 		//Reading the weights
 		Double[][] hiddenWeights=new Double[Integer.parseInt(args[0])][];
 		
 		for(int i=0;i<hiddenWeights.length;i++)
 		{
-			hiddenWeights[i]=new Double[trainingSet.get(0).attributes.size()+1];
+		    hiddenWeights[i]=new Double[trainingSet.get(0).attributes.size()+1];
 		}
 		
 		Double [][] outputWeights=new Double[trainingSet.get(0).classValues.size()][];
