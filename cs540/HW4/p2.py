@@ -36,48 +36,52 @@ aX3 = 0.1
 #        for each node j in layer do
 #            inj <-- iwi,jai
 #            aj  <--g(inj)
+print "Inputs/outputs:"
 inA = (aX1 * w["wx1a"]) + (aX2 * w["wx2a"]) + (aX3 * w["wx3a"]) + (1 * w["wh1a"])
 print inA
 # inA: 0.78
 aA = g(inA)
 print aA
-# aA: 0.6857
+# aA: 0.685680
 inB = (aX1 * w["wx1b"]) + (aX2 * w["wx2b"]) + (aX3 * w["wx3b"]) + (1 * w["wh1b"])
 print inB
 # inB: 0.06
 aB = g(inB)
 print aB
-# aB: 0.5150
+# aB: 0.514995
 inC = (aA * w["wac"]) + (aB * w["wbc"]) + (1 * w["wh2c"])
 print inC
-# inC: 0.4713
+# inC: 0.471273
 aC = g(inC)
 print aC
-# aC: 0.6157
+# aC: 0.615685
 
 #    /* Propagate deltas backward from output layer to input layer */
 #    for each node j in the output layer do
 #        (delta)[j] <--g (inj)*(yj - aj)
+print "\nDeltas:"
 dC = g_prime(inC)*(1-aC)
 print dC
-# dC: 0.9093
+# dC: 0.090935
 
 #    for =L-1to1do
 #        for each node i in layer do
 #            (delta)[i] <--g (ini) j wi,j (delta)[j]
-dA = g_prime(inA)*dC
+dA = g_prime(inA)*w["wac"]*dC
 print dA
-# dA: 0.0196
-dB = g_prime(inB)*dC
+# dA: 0.007839
+dB = g_prime(inB)*w["wbc"]*dC
 print dB
-# dB: 0.0227
-dBias = g_prime(1)*dC
+# dB: -0.004543
+dBias = g_prime(1)*w["wh2c"]*dC
 print dBias
-# dBias: 0.0179
+# dBias: 0.005364
 
 #    /* Update every weight in network using deltas */
 #    for each weight wi,j in network do
 #        wi,j <--wi,j+alpha*ai*(delta)[j]
+
+print "\nWeights:"
 w["wx1a"] += alpha * aX1 * dA
 w["wx1b"] += alpha * aX1 * dB
 w["wx2a"] += alpha * aX2 * dA
@@ -90,5 +94,16 @@ w["wac"] += alpha * aA * dC
 w["wbc"] += alpha * aB * dC
 w["wh2c"] += alpha * 1 * dC
 
-for k in sorted(w):
-  print "\\item $%s = %.4f$" % (k, w[k])
+print "Weights to hidden layer:"
+for k in ["wx1a", "wx1b", "wx2a", "wx2b", "wx3a", "wx3b", "wh1a", "wh1b"]:
+  print "%s = %.6f" % (k, w[k])
+
+print "\nWeights to output layer:"
+for k in ["wac", "wbc", "wh2c"]:
+  print "%s = %.6f" % (k, w[k])
+
+print "\nBiases:"
+print "dA: %.6f" % dA
+print "dB: %.6f" % dB
+print "dBias: %.6f" % dBias
+print "dC: %.6f" % dC

@@ -172,16 +172,6 @@ Figure 18.24 The back-propagation algorithm for learning in multilayer networks.
         //  for each weight wi,j in network do
         //      wi,j ← a small random number
 
-	    Random r = new Random();
-
-	    for(NodeWeightPair nw : hiddenNodes.get(0).parents) {
-		nw.weight = r.nextDouble()*0.01;
-	    }
-
-	    for(NodeWeightPair nw : outputNodes.get(0).parents) {
-		nw.weight = r.nextDouble()*0.01;
-	    }
-
         //  for each example (x, y) in examples do
 	    for(Instance i : trainingSet) {
 
@@ -225,11 +215,8 @@ Figure 18.24 The back-propagation algorithm for learning in multilayer networks.
 		    for(int output = 0; output < outputNodes.size(); output++) {
 			val += outputNodes.get(output).parents.get(hidden).weight * delta_out.get(output);
 		    }
-		    if(hidden < hiddenNodes.size() - 1) {
-			delta_hidden.add(val * hiddenNodes.get(hidden).getGPrime());
-		    } else {
-			delta_hidden.add(val * 1.0);
-		    }
+		    
+		    delta_hidden.add(val * hiddenNodes.get(hidden).getGPrime());
 		}
 
         //      // Update every weight in network using deltas

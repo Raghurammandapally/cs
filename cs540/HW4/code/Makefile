@@ -8,10 +8,14 @@ HWNUM = 4
 
 CLASSES = \
         NNImpl.java\
-	Node.java\
-	HW$(HWNUM).java
+	Node.java
 
-default: classes
+CLASSES_EXTRA = \
+								HW$(HWNUM).java
+
+default: classes classes_extra
+
+classes_extra: $(CLASSES_EXTRA:.java=.class)
 
 classes: $(CLASSES:.java=.class)
 
@@ -24,7 +28,7 @@ clean:
 
 package:
 	rm -f ../wfunkhouser-HW$(HWNUM).zip || exit 0
-	zip -j ../wfunkhouser-HW$(HWNUM).zip ../P1.pdf ../P2.pdf $(FILE).java
+	zip -j ../wfunkhouser-HW$(HWNUM).zip ../P1.pdf ../P2.pdf $(CLASSES)
 
 show:
 	unzip -l ../wfunkhouser-HW$(HWNUM).zip

@@ -34,6 +34,9 @@ public class Node{
 	    {
 		parents=new ArrayList<NodeWeightPair>();
 	    }
+	if(type == 1 || type == 3) {
+	    sum = 1.0;
+	}
     }
 	
     //For an input node sets the input value which will be the value of a particular attribute
