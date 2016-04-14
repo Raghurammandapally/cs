@@ -12,8 +12,17 @@ jpeg('rplot.jpg')
 
 #plot.new()
 
-plot(x1, y1, pch=16)
+plot(x1, y1, pch=16, xlab="p", ylab="q")
 points(x2, y2)
+
+x = c(x1[c(1,2)],x2[c(1,2)])
+y = c(y1[c(1,2)],y2[c(1,2)])
+dy = 0.6
+dx = dy/4
+#draw squares over support vectors
+for(i in 1:4) {
+  rect(x[i] - dx, y[i] - dy, x[i] + dx, y[i] + dy)
+}
 
 # line with slope of 3 and y-intercept of -1
 # y = 3x - 1
