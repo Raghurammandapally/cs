@@ -13,11 +13,12 @@ int crawl(char *start_url,
 // linked_list.c
 typedef struct node {
   char* str;
+  char* link;
   struct node* next;
 } node;
 
 void print(node *);
-node *push(char *, node *);
+node *push(char *, char *, node *);
 node *pop(node *);
 
 // hash_set.c

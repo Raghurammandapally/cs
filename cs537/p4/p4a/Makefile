@@ -7,6 +7,7 @@ file_tester : file_tester.c libcrawler.so
 test: all file_tester
 	./file_tester pagea
 
+
 linked_list:
 	gcc -g -fpic -c linked_list.c -Wall -Werror -o linked_list.o
 

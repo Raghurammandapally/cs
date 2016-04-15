@@ -8,6 +8,13 @@
 #include "crawler.h"
 #include "mythreads.h"
 
+// comment next line out to disable debugging
+#define DEBUG
+
+#ifndef DEBUG
+#define printf(...) {}
+#endif
+
 // initialize queues to empty linked list
 node *links = NULL;
 node *pages = NULL;
@@ -24,6 +31,8 @@ volatile int max_link = 0;
 volatile int page_count = 0;
 volatile int link_count = 0;
 
+volatile int total_work = 0;
+
 // links: 2 cv, 1 mutex
 pthread_cond_t l_empty = PTHREAD_COND_INITIALIZER;
 pthread_cond_t l_fill = PTHREAD_COND_INITIALIZER;
@@ -36,14 +45,14 @@ pthread_mutex_t p_m = PTHREAD_MUTEX_INITIALIZER;
 // exiting from main()
 pthread_cond_t done_cv = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t done_m = PTHREAD_MUTEX_INITIALIZER;
-int done = 0;
+//volatile int done = 0;
 
 // callbacks
 char * (*fetch_fn)(char *url);
 void (*edge_fn)(char *from, char *to);
 
-void do_tokenizing(char *orig) {
-  printf("***tokenizing...\n------------------------\n%s\n----------------------\n", orig);
+void do_tokenizing(char *orig, char *source) {
+  //printf("***tokenizing...\n------------------------\n%s\n----------------------\n", orig);
   char *str = strdup(orig);
 
   char *curr, *new_str, *word;
@@ -59,8 +68,10 @@ void do_tokenizing(char *orig) {
     word = strtok_r(curr, ":", &saveptr2);
     word = strtok_r(NULL, ":", &saveptr2);
 
-    printf("found word: %s\n", word);
+    //printf("found word: %s\n", word);
     assert(word != NULL);
+
+    edge_fn(source, word);
 
     // check hash set and, if not present, add
     // link producer
@@ -72,8 +83,16 @@ void do_tokenizing(char *orig) {
     
     if(!contains(table, word)) {
       // do pushing
-      links = push(strdup(word), links);
+      printf("PUSH link: %s\n", word);
+      links = push(NULL, strdup(word), links);
       link_count++;
+      
+      Mutex_lock(&done_m);
+      total_work++;
+      Mutex_unlock(&done_m);
+
+      printf("--> new link_count: %d\n", link_count);
+      printf("--> curr page_count: %d\n", page_count);
       // update table
       add(table, word);
     }
@@ -93,7 +112,7 @@ void do_tokenizing(char *orig) {
 void parse(node *n) {
 
   // do some parsing of n->str using strtok_r
-  do_tokenizing(n->str);
+  do_tokenizing(n->str, n->link);
 
   // will free page after parse returns
 
@@ -101,9 +120,9 @@ void parse(node *n) {
 }
 
 void download(node *n) {
-  printf("  -->download called on %s.\n", n->str);
+  //printf("  -->download called on %s.\n", n->link);
 
-  char *page = fetch_fn(n->str);
+  char *page = fetch_fn(n->link);
   assert(page != NULL);
   //printf("PAGE: %s\n", page);
 
@@ -112,8 +131,12 @@ void download(node *n) {
   // page queue is unbounded, so no waiting
 
   // do pushing
-  pages = push(page, pages);
+  pages = push(page, strdup(n->link), pages);
   page_count++;
+  printf("PUSH page: %s\n", n->link);
+  printf("--> new link_count: %d\n", link_count);
+  printf("--> curr page_count: %d\n", page_count);
+
   
   Cond_signal(&p_fill);
   Mutex_unlock(&p_m);
@@ -125,14 +148,14 @@ void download(node *n) {
 }
 
 void *downloader(void *arg) {
-  printf("***downloader started!\n");
+  //printf("***downloader started!\n");
 
   // loop forever
   while(1) {
 
     Mutex_lock(&l_m);
     while(link_count == 0) {
-      printf("***downloader waiting!\n");
+      //printf("***downloader waiting!\n");
       // wait
       Cond_wait(&l_fill, &l_m);
     }
@@ -142,6 +165,10 @@ void *downloader(void *arg) {
     links = pop(links);
     link_count--;
 
+    printf("POP link: %s\n", next->link);
+    printf("--> link_count: %d\n", link_count);
+    printf("--> page_count: %d\n", page_count);
+
     // signal links empty
     Cond_signal(&l_empty);
     Mutex_unlock(&l_m);
@@ -150,8 +177,12 @@ void *downloader(void *arg) {
     download(next);
 
     // free node
-    free(next->str);
+    free(next->link);
     free(next);
+
+    //Mutex_lock(&l_m);
+    //link_count--;
+    //Mutex_unlock(&l_m);
   
   }
 
@@ -169,11 +200,11 @@ void *parser(void *arg) {
 
   while(1) {
 
-    printf("***parser started!\n");
+    //printf("***parser started!\n");
 
     Mutex_lock(&p_m);
     while(page_count == 0) {
-      printf("***parser waiting!\n");
+      //printf("***parser waiting!\n");
       // wait
       Cond_wait(&p_fill, &p_m);
     }
@@ -182,6 +213,10 @@ void *parser(void *arg) {
     // pop the top of the stack (will need to free the node and the string later)
     pages = pop(pages);
     page_count--;
+    printf("POP page: %s\n", next->link);
+    printf("--> new link_count: %d\n", link_count);
+    printf("--> curr page_count: %d\n", page_count);
+
 
     // signal pages empty: may not need to do this since nobody will be waiting on
     // pages to be reduced in size (unbounded)
@@ -193,19 +228,28 @@ void *parser(void *arg) {
 
     // free node
     free(next->str);
+    free(next->link);
     free(next);
 
-    Mutex_lock(&p_m);
-    Mutex_lock(&l_m);
+    //Mutex_lock(&p_m);
+    //page_count--;
+    //Mutex_unlock(&p_m);
+
+    //Mutex_lock(&p_m);
+    //Mutex_lock(&l_m);
     Mutex_lock(&done_m);
-    printf("page count: %d\nlink count: %d\n", page_count, link_count);
-    if(page_count == 0 && link_count == 0) {
-      done = 1;
+    total_work--;
+
+    printf("link count: %d\npage count: %d\n", link_count, page_count);
+    //if(page_count == 0 && link_count == 0) {
+    if(total_work == 0) {
+      //done = 1;
       Cond_signal(&done_cv);
     }
+
     Mutex_unlock(&done_m);
-    Mutex_unlock(&l_m);
-    Mutex_unlock(&p_m);
+    //Mutex_unlock(&l_m);
+    //Mutex_unlock(&p_m);
 
   }
 
@@ -218,7 +262,7 @@ int crawl(char *start_url,
 	  int queue_size,
 	  char * (*_fetch_fn)(char *url),
 	  void (*_edge_fn)(char *from, char *to)) {
-
+  
   // initialize our hash set
   table = table_init();
 
@@ -229,8 +273,9 @@ int crawl(char *start_url,
   max_link = queue_size;
 
   // initialize download queue with start_url
-  links = push(strdup(start_url), links);
+  links = push(NULL, strdup(start_url), links);
   link_count++;
+  total_work++;
 
   pthread_t *did = malloc(download_workers * sizeof(pthread_t));
   pthread_t *pid = malloc(parse_workers * sizeof(pthread_t));
@@ -255,7 +300,8 @@ int crawl(char *start_url,
 
   // wait for threads to signal completion
   Mutex_lock(&done_m);
-  while(done != 1) {
+  //while(done != 1) {
+  while(total_work != 0) {
     // wait
     Cond_wait(&done_cv, &done_m);
   }

@@ -70,7 +70,7 @@ void add(node **table, char *str) {
   // check that the hash return is valid
   assert(slot >= 0 && slot < MAX_SIZE);
 
-  table[slot] = push(strdup(str), table[slot]);
+  table[slot] = push(strdup(str), NULL, table[slot]);
 }
 
 int contains(node **table, char *str) {

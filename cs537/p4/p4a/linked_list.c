@@ -20,10 +20,11 @@ void print(node *head) {
 }
 
 // e.g. head = push(strdup("hello world!", head));
-node *push(char *str, node *head) {
+node *push(char *str, char *link, node *head) {
   node *newhead = malloc(sizeof(node));
   assert(newhead != NULL);
   newhead->str = str;
+  newhead->link = link;
   newhead->next = head;
   return newhead;
 }
