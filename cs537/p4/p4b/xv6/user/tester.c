@@ -5,9 +5,16 @@
 #include "stat.h"
 #include "user.h"
 
+void
+fcn(void *arg)
+{
+  return;
+}
+
 int
 main(int argc, char *argv[])
 {
-  printf(1, "%s", "** Placeholder program for grading scripts **\n");
+  clone(fcn, (void *) 0x0, (void *) 0x0);
+  join( (void **) 0x0);
   exit();
 }

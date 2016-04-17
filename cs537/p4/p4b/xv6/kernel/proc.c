@@ -245,6 +245,20 @@ wait(void)
   }
 }
 
+int
+clone(void(*fcn)(void*), void *arg, void*stack)
+{
+  cprintf("clone called!\n");
+  return 0;
+}
+
+int
+join(void **stack)
+{
+  cprintf("join called!\n");
+  return 0;
+}
+
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:

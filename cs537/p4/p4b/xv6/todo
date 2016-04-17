@@ -1,0 +1,54 @@
+./include/syscall.h:#define SYS_getpid 18
+./kernel/sysfunc.h:int sys_getpid(void);
+./kernel/sysproc.c:sys_getpid(void)
+./kernel/syscall.c:[SYS_getpid]  sys_getpid,
+./user/usys.S:SYSCALL(getpid)
+./user/user.h:int getpid(void);
+./include/syscall.h:#define SYS_kill    8
+./kernel/sysfunc.h:int sys_kill(void);
+./kernel/sysproc.c:sys_kill(void)
+./kernel/sysproc.c:  return kill(pid);
+./kernel/sysproc.c:    if(proc->killed){
+./kernel/pipe.c:      if(p->readopen == 0 || proc->killed){
+./kernel/pipe.c:    if(proc->killed){
+./kernel/trap.c:    if(proc->killed)
+./kernel/trap.c:    if(proc->killed)
+./kernel/trap.c:            "eip 0x%x addr 0x%x--kill proc\n",
+./kernel/trap.c:    proc->killed = 1;
+./kernel/trap.c:  // Force process exit if it has been killed and is in user space.
+./kernel/trap.c:  if(proc && proc->killed && (tf->cs&3) == DPL_USER)
+./kernel/trap.c:  // Check if the process has been killed since we yielded
+./kernel/trap.c:  if(proc && proc->killed && (tf->cs&3) == DPL_USER)
+./kernel/syscall.c:[SYS_kill]    sys_kill,
+./kernel/ide.c:  // Assuming will not sleep too long: ignore proc->killed.
+./kernel/proc.h:  int killed;                  // If non-zero, have been killed
+./kernel/defs.h:int             kill(int);
+./kernel/console.c:      if(proc->killed){
+./kernel/proc.c:        p->killed = 0;
+./kernel/proc.c:    if(!havekids || proc->killed){
+./kernel/proc.c:kill(int pid)
+./kernel/proc.c:      p->killed = 1;
+Binary file ./kernel/console.o matches
+Binary file ./kernel/exec.o matches
+Binary file ./kernel/fs.o matches
+Binary file ./kernel/ide.o matches
+Binary file ./kernel/main.o matches
+Binary file ./kernel/mp.o matches
+Binary file ./kernel/pipe.o matches
+./user/kill.c:    printf(2, "usage: kill pid...\n");
+./user/kill.c:    kill(atoi(argv[i]));
+./user/usys.S:SYSCALL(kill)
+./user/user.h:int kill(int);
+./user/makefile.mk:	kill\
+./user/usertests.c:  printf(1, "kill... ");
+./user/usertests.c:  kill(pid1);
+./user/usertests.c:  kill(pid2);
+./user/usertests.c:  kill(pid3);
+./user/usertests.c:      kill(ppid);
+./user/usertests.c:      kill(ppid);
+./user/usertests.c:      // sit around until killed
+./user/usertests.c:  kill(pids[0]);
+./user/usertests.c:     // sit around until killed
+./user/usertests.c:    kill(pids[i]);
+./user/usertests.c:    kill(pid);
+./user/kill.d:user/kill.d user/kill.o: user/kill.c include/types.h include/stat.h \
