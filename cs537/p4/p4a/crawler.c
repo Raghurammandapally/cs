@@ -51,6 +51,10 @@ pthread_mutex_t done_m = PTHREAD_MUTEX_INITIALIZER;
 char * (*fetch_fn)(char *url);
 void (*edge_fn)(char *from, char *to);
 
+int is_blank_space(char c) {
+  return c == ' ' || c == '\n' || c == '\t';
+}
+
 void do_tokenizing(char *orig, char *source) {
   //printf("***tokenizing...\n------------------------\n%s\n----------------------\n", orig);
   char *str = strdup(orig);
@@ -62,43 +66,47 @@ void do_tokenizing(char *orig, char *source) {
   while( (curr = strstr(str, "link:")) != NULL) {
     new_str = strdup(curr+1);
 
-    curr = strtok_r(curr, " \n", &saveptr1);
-    assert(curr != NULL);
+    if(curr == str || (curr > str && is_blank_space(*(curr-1)))) {
 
-    word = strtok_r(curr, ":", &saveptr2);
-    word = strtok_r(NULL, ":", &saveptr2);
+      curr = strtok_r(curr, " \n", &saveptr1);
+      assert(curr != NULL);
 
-    //printf("found word: %s\n", word);
-    assert(word != NULL);
+      word = strtok_r(curr, ":", &saveptr2);
+      word = strtok_r(NULL, ":", &saveptr2);
 
-    edge_fn(source, word);
+      //printf("found word: %s\n", word);
+      assert(word != NULL);
 
-    // check hash set and, if not present, add
-    // link producer
-    Mutex_lock(&l_m);
-    while(link_count == max_link) {
-      // wait
-      Cond_wait(&l_empty, &l_m);
-    }
+      edge_fn(source, word);
+
+      // check hash set and, if not present, add
+      // link producer
+      Mutex_lock(&l_m);
+      while(link_count == max_link) {
+	// wait
+	Cond_wait(&l_empty, &l_m);
+      }
     
-    if(!contains(table, word)) {
-      // do pushing
-      printf("PUSH link: %s\n", word);
-      links = push(NULL, strdup(word), links);
-      link_count++;
+      if(!contains(table, word)) {
+	// do pushing
+	printf("PUSH link: %s\n", word);
+	links = push(NULL, strdup(word), links);
+	link_count++;
       
-      Mutex_lock(&done_m);
-      total_work++;
-      Mutex_unlock(&done_m);
+	Mutex_lock(&done_m);
+	total_work++;
+	Mutex_unlock(&done_m);
 
-      printf("--> new link_count: %d\n", link_count);
-      printf("--> curr page_count: %d\n", page_count);
-      // update table
-      add(table, word);
-    }
+	printf("--> new link_count: %d\n", link_count);
+	printf("--> curr page_count: %d\n", page_count);
+	// update table
+	add(table, word);
+      }
     
-    Cond_signal(&l_fill);
-    Mutex_unlock(&l_m);
+      Cond_signal(&l_fill);
+      Mutex_unlock(&l_m);
+
+    }
 
     free(str);
     str = new_str;
@@ -274,6 +282,7 @@ int crawl(char *start_url,
 
   // initialize download queue with start_url
   links = push(NULL, strdup(start_url), links);
+  add(table, start_url);
   link_count++;
   total_work++;
 

@@ -52,7 +52,9 @@ int main(int argc, char *argv[]) {
   // basic_test.c
   //int rc = crawl("/u/c/s/cs537-1/ta/tests/4a/tests/files/num_threads/pagea", 5, 4, 15, fetch, edge);
   // simple_loop.c
-  int rc = crawl("/u/c/s/cs537-1/ta/tests/4a/tests/files/simple_loop/pagea", 5, 4, 15, fetch, edge);
+  //int rc = crawl("/u/c/s/cs537-1/ta/tests/4a/tests/files/simple_loop/pagea", 5, 4, 15, fetch, edge);
+  // complex_parsing
+  int rc = crawl("/u/c/s/cs537-1/ta/tests/4a/tests/files/complex_parsing/pagea", 5, 4, 15, fetch, edge);
   assert(rc == 0);
   return 0;
 }
