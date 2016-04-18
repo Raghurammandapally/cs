@@ -249,6 +249,15 @@ int
 clone(void(*fcn)(void*), void *arg, void*stack)
 {
   cprintf("clone called!\n");
+  cprintf("  fcn:\t %p\n", fcn);
+  cprintf("  arg:\t %p\n", arg);
+  cprintf(" arg val:\t %d\n", *( (int *) arg));
+  cprintf("  stack:\t %p\n", stack);
+
+  cprintf("pre fn call...\n");
+  (*fcn)(arg);
+  cprintf("post fn call...\n");
+
   return 0;
 }
 

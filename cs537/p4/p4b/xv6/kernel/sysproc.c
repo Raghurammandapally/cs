@@ -89,16 +89,26 @@ sys_uptime(void)
   return xticks;
 }
 
-void
-tester(void *arg)
-{
-  return;
-}
-
+// int clone(void(*fcn)(void*), void *arg, void*stack)
 int
 sys_clone(void)
 {
-  return clone(tester, (void *) 0, (void *) 0);
+  void (*fcn)(void*);
+  void *arg;
+  void *stack;
+
+  if(argptr(0, (char **) &fcn, sizeof(char**)) < 0)
+    return -1;
+  if(argptr(1, (char **) &arg, sizeof(char**)) < 0)
+    return -1;
+  if(argptr(2, (char **) &stack, sizeof(char**)) < 0)
+    return -1;
+  cprintf("sys_clone called!\n");
+  cprintf("  fcn:\t %p\n", fcn);
+  cprintf("  arg:\t %p\n", arg);
+  cprintf("  stack:\t %p\n", stack);
+
+  return clone(fcn, arg, stack);
 }
 
 int
