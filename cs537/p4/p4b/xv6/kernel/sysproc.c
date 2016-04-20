@@ -114,5 +114,16 @@ sys_clone(void)
 int
 sys_join(void)
 {
-  return join( (void **) 0x0);
+  void **stack = 0x0;
+
+  if(argptr(0, (char **) &stack, sizeof(char**)) < 0)
+    return -1;
+  cprintf("sys_join called!\n");
+  cprintf("  &stack:\t %p\n", &stack);
+  cprintf("  stack:\t %p\n", stack);
+  cprintf("  *stack:\t %p\n", *stack);
+
+  cprintf("sys_join: stack location %p\n", stack);
+
+  return join(stack);
 }

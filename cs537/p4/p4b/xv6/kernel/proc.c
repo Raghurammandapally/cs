@@ -268,6 +268,9 @@ clone(void(*fcn)(void*), void *arg, void*stack)
   // prevent freeing of vm
   np->thread = 1;
 
+  // store stack pointer
+  np->t_stack = stack;
+
   np->sz = proc->sz;
   np->parent = proc;
   *np->tf = *proc->tf;
@@ -304,7 +307,57 @@ int
 join(void **stack)
 {
   cprintf("join called!\n");
-  return 0;
+
+  struct proc *p;
+  int havekids, pid;
+  void *thread_stack;
+
+  acquire(&ptable.lock);
+  for(;;){
+    // Scan through table looking for zombie children.
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->parent != proc || p->thread != 1)
+        continue;
+      havekids = 1;
+      if(p->state == ZOMBIE) {
+        // Found one.
+        pid = p->pid;
+	thread_stack = p->t_stack;
+
+	cprintf("t_stack location: %p\n", p->t_stack);
+
+        kfree(p->kstack);
+        p->kstack = 0;
+        //freevm(p->pgdir);
+        p->state = UNUSED;
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+	
+	p->thread = 0;
+	p->t_stack = 0;
+
+        release(&ptable.lock);
+
+	*stack = thread_stack;
+	cprintf("stack: %p\n", *stack);
+	cprintf("stack location: %p\n", stack);
+
+        return pid;
+      }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || proc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(proc, &ptable.lock);  //DOC: wait-sleep
+  }
 }
 
 // Per-CPU process scheduler.
