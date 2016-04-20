@@ -218,7 +218,7 @@ wait(void)
       if(p->parent != proc)
         continue;
       havekids = 1;
-      if(p->state == ZOMBIE){
+      if(p->state == ZOMBIE && !p->thread){
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
@@ -248,17 +248,56 @@ wait(void)
 int
 clone(void(*fcn)(void*), void *arg, void*stack)
 {
-  cprintf("clone called!\n");
-  cprintf("  fcn:\t %p\n", fcn);
-  cprintf("  arg:\t %p\n", arg);
-  cprintf(" arg val:\t %d\n", *( (int *) arg));
-  cprintf("  stack:\t %p\n", stack);
+  cprintf("stack % PGSIZE: %d\n", ((int) stack) % PGSIZE);
+  //int s = (int) sbrk(0);
+  //cprintf("sbrk: %d\n", s);
+  if( ((int) stack) % PGSIZE != 0) {
+    return -1;
+  }
 
-  cprintf("pre fn call...\n");
-  (*fcn)(arg);
-  cprintf("post fn call...\n");
+  int i, pid;
+  struct proc *np;
 
-  return 0;
+  // Allocate process.
+  if((np = allocproc()) == 0)
+    return -1;
+
+  // parent and child point to same page table
+  np->pgdir = proc->pgdir;
+
+  // prevent freeing of vm
+  np->thread = 1;
+
+  np->sz = proc->sz;
+  np->parent = proc;
+  *np->tf = *proc->tf;
+
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+
+  // set up new user stack and registers (np->tf->eip, np->tf->esp)
+
+  int bottom;
+  bottom = (int) stack + PGSIZE - 4;
+  // push arg/return addr
+  // 1) push arg
+  *( (int *) bottom) = (int) arg;
+  // 2) push return addr
+  *( (int *) (bottom - 4) ) = (int) 0xffffffff;
+  
+  // set registers
+  np->tf->eip = (int) fcn;
+  np->tf->esp = (int) bottom - 4;
+
+  for(i = 0; i < NOFILE; i++)
+    if(proc->ofile[i])
+      np->ofile[i] = filedup(proc->ofile[i]);
+  np->cwd = idup(proc->cwd);
+ 
+  pid = np->pid;
+  np->state = RUNNABLE;
+  safestrcpy(np->name, proc->name, sizeof(proc->name));
+  return pid;
 }
 
 int

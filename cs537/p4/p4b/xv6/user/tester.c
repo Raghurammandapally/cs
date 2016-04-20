@@ -18,8 +18,9 @@ void
 fcn(void *arg)
 {
   printf(1, "FCN WAS CALLED!\n");
-  //printf(1, "the arg was: %d\n", *( (int *) arg));
-  return;
+  printf(1, "the location of arg: %x\n", arg);
+  printf(1, "the arg was: %d\n", *( (int *) arg));
+  exit();
 }
 
 void 
@@ -31,9 +32,8 @@ test( void (*func)(void *), void *arg)
 int
 main(int argc, char *argv[])
 {
-  void *v, *stack;
-  v = (void *) 0xeee;
-  stack = (void *) 0xfff;
+  void *stack;
+  stack = (void *) malloc(4096);
 
   int *b;
   b = malloc(sizeof(int));
@@ -42,13 +42,7 @@ main(int argc, char *argv[])
   printf(1, "main:\n");
   printf(1, "--> addr of fcn: %p\n", fcn);
 
-  //printf(1, "pre fn call...\n");
-  //(*fcn)(b);
-  //printf(1, "post fn call...\n");
-  
-  //test(&fcn, b);
-
   clone(&fcn, (void *) b, (void *) stack);
-  join( (void **) 0x0);
+  //join( (void **) 0x0);
   exit();
 }
