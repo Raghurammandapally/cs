@@ -118,6 +118,22 @@ growproc(int n)
   }
   proc->sz = sz;
   switchuvm(proc);
+
+  struct proc *p;
+
+  acquire(&ptable.lock);
+
+  // Scan through table looking for zombie children.
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->parent != proc || p->thread != 1)
+      continue;
+    // Found one.
+    p->sz = sz;
+    switchuvm(p);
+  }
+
+  release(&ptable.lock);
+    
   return 0;
 }
 
@@ -248,10 +264,13 @@ wait(void)
 int
 clone(void(*fcn)(void*), void *arg, void*stack)
 {
-  cprintf("stack % PGSIZE: %d\n", ((int) stack) % PGSIZE);
+  //cprintf("stack % PGSIZE: %d\n", ((int) stack) % PGSIZE);
   //int s = (int) sbrk(0);
   //cprintf("sbrk: %d\n", s);
-  if( ((int) stack) % PGSIZE != 0) {
+  //cprintf("stack: %p\n", stack);
+  //cprintf("proc->sz: %x\n", proc->sz);
+  //cprintf("esp: %x\n", proc->tf->esp);
+  if( ((int) stack) % PGSIZE != 0 ) { // || (int) stack < proc->tf->esp) {
     return -1;
   }
 
@@ -306,7 +325,7 @@ clone(void(*fcn)(void*), void *arg, void*stack)
 int
 join(void **stack)
 {
-  cprintf("join called!\n");
+  //cprintf("join called!\n");
 
   struct proc *p;
   int havekids, pid;
@@ -325,7 +344,7 @@ join(void **stack)
         pid = p->pid;
 	thread_stack = p->t_stack;
 
-	cprintf("t_stack location: %p\n", p->t_stack);
+	//cprintf("t_stack location: %p\n", p->t_stack);
 
         kfree(p->kstack);
         p->kstack = 0;
@@ -342,8 +361,8 @@ join(void **stack)
         release(&ptable.lock);
 
 	*stack = thread_stack;
-	cprintf("stack: %p\n", *stack);
-	cprintf("stack location: %p\n", stack);
+	//cprintf("stack: %p\n", *stack);
+	//cprintf("stack location: %p\n", stack);
 
         return pid;
       }

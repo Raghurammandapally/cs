@@ -1,4 +1,5 @@
-/* clone and join syscalls */
+
+/* clone with bad stack argument */
 #include "types.h"
 #include "user.h"
 
@@ -8,7 +9,6 @@
 #define PGSIZE (4096)
 
 int ppid;
-int global = 1;
 
 #define assert(x) if (x) {} else { \
    printf(1, "%s: %d ", __FILE__, __LINE__); \
@@ -24,24 +24,21 @@ int
 main(int argc, char *argv[])
 {
    ppid = getpid();
-
    void *stack = malloc(PGSIZE*2);
    assert(stack != NULL);
+   if((uint)stack % PGSIZE == 0)
+     stack += 4;
+
+   assert(clone(worker, 0, stack) == -1);
+
+   stack = sbrk(0);
    if((uint)stack % PGSIZE)
-     stack = stack + (4096 - (uint)stack % PGSIZE);
+     stack = stack + (PGSIZE - (uint)stack % PGSIZE);
+   sbrk( ((uint)stack - (uint)sbrk(0)) + PGSIZE/2 );
+   assert((uint)stack % PGSIZE == 0);
+   assert((uint)sbrk(0) - (uint)stack == PGSIZE/2);
 
-   int arg = 42;
-   int clone_pid = clone(worker, &arg, stack);
-   assert(clone_pid > 0);
-
-   void *join_stack;
-   printf(1, "main: stack location: %p\n", &join_stack);
-   int join_pid = join(&join_stack);
-   assert(join_pid == clone_pid);
-   printf(1, "%p\n", stack);
-   printf(1, "%p\n", join_stack);
-   assert(stack == join_stack);
-   assert(global == 2);
+   assert(clone(worker, 0, stack) == -1);
 
    printf(1, "TEST PASSED\n");
    exit();
@@ -49,11 +46,5 @@ main(int argc, char *argv[])
 
 void
 worker(void *arg_ptr) {
-   int arg = *(int*)arg_ptr;
-   assert(arg == 42);
-   assert(global == 1);
-   global++;
    exit();
 }
-
-

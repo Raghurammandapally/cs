@@ -9,7 +9,7 @@
 #include "mythreads.h"
 
 // comment next line out to disable debugging
-#define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG
 #define printf(...) {}

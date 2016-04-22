@@ -3,6 +3,9 @@
 #include "fcntl.h"
 #include "user.h"
 #include "x86.h"
+#include "uspinlock.h"
+
+#define PGSIZE 4096
 
 char*
 strcpy(char *s, char *t)
@@ -103,3 +106,45 @@ memmove(void *vdst, void *vsrc, int n)
     *dst++ = *src++;
   return vdst;
 }
+
+int
+thread_create(void (*start_routine)(void*), void *arg)
+{
+  void *stack = malloc(PGSIZE*2);
+
+  if((uint)stack % PGSIZE)
+    stack = stack + (4096 - (uint)stack % PGSIZE);
+
+  return clone(start_routine, arg, stack);
+}
+
+int
+thread_join()
+{
+  //which calls the underlying join() system call, frees the user stack, and then returns.
+  void **stack = 0x0;
+  int ret = join(stack);
+  free(*stack);
+  return ret;
+}
+
+void
+lock_init(lock_t *lk)
+{
+  lk->locked = 0;
+  //lk->cpu = 0;
+}
+
+void
+lock_acquire(lock_t *lk)
+{
+  while(xchg(&lk->locked, 1) != 0)
+    ;
+}
+
+void
+lock_release(lock_t *lk)
+{
+  xchg(&lk->locked, 0);
+}
+

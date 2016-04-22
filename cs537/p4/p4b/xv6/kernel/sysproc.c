@@ -101,12 +101,14 @@ sys_clone(void)
     return -1;
   if(argptr(1, (char **) &arg, sizeof(char**)) < 0)
     return -1;
-  if(argptr(2, (char **) &stack, sizeof(char**)) < 0)
+  if(argptr(2, (char **) &stack, PGSIZE) < 0)
     return -1;
+  /*
   cprintf("sys_clone called!\n");
   cprintf("  fcn:\t %p\n", fcn);
   cprintf("  arg:\t %p\n", arg);
   cprintf("  stack:\t %p\n", stack);
+  */
 
   return clone(fcn, arg, stack);
 }
@@ -118,12 +120,12 @@ sys_join(void)
 
   if(argptr(0, (char **) &stack, sizeof(char**)) < 0)
     return -1;
-  cprintf("sys_join called!\n");
-  cprintf("  &stack:\t %p\n", &stack);
-  cprintf("  stack:\t %p\n", stack);
-  cprintf("  *stack:\t %p\n", *stack);
+  //cprintf("sys_join called!\n");
+  //cprintf("  &stack:\t %p\n", &stack);
+  //cprintf("  stack:\t %p\n", stack);
+  //cprintf("  *stack:\t %p\n", *stack);
 
-  cprintf("sys_join: stack location %p\n", stack);
+  //cprintf("sys_join: stack location %p\n", stack);
 
   return join(stack);
 }
