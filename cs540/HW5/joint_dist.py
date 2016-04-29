@@ -54,6 +54,8 @@ def short(s):
 
 latex = True
 
+tot = 0.0
+
 if latex:
   print "%s & %s & %s & %s & %s & %s\\\\" % tuple("ABCDEP")
 else:
@@ -63,6 +65,7 @@ for a in [True, False]:
     for c in [True, False]:
       for d in [True, False]:
         for e in [True, False]:
+          tot += p(a,b,c,d,e)
           if latex:
             #   T & T & T          &F  & F & F\\
             fmt = "%s & %s & %s & %s & %s & %f\\\\"
@@ -70,4 +73,6 @@ for a in [True, False]:
             fmt = "%s\t%s\t%s\t%s\t%s\t%f"
 
           print fmt % (short(a), short(b), short(c), short(d), short(e), p(a, b, c, d, e))
+
+print tot
 
