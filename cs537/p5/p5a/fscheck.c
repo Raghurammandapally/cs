@@ -1,4 +1,14 @@
+#include <errno.h>
 #include <stdio.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <malloc.h>
 
 /*
 Your checker should read through the file system image and determine the consistency of a number of things, including the following. When one of these does not hold, print the error message (also shown below) and exit immediately.
@@ -18,6 +28,44 @@ No extra links allowed for directories (each directory only appears in one other
 
 */
 
-int main(char *argv[], int argc) {
-  printf("hello, world!\n");
+int main(int argc, char *argv[]) {
+  int fd;
+  struct stat fstruct;
+  char *fdata;
+  
+  if(argc != 2) {
+    fprintf(stderr, "Invalid number of arguments!\n");
+    return 1;
+  }
+
+  fd = open(argv[1], O_RDONLY);
+
+  //open() and creat() return the new file descriptor, or -1 if an error occurred (in which
+  //case, errno is set appropriately).
+  if(fd < 0) {
+    fprintf(stderr, "image not found.\n");
+    return 1;
+  }
+
+  //int fstat(int fd, struct stat *buf);
+  if(fstat(fd, &fstruct) < 0) {
+    fprintf(stderr, "error in fstat.\n");
+    return 1;
+  }
+
+  //void *mmap(void *addr, size_t length, int prot, int flags,
+  //  int fd, off_t offset);
+  fdata = mmap(NULL, fstruct.st_size, PROT_READ,
+	       MAP_PRIVATE, fd, 0);
+  
+  if(fdata == MAP_FAILED) { // (void *) -1
+    fprintf(stderr, "error in mmap.\n");
+    return 1;
+  }
+
+  //printf("file:\n---------------\n%s", fdata);
+  //printf("first char: %c\n", *fdata);
+
+  return 0;
+
 }

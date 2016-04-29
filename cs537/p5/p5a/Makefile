@@ -5,3 +5,7 @@ check-syntax:
 clean:
 	rm -f fscheck
 	rm -f nul
+test: default
+	#./fscheck
+	#./fscheck tester
+	./fscheck fs.h
