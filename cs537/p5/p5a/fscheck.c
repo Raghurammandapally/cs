@@ -1,124 +1,91 @@
-#include <string.h>
-#include <errno.h>
-#include <stdio.h>
+// mmap
 #include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/mman.h>
+
+// fstat
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <malloc.h>
-#include <inttypes.h>
+
+// fprintf
+#include <stdio.h>
+
+// open
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+// uintptr_t
 #include <stdint.h>
 
-// Definitions from xv6
-typedef unsigned char uchar;
+// exit
+# include <stdlib.h>
 
-// include/stat.h
-#define T_DIR  1   // Directory
-#define T_FILE 2   // File
-#define T_DEV  3   // Special device
+// fs info including structs
+#include "fs.h"
+// structs:
+//   superblock
+//   dinode
+//   dirent
 
-//include/fs.h
-// Block 0 is unused.
-// Block 1 is super block.
-// Inodes start at block 2.
-#define ROOTINO 1  // root i-number
-#define BSIZE 512  // block size
+// macros
+/******************************************************************/
+#define DIE(str) fprintf(stderr, str); exit(1);
+#define DUMP_INT(expr) printf(#expr ": %d\n", expr);
+#define NBYTES BSIZE/sizeof(char)
+#define NUMDIRENTS BSIZE/sizeof(struct dirent)
+#define T_DIR 1
+#define T_DEV 2
+#define T_FILE 3
 
-// File system super block
-struct superblock {
-  uint size;         // Size of file system image (blocks)
-  uint nblocks;      // Number of data blocks
-  uint ninodes;      // Number of inodes.
-};
-
-#define NDIRECT 12
-#define NINDIRECT (BSIZE / sizeof(uint))
-#define MAXFILE (NDIRECT + NINDIRECT)
-
-// On-disk inode structure
-struct dinode {
-  // 1: T_DIR
-  // 2: T_FILE
-  // 3: T_DEV
-  short type;           // File type
-  short major;          // Major device number (T_DEV only)
-  short minor;          // Minor device number (T_DEV only)
-  short nlink;          // Number of links to inode in file system
-  uint size;            // Size of file (bytes)
-  uint addrs[NDIRECT+1];   // Data block addresses
-};
-
-// Inodes per block.
-#define IPB           (BSIZE / sizeof(struct dinode))
-
-// Block containing inode i
-#define IBLOCK(i)     ((i) / IPB + 2)
-
-// Bitmap bits per block
-#define BPB           (BSIZE*8)
-
-// Block containing bit for block b
-#define BBLOCK(b, ninodes) (b/BPB + (ninodes)/IPB + 3)
-
-// Directory is a file containing a sequence of dirent structures.
-#define DIRSIZ 14
-
-struct dirent {
-  ushort inum;
-  char name[DIRSIZ];
-};
-
-#define NUM_DIRS BSIZE/sizeof(struct dirent)
-
-struct dir {
-  struct dirent dirs[NUM_DIRS];
-};
-
-struct indirect_dir {
-  struct dir *dirs[NINDIRECT];
-};
-
-#define NUM_BYTES BSIZE/sizeof(uchar)
+// structs
+/******************************************************************/
+// bitmap
 struct bitmap {
-  uchar bits[NUM_BYTES]
+  unsigned char bytes[NBYTES];
 };
 
-/*
-Your checker should read through the file system image and determine the consistency of a number of things, including the following. When one of these does not hold, print the error message (also shown below) and exit immediately.
+// indirect pointer to a block full of references
+struct indirect {
+  uint addrs[NINDIRECT];
+};
 
-*/
+// directory is full of directory entries
+struct dir {
+  struct dirent ents[NUMDIRENTS];
+};
 
-// pointer to location in memory that file is mapped to
-char *fdata;
+// inode block
+struct iblock {
+  struct dinode inodes[IPB];
+};
 
-struct dirent *
-get_dirent(struct dir *dir, int num)
-{
-  return (struct dirent *) ( (uintptr_t) dir + (num * sizeof(struct dirent)) );
-}
+/******************************************************************/
+// pointer to (block 0) file in memory after mmap
+void *fdata;
+// location of superblock
+struct superblock *sb;
 
-void *
-get_block(uint blk)
-{
-  return (void *)( (uintptr_t) fdata + (BSIZE * blk) );
-}
+// prototypes
+/******************************************************************/
+void init();
+int block_in_use(uint);
+void *get_block(uint);
+void test();
+struct indirect *get_indirect(struct dinode *);
+struct dinode *get_inode(uint);
+int is_valid_addr(uint);
+int dir_contains(struct dinode *, char *);
+int dirent_contains(struct dir *, char *);
+struct dir *get_dir(struct dinode *, uint blk);
 
-int
-isvalid(uint addr, struct superblock *sb)
-{
-  return addr > 1 + (sb->ninodes/IPB) && addr < sb->nblocks;
-}
-
+// main method
+/******************************************************************/
 int
 main(int argc, char *argv[])
 {
   int fd;
   struct stat fstruct;
-  
+
   if(argc != 2) {
     fprintf(stderr, "Invalid number of arguments!\n");
     return 1;
@@ -149,172 +116,361 @@ main(int argc, char *argv[])
     return 1;
   }
 
-  // block 1 is superblock
-  struct superblock *sb;
-  sb = (struct superblock *) ( ((intptr_t) fdata) + BSIZE);
+  // initialize superblock, etc.
+  init();
 
-  // bitmap
-  void *bmp = (void *) ( (intptr_t) fdata + (512 * (sb->ninodes/IPB + 3)));
-  
+  // run checks
+  test();
 
-  struct dinode *di = (struct dinode *) ( (intptr_t) fdata + 1024 );
-  int i;
-  for(i = 0; i < sb->ninodes; i++) {
-    //Each inode is either unallocated or one of the valid types (T_FILE, T_DIR, T_DEV). ERROR: bad inode.
-    if(di->type < 0 || di->type > T_DEV) {
-      fprintf(stderr, "bad inode.\n");
-      return 1;
-    }
-
-    if(di->type > 0) {
-      // For in-use inodes, each address that is used by inode is valid (points to a valid datablock address within the image). Note: must check indirect blocks too, when they are in use. ERROR: bad address in inode.
-      int data;
-      for(data = 0; data < NDIRECT; data++) {
-	if(di->addrs[data] == 0) {
-	  continue;
-	}
-	//if(di->addrs[data] <= 1 + (sb->ninodes/IPB) || di->addrs[data] >= sb->nblocks) {
-	if(!isvalid(di->addrs[data], sb)) {
-	  fprintf(stderr, "bad address in inode.\n");
-	  return 1;
-	}
-      }
-      // now data == NDIRECT; check if we are using indirect block
-      if(di->addrs[data]) {
-	uint *indirect = (uint *) ( (uintptr_t) fdata + (BSIZE * di->addrs[data]));
-	int j;
-	for(j = 0; j < NINDIRECT; j++) {
-	  if(*indirect == 0) {
-	    continue;
-	  }
-
-	  if(!isvalid(*indirect, sb)) {
-	    fprintf(stderr, "bad address in inode.\n");
-	    return 1;
-	  }
-
-	  indirect++;
-	}
-      }
-    }
-    // move pointer to next dinode
-    di++;
-  }
-  
-  di = (struct dinode *) ( (intptr_t) fdata + 1024 + sizeof(struct dinode) );
-  // Root directory exists, and it is inode number 1. ERROR MESSAGE: root directory does not exist.
-  if(di->type != 1) {
-    fprintf(stderr, "root directory does not exist.\n");
-    return 1;
-  }
-
-  // Each directory contains . and .. entries. ERROR: directory not properly formatted.
-  di = (struct dinode *) get_block(2);
-  for(i = 0; i < sb->ninodes; i++) {
-    if(di->type != T_DIR) {
-      di++;
-      continue;
-    }
-
-    int has_dot;
-    int has_dotdot;
-
-    int block;
-    struct dir *de;
-    for(block = 0; block < NDIRECT && di->addrs[block]; block++) {
-      de = (struct dir *) get_block(di->addrs[block]);
-      int k;
-      for(k = 0; k < NUM_DIRS; k++) {
-	struct dirent *dirent;
-	dirent = get_dirent(de, k);
-	if(strcmp(dirent->name, ".") == 0) {
-	  has_dot = 1;
-	} else if (strcmp(dirent->name, "..") == 0) {
-	  has_dotdot = 1;
-	}
-      }
-    }
-    
-    //now block == NDIRECT, so we are on the indirect block
-    if(di->addrs[block]) {
-      struct indirect_dir *in_dir = (struct indirect_dir *) get_block(di->addrs[block]);
-      int l;
-      for(l = 0; l < NINDIRECT; l++) {
-	struct dir *dir = in_dir->dirs[l];
-	int k;
-	for(k = 0; k < NUM_DIRS; k++) {
-	  struct dirent *dirent;
-	  dirent = get_dirent(de, k);
-	  if(strcmp(dirent->name, ".") == 0) {
-	    has_dot = 1;
-	  } else if (strcmp(dirent->name, "..") == 0) {
-	    has_dotdot = 1;
-	  }
-	}
-      }
-    }
-
-    if(!has_dot || !has_dotdot) {
-      fprintf(stderr, "directory not properly formatted.\n");
-      return 1;
-    }
-    
-    di++;
-  }
-
-
-  struct bitmap *bits = (struct bitmap *) get_block(28);
-  uchar used[BPB];
-  for(i = 0; i < NUM_BYTES; i++) {
-    uchar u = bits->bits[i];
-    int j;
-    for(j = 0; j < 8; j++) {
-      used[(i*8)+j] = u % 2;
-      u = u >> 1;
-    }
-  }
-  int count = 0;
-  for(i = 0; i < BPB; i++) {
-    if(used[i]) count++;
-    printf("%d ", used[i]);
-  }
-  printf("count: %d\n", count);
-  /*
-  struct dinode *di = (struct dinode *) get_block(2);
-  for(i = 0; i < sb->ninodes; i++) {
-    if(di->type > 0 && di->type > T_DEV) {
-      fprintf(stderr, "bad inode.\n");
-      return 1;
-    }
-
-    di++;
-  }
-  */
-
-// Each .. entry in directory refers to the proper parent inode, and parent inode points back to it. ERROR: parent directory mismatch.
-  /*
-    loop over inodes i
-      if not T_DIR or i == 1:
-        continue
-      
-       
-  */
-      
-      
-      
-// For in-use inodes, each address in use is also marked in use in the bitmap. ERROR: address used by inode but marked free in bitmap.  
-// For blocks marked in-use in bitmap, actually is in-use in an inode or indirect block somewhere. ERROR: bitmap marks block in use but it is not in use.
-// For in-use inodes, any address in use is only used once. ERROR: address used more than once.
-// For inodes marked used in inode table, must be referred to in at least one directory. ERROR: inode marked use but not found in a directory.
-// For inode numbers referred to in a valid directory, actually marked in use in inode table. ERROR: inode referred to in directory but marked free.
-// Reference counts for regular files match the number of times file is referred to in directories (i.e., hard links work correctly). ERROR: bad reference count for file.
-// No extra links allowed for directories (each directory only appears in one other directory). ERROR: directory appears more than once in file system.
-  
-  printf("sizeof uint: %d\n", sizeof(uint));
-  
+  // if none of them failed, we are error-free!
   return 0;
 
 }
 
+// do some initialization
+void
+init()
+{
+  // set up superblock
+  sb = (struct superblock *) get_block(1);
+}  
 
+// return a pointer to the blk'th block, offset from fdata
+void *
+get_block(uint blk)
+{
+  uint ret = (uintptr_t) fdata + (BSIZE * blk);
+  return (void *) ((uintptr_t) fdata + (BSIZE * blk));
+}
 
+// is block i in use according to the bitmap?
+int
+block_in_use(uint blk)
+{
+  
+  uint byte = (blk % BPB) / 8;
+  uint bit = blk % 8;
+  struct bitmap *bmp = (struct bitmap *) get_block(BBLOCK(blk, sb->ninodes));
+
+  uint shift = bmp->bytes[byte] >> bit;
+  return shift % 2 == 1;
+}
+
+// return a pointer to the dinode whose number is given by inode
+struct dinode *
+get_inode(uint inode)
+{
+  struct iblock *iblk = (struct iblock *) get_block(IBLOCK(inode));
+  return &(iblk->inodes[inode % IPB]);
+}
+
+// return a pointer to the indirect struct for the inode whose number
+// is given by inode
+// returns NULL if there is no indirect block given
+struct indirect *
+get_indirect(struct dinode *di)
+{
+  if(di->addrs[NDIRECT] == 0) {
+    return NULL;
+  } else {
+    return (struct indirect *) get_block(di->addrs[NDIRECT]);
+  }
+}
+
+// given an inode and the number of which dir block to look at
+// (should be between 0 and NDIRECT + NINDIRECT), return the struct dir
+// MUST check beforehand whether the addr specified is non-zero
+struct dir *
+get_dir(struct dinode *di, uint blk)
+{
+  if(blk < NDIRECT) {
+    if(!di->addrs[blk])
+      return NULL;
+    return (struct dir *) get_block(di->addrs[blk]);
+  } else {
+    struct indirect *ind = get_indirect(di);
+    if(ind == NULL || !ind->addrs[blk-NDIRECT])
+      return NULL;
+    return (struct dir *) get_block(ind->addrs[blk-NDIRECT]);
+  }
+}
+    
+
+// check whether addr is valid (points to a valid datablock address within the image)
+int
+is_valid_addr(uint addr)
+{
+  return addr < sb->size && sb->size - sb->nblocks <= addr;
+}
+
+// check whether the dir whose inode is given by di contains a pointer to the inode
+// with name str
+// if the dir does contain it, return the inode number; otherwise return 0
+int
+dir_contains(struct dinode *di, char *str)
+{
+  int i;
+  for(i = 0; i < NDIRECT; i++) {
+    // only check addresses that are non-zero
+    if(!di->addrs[i])
+      break;
+    
+    struct dir *dir = (struct dir *) get_block(di->addrs[i]);
+
+    // if we find the string, the go ahead and return
+    int ret = dirent_contains(dir, str);
+    if(ret) 
+      return ret;
+  }
+  // else, we have failed
+  return 0;
+}
+
+// check whether the dir given by de contains a dirent with name str
+// if the dir does contain it, return the inode number; otherwise return 0
+int
+dirent_contains(struct dir *d, char *str)
+{
+  int i;
+  for(i = 0; i < NUMDIRENTS; i++) {
+    // if the two strings are equal, return true
+    if(strncmp(str, d->ents[i].name, DIRSIZ) == 0) {
+      return d->ents[i].inum;
+    }
+  }
+  // otherwise, return false
+  return 0;
+}
+
+// check if the inode pointed to has a valid type
+int
+is_valid_inode_type(struct dinode *inode)
+{
+  return inode->type == 0 || // unallocated
+    inode->type == T_DIR ||
+    inode->type == T_DEV || 
+    inode->type == T_FILE;
+}
+
+// checks
+/******************************************************************/
+//Each inode is either unallocated or one of the valid types (T_FILE, T_DIR, T_DEV). ERROR: bad inode.
+void
+check_inode_types()
+{
+  int i;
+  for(i = 0; i < sb->ninodes; i++) {
+    struct dinode *inode = get_inode(i);
+    if(!is_valid_inode_type(inode)) {
+      DIE("bad inode.\n");
+    }
+  }
+}
+
+//For in-use inodes, each address that is used by inode is valid (points to a valid datablock address within the image). Note: must check indirect blocks too, when they are in use. ERROR: bad address in inode.
+void
+check_inode_addrs()
+{
+  int i, j;
+  for(i = 0; i < sb->ninodes; i++) {
+    struct dinode *inode = get_inode(i);
+    if(inode->type == 0)
+      continue;
+    for(j = 0; j < NDIRECT; j++) {
+      if(inode->addrs[j] != 0 && !is_valid_addr(inode->addrs[j])) {
+	DIE("bad address in inode.\n");
+      }
+    }
+
+    struct indirect *ind;
+    if( (ind = get_indirect(inode)) != NULL ) {
+      for(j = 0; j < NINDIRECT; j++) {
+	if(ind->addrs[j] != 0 && !is_valid_addr(ind->addrs[j])) {
+	  DIE("bad address in inode.\n");
+	}
+      }
+    }
+  }
+}    
+
+//Root directory exists, and it is inode number 1. ERROR MESSAGE: root directory does not exist.
+void
+check_root()
+{
+  struct dinode *root = get_inode(1);
+  if(root->type != 1) {
+    DIE("root directory does not exist.\n");
+  }
+}
+
+//Each directory contains . and .. entries. ERROR: directory not properly formatted.
+void
+check_dirs_rel_links()
+{
+  int i;
+  for(i = 0; i < sb->ninodes; i++) {
+    struct dinode *di = get_inode(i);
+    if(di->type != T_DIR)
+      continue;
+    if(!(dir_contains(di, ".") && dir_contains(di, ".."))) {
+      DIE("directory not properly formatted.\n");
+    }
+  }
+}
+
+//Each .. entry in directory refers to the proper parent inode, and parent inode points back to it. ERROR: parent directory mismatch.
+void
+check_parent_refs()
+{
+  int i,j,k;
+  for(i = 0; i < sb->ninodes; i++) {
+    struct dinode *di = get_inode(i);
+    if(di->type != T_DIR || i == 1) // not a dir or the root dir
+      continue;
+    // loop over the folders inside this folder
+    struct dir *dir;
+    for(j = 0; j < NDIRECT + NINDIRECT; j++) {
+      if( (dir = get_dir(di, j)) == NULL )
+	continue;
+      struct dirent *de;
+      for(k = 0; k < NUMDIRENTS; k++) {
+	if( (de = &(dir->ents[k])) == NULL )
+	  continue;
+	int ret = dir_contains(get_inode(de->inum), "..");
+	if(ret == 0 || ret != i) {
+	  DIE("parent directory mismatch.\n");
+	}
+      }
+    }
+  }
+}
+
+//For in-use inodes, each address in use is also marked in use in the bitmap. ERROR: address used by inode but marked free in bitmap.
+void
+check_inode_addrs_used()
+{
+  int i, j;
+  struct dinode *di;
+
+  // first, check the major parts of the os
+  for(i = 1; i < sb->size - sb->nblocks; i++) {
+    if(!block_in_use(i)) {
+      //DIE("address used by inode but marked free in bitmap.\n");
+    }
+  }
+  
+  // now check data blocks referenced by inodes
+  for(i = 0; i < sb->ninodes; i++) {
+    di = get_inode(i);
+    if(di->type == 0)
+      continue;
+    for(j = 0; j < NDIRECT; j++) {
+      if(di->addrs[j] && !block_in_use(di->addrs[j])) {
+	DIE("address used by inode but marked free in bitmap.\n");
+      }
+    }
+    struct indirect *ind;
+    if( (ind = get_indirect(di)) != NULL) {
+      for(j = 0; j < NINDIRECT; j++) {
+	if(ind->addrs[j] && !block_in_use(ind->addrs[j])) {
+	  DIE("address used by inode but marked free in bitmap.\n");
+	}
+      }
+    }
+  }      
+}
+
+//For blocks marked in-use in bitmap, actually is in-use in an inode or indirect block somewhere. ERROR: bitmap marks block in use but it is not in use.
+void
+check_bitmap_addrs_used()
+{
+  uint used[sb->size];
+  int i, j;
+  struct dinode *di;
+
+  // first, check the major parts of the os
+  for(i = 0; i < sb->size - sb->nblocks; i++) {
+    used[i]++;
+  }
+  
+  // now check data blocks referenced by inodes
+  for(i = 0; i < sb->ninodes; i++) {
+    di = get_inode(i);
+    if(di->type == 0)
+      continue;
+    for(j = 0; j < NDIRECT; j++) {
+      if(di->addrs[j]) {
+	used[di->addrs[j]]++;
+      }
+    }
+    struct indirect *ind;
+    if( (ind = get_indirect(di)) != NULL) {
+      // update the counter for the indirect block itself
+      used[di->addrs[j]]++;
+
+      for(j = 0; j < NINDIRECT; j++) {
+	if(ind->addrs[j]) {
+	  used[ind->addrs[j]]++;
+	}
+      }
+    }
+  }
+
+  // now check them all
+  for(i = 0; i < sb->size; i++) {
+    if(!used[i] && block_in_use(i)) {
+      DIE("bitmap marks block in use but it is not in use.\n");
+    }
+  }
+}
+
+//For in-use inodes, any address in use is only used once. ERROR: address used more than once.
+//For inodes marked used in inode table, must be referred to in at least one directory. ERROR: inode marked use but not found in a directory.
+//For inode numbers referred to in a valid directory, actually marked in use in inode table. ERROR: inode referred to in directory but marked free.
+//Reference counts (number of links) for regular files match the number of times file is referred to in directories (i.e., hard links work correctly). ERROR: bad reference count for file.
+//No extra links allowed for directories (each directory only appears in one other directory). ERROR: directory appears more than once in file system.
+
+void
+test()
+{
+  check_inode_types();
+  check_inode_addrs();
+  check_root();
+  check_dirs_rel_links();
+  check_parent_refs();
+  check_inode_addrs_used();
+  check_bitmap_addrs_used();
+
+  /*  
+  DUMP_INT(sb->size - sb->nblocks);
+
+  DUMP_INT(block_in_use(0));
+  DUMP_INT(block_in_use(454));
+  DUMP_INT(block_in_use(453));
+  DUMP_INT(block_in_use(500));
+
+  printf("root contains .: %d\n", dir_contains((struct dinode *) get_inode(1), "."));
+  printf("root contains ..: %d\n", dir_contains((struct dinode *) get_inode(1), ".."));
+  printf("root contains onomanopoeoieo: %d\n", dir_contains((struct dinode *) get_inode(1), "onomanopoeoiaeoia"));
+
+  DUMP_INT(sb->nblocks);
+  DUMP_INT(sb->size);
+
+  DUMP_INT(is_valid_addr(29));
+  DUMP_INT(is_valid_addr(1023));
+  DUMP_INT(is_valid_addr(28));
+  DUMP_INT(is_valid_addr(1024));
+  
+  printf("type of inode 0: %d\n", get_inode(0)->type);
+  printf("type of inode 1: %d\n", get_inode(1)->type);
+  printf("type of inode 2: %d\n", get_inode(2)->type);
+
+  int i;
+  for(i = 0; i < sb->size; i++) {
+    printf("%d ", block_in_use(i));
+    if(i % 8 == 7) {
+      printf("\n");
+    }
+  }
+  */
+}
