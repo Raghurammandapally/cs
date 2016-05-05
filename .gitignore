@@ -3,8 +3,6 @@
 *.pyc
 *.jar
 *.DS_STORE
-cs537/p1/1b/xv6/fs.img
-cs537/p2/2b/xv6/fs.img
 .__afs*
 \#*\#
 *~
@@ -12,3 +10,4 @@ cs540/HW4/code/*.txt
 cs540/HW5/code/*.txt
 cs540/*/*.pdf
 cs540/*/*.zip
+*.img

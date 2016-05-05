@@ -8,4 +8,4 @@ clean:
 test: default
 	#./fscheck
 	#./fscheck tester
-	./fscheck fs.h
+	./fscheck fs.img

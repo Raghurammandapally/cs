@@ -41,7 +41,7 @@ uint ialloc(ushort type);
 void iappend(uint inum, void *p, int n);
 
 // convert to intel byte order
-ushort
+short
 xshort(ushort x)
 {
   ushort y;
@@ -218,7 +218,7 @@ main(int argc, char *argv[])
   }
 
   mkfs(995, 200, 1024);
-
+ 
   root_dir = opendir(argv[2]);
 
   root_inode = ialloc(T_DIR);
@@ -354,7 +354,7 @@ iappend(uint inum, void *xp, int n)
         usedblocks++;
       }
       // printf("read indirect block\n");
-      rsect(xint(din.addrs[NDIRECT]), (char*)indirect);
+      rsectx(int(din.addrs[NDIRECT]), (char*)indirect);
       if(indirect[fbn - NDIRECT] == 0){
         indirect[fbn - NDIRECT] = xint(freeblock++);
         usedblocks++;
