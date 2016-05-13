@@ -6,7 +6,11 @@ clean:
 	rm -f fscheck
 	rm -f nul
 test: default
-	./fscheck corrupt/fs.img.bak
+	#./fscheck corrupt/fs.img.bak
+	#./fscheck corrupt/badroot2
+	#./fscheck corrupt/badfmt
+	#./fscheck corrupt/mismatch
+	./fscheck corrupt/good
 	# [x] ./fscheck corrupt/fs_badinode.img
 	# [x] ./fscheck corrupt/fs_badaddr.img
 	# [x] ./fscheck corrupt/fs_badroot.img

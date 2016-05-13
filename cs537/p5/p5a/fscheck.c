@@ -59,6 +59,30 @@ struct iblock {
   struct dinode inodes[IPB];
 };
 
+/*
+// File system super block
+struct superblock {
+  uint size;         // Size of file system image (blocks)
+  uint nblocks;      // Number of data blocks
+  uint ninodes;      // Number of inodes.
+};
+
+// On-disk inode structure
+struct dinode {
+  short type;           // File type
+  short major;          // Major device number (T_DEV only)
+  short minor;          // Minor device number (T_DEV only)
+  short nlink;          // Number of links to inode in file system
+  uint size;            // Size of file (bytes)
+  uint addrs[NDIRECT+1];   // Data block addresses
+};
+
+struct dirent {
+  ushort inum;
+  char name[DIRSIZ];
+};
+*/
+
 /******************************************************************/
 // pointer to (block 0) file in memory after mmap
 void *fdata;
@@ -69,6 +93,8 @@ struct superblock *sb;
 /******************************************************************/
 void init();
 int block_in_use(uint);
+int inode_in_use(uint);
+int bitmap_block_used(struct bitmap *, uint);
 void *get_block(uint);
 void test();
 struct indirect *get_indirect(struct dinode *);
@@ -147,11 +173,24 @@ get_block(uint blk)
 int
 block_in_use(uint blk)
 {
-  
+  struct bitmap *bmp = (struct bitmap *) get_block(BBLOCK(blk, sb->ninodes));
+  return bitmap_block_used(bmp, blk);
+}
+
+// is inode i in use according to the bitmap?
+int
+inode_in_use(uint i)
+{
+  struct dinode *di = get_inode(i);
+  return di->type != 0;
+}
+
+// is blk i of the bitmap marked as a 0 or a 1?
+int
+bitmap_block_used(struct bitmap *bmp, uint blk)
+{
   uint byte = (blk % BPB) / 8;
   uint bit = blk % 8;
-  struct bitmap *bmp = (struct bitmap *) get_block(BBLOCK(blk, sb->ninodes));
-
   uint shift = bmp->bytes[byte] >> bit;
   return shift % 2 == 1;
 }
@@ -262,7 +301,7 @@ check_inode_types()
   for(i = 0; i < sb->ninodes; i++) {
     struct dinode *inode = get_inode(i);
     if(!is_valid_inode_type(inode)) {
-      DIE("bad inode.\n");
+      DIE("ERROR: bad inode.\n");
     }
   }
 }
@@ -278,7 +317,7 @@ check_inode_addrs()
       continue;
     for(j = 0; j < NDIRECT; j++) {
       if(inode->addrs[j] != 0 && !is_valid_addr(inode->addrs[j])) {
-	DIE("bad address in inode.\n");
+	DIE("ERROR: bad address in inode.\n");
       }
     }
 
@@ -286,7 +325,7 @@ check_inode_addrs()
     if( (ind = get_indirect(inode)) != NULL ) {
       for(j = 0; j < NINDIRECT; j++) {
 	if(ind->addrs[j] != 0 && !is_valid_addr(ind->addrs[j])) {
-	  DIE("bad address in inode.\n");
+	  DIE("ERROR: bad address in inode.\n");
 	}
       }
     }
@@ -298,8 +337,9 @@ void
 check_root()
 {
   struct dinode *root = get_inode(1);
-  if(root->type != 1) {
-    DIE("root directory does not exist.\n");
+
+  if(root->type != 1 || (dir_contains(root, ".") != 1) || (dir_contains(root, "..") != 1))  {
+    DIE("ERROR: root directory does not exist.\n");
   }
 }
 
@@ -313,7 +353,7 @@ check_dirs_rel_links()
     if(di->type != T_DIR)
       continue;
     if(!(dir_contains(di, ".") && dir_contains(di, ".."))) {
-      DIE("directory not properly formatted.\n");
+      DIE("ERROR: directory not properly formatted.\n");
     }
   }
 }
@@ -325,20 +365,26 @@ check_parent_refs()
   int i,j,k;
   for(i = 0; i < sb->ninodes; i++) {
     struct dinode *di = get_inode(i);
-    if(di->type != T_DIR || i == 1) // not a dir or the root dir
+    if(di->type != T_DIR) // not a dir or the root dir
       continue;
     // loop over the folders inside this folder
     struct dir *dir;
     for(j = 0; j < NDIRECT + NINDIRECT; j++) {
       if( (dir = get_dir(di, j)) == NULL )
 	continue;
-      struct dirent *de;
+      struct dirent de;
       for(k = 0; k < NUMDIRENTS; k++) {
-	if( (de = &(dir->ents[k])) == NULL )
+	de = dir->ents[k];
+	if( de.inum == 0 || ( strncmp(de.name, ".", DIRSIZ) == 0 ) || ( strncmp(de.name, "..", DIRSIZ) == 0) ) { // check if it's . or ..
 	  continue;
-	int ret = dir_contains(get_inode(de->inum), "..");
-	if(ret == 0 || ret != i) {
-	  DIE("parent directory mismatch.\n");
+	}
+	struct dinode *subdir = get_inode(de.inum);
+	if(subdir->type != T_DIR) {
+	  continue;
+	}
+	int ret = dir_contains(subdir, "..");
+        if(ret == 0 || ret != i) {
+	  DIE("ERROR: parent directory mismatch.\n");
 	}
       }
     }
@@ -366,14 +412,14 @@ check_inode_addrs_used()
       continue;
     for(j = 0; j < NDIRECT; j++) {
       if(di->addrs[j] && !block_in_use(di->addrs[j])) {
-	DIE("address used by inode but marked free in bitmap.\n");
+	DIE("ERROR: address used by inode but marked free in bitmap.\n");
       }
     }
     struct indirect *ind;
     if( (ind = get_indirect(di)) != NULL) {
       for(j = 0; j < NINDIRECT; j++) {
 	if(ind->addrs[j] && !block_in_use(ind->addrs[j])) {
-	  DIE("address used by inode but marked free in bitmap.\n");
+	  DIE("ERROR: address used by inode but marked free in bitmap.\n");
 	}
       }
     }
@@ -419,14 +465,96 @@ check_bitmap_addrs_used()
   // now check them all
   for(i = 0; i < sb->size; i++) {
     if(!used[i] && block_in_use(i)) {
-      DIE("bitmap marks block in use but it is not in use.\n");
+      DIE("ERROR: bitmap marks block in use but it is not in use.\n");
     }
   }
 }
 
 //For in-use inodes, any address in use is only used once. ERROR: address used more than once.
+void
+check_addrs_used_once()
+{
+  unsigned int used[sb->size];
+
+  int i, j;
+
+  for(i = 0; i < sb->size; i++) {
+    used[i] = 0;
+  }
+
+  for(i = 0; i < sb->ninodes; i++) {
+    struct dinode *inode = get_inode(i);
+    if(inode->type == 0)
+      continue;
+    for(j = 0; j < NDIRECT; j++) {
+      if(inode->addrs[j] != 0) {
+	used[inode->addrs[j]]++;
+      }
+    }
+
+    struct indirect *ind;
+    if( (ind = get_indirect(inode)) != NULL ) {
+      for(j = 0; j < NINDIRECT; j++) {
+	if(ind->addrs[j] != 0) {
+	  used[ind->addrs[j]]++;
+	}
+      }
+    }
+  }
+
+  for(i = 0; i < sb->size; i++) {
+    //printf("used[%d]: %d\n", i, used[i]);
+    if(used[i] > 1) {
+      DIE("ERROR: address used more than once.\n");
+    }
+  }
+}
+
 //For inodes marked used in inode table, must be referred to in at least one directory. ERROR: inode marked use but not found in a directory.
 //For inode numbers referred to in a valid directory, actually marked in use in inode table. ERROR: inode referred to in directory but marked free.
+void
+check_inode_usage()
+{
+  unsigned int used[sb->ninodes];
+
+  int i, j, k;
+
+  // initialize
+  for(i = 0; i < sb->ninodes; i++) {
+    used[i] = inode_in_use(i);
+  }
+
+  // loop over dirents and decrement index of inum with each reference
+  for(i = 0; i < sb->ninodes; i++) {
+    struct dinode *di = get_inode(i);
+    if(di->type != T_DIR) // not a dir or the root dir
+      continue;
+    // loop over the folders inside this folder
+    struct dir *dir;
+    for(j = 0; j < NDIRECT + NINDIRECT; j++) {
+      if( (dir = get_dir(di, j)) == NULL )
+	continue;
+      struct dirent de;
+      for(k = 0; k < NUMDIRENTS; k++) {
+	de = dir->ents[k];
+	if( de.inum == 0 || ( strncmp(de.name, ".", DIRSIZ) == 0 ) || ( strncmp(de.name, "..", DIRSIZ) == 0) ) { // check if it's . or ..
+	  continue;
+	}
+	used[de.inum]--;
+      }
+    }
+  }
+  
+  // start at 2 because 0 is unused and 1 is unreferenced
+  for(i = 2; i < sb->ninodes; i++) {
+    if(used[i] == 1) {
+      DIE("ERROR: inode marked use but not found in a directory.\n");
+    } else if (used[i] == -1) {
+      DIE("ERROR: inode referred to in directory but marked free.\n");
+    }
+  }
+}
+
 //Reference counts (number of links) for regular files match the number of times file is referred to in directories (i.e., hard links work correctly). ERROR: bad reference count for file.
 //No extra links allowed for directories (each directory only appears in one other directory). ERROR: directory appears more than once in file system.
 
@@ -435,11 +563,14 @@ test()
 {
   check_inode_types();
   check_inode_addrs();
-  check_root();
   check_dirs_rel_links();
+  check_root();
   check_parent_refs();
   check_inode_addrs_used();
   check_bitmap_addrs_used();
+  check_addrs_used_once();
+  check_inode_usage();
+  
 
   /*  
   DUMP_INT(sb->size - sb->nblocks);
